@@ -1,0 +1,10 @@
+<f:for each="{tables}" key="table" as="fields">
+#
+# Table structure for table '{table}'
+#
+CREATE TABLE {table} (
+<f:for each="{fields}" key="field" as="databaseSchema">
+  {field} {databaseSchema}
+</f:for>
+);
+</f:for>

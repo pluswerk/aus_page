@@ -25,7 +25,8 @@ namespace AUS\AusPage\Configuration;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-use AUS\AusPage\Service\PageConfigurationService;
+
+use AUS\AusPage\Page\PageConfigurationService;
 
 /**
  * Class PageConfiguration
@@ -35,6 +36,8 @@ use AUS\AusPage\Service\PageConfigurationService;
  */
 class PageConfiguration
 {
+
+    const EXTENSION_KEY = 'aus_page';
 
     /**
      * @param array $configuration
