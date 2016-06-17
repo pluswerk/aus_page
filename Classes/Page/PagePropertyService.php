@@ -104,26 +104,29 @@ class PagePropertyService implements SingletonInterface
      */
     public function renderTca(int $dokType)
     {
-        $this->addFieldsToLocalization($this->tcaFields[$dokType]['pageProperties']);
+        if (isset($this->tcaFields[$dokType])) {
+            $this->addFieldsToLocalization($this->tcaFields[$dokType]['pageProperties']);
 
-        $showItem = ',--div--;' . $this->tcaFields[$dokType]['title'] . ', ' . implode(',', array_unique($this->tcaFields[$dokType]['pageProperties']));
+            $showItem = ',--div--;' . $this->tcaFields[$dokType]['title'] . ', ' . implode(',',
+                    array_unique($this->tcaFields[$dokType]['pageProperties']));
 
-        // add showItems to pages
-        if (isset($GLOBALS['TCA']['pages']['types']['1']['showitem'])) {
-            $GLOBALS['TCA']['pages']['types'][$dokType]['showitem'] = $GLOBALS['TCA']['pages']['types']['1']['showitem'] . $showItem;
-        } elseif (is_array($GLOBALS['TCA']['pages']['types'])) {
-            // use first entry in types array
-            $pagesTypeDefinition = reset($GLOBALS['TCA']['pages']['types']);
-            $GLOBALS['TCA']['pages']['types'][$dokType]['showitem'] = $pagesTypeDefinition['showitem'] . $showItem;
-        }
+            // add showItems to pages
+            if (isset($GLOBALS['TCA']['pages']['types']['1']['showitem'])) {
+                $GLOBALS['TCA']['pages']['types'][$dokType]['showitem'] = $GLOBALS['TCA']['pages']['types']['1']['showitem'] . $showItem;
+            } elseif (is_array($GLOBALS['TCA']['pages']['types'])) {
+                // use first entry in types array
+                $pagesTypeDefinition = reset($GLOBALS['TCA']['pages']['types']);
+                $GLOBALS['TCA']['pages']['types'][$dokType]['showitem'] = $pagesTypeDefinition['showitem'] . $showItem;
+            }
 
-        // add showItems to pages_language_overlay
-        if (isset($GLOBALS['TCA']['pages_language_overlay']['types']['1']['showitem'])) {
-            $GLOBALS['TCA']['pages_language_overlay']['types'][$dokType]['showitem'] = $GLOBALS['TCA']['pages_language_overlay']['types']['1']['showitem'] . $showItem;
-        } elseif (is_array($GLOBALS['TCA']['pages_language_overlay']['types'])) {
-            // use first entry in types array
-            $pagesTypeDefinition = reset($GLOBALS['TCA']['pages_language_overlay']['types']);
-            $GLOBALS['TCA']['pages_language_overlay']['types'][$dokType]['showitem'] = $pagesTypeDefinition['showitem'] . $showItem;
+            // add showItems to pages_language_overlay
+            if (isset($GLOBALS['TCA']['pages_language_overlay']['types']['1']['showitem'])) {
+                $GLOBALS['TCA']['pages_language_overlay']['types'][$dokType]['showitem'] = $GLOBALS['TCA']['pages_language_overlay']['types']['1']['showitem'] . $showItem;
+            } elseif (is_array($GLOBALS['TCA']['pages_language_overlay']['types'])) {
+                // use first entry in types array
+                $pagesTypeDefinition = reset($GLOBALS['TCA']['pages_language_overlay']['types']);
+                $GLOBALS['TCA']['pages_language_overlay']['types'][$dokType]['showitem'] = $pagesTypeDefinition['showitem'] . $showItem;
+            }
         }
     }
 

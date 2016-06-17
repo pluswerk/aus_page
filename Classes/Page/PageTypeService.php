@@ -46,6 +46,11 @@ class PageTypeService implements SingletonInterface
     const ICON_DEFAULT_PATH = 'EXT:aus_page/ext_icon.svg';
 
     /**
+     * @var int[]
+     */
+    protected $pageTypeClasses = [];
+
+    /**
      * @param int $dokType
      * @param string $identifier
      * @param string|null $title
@@ -78,6 +83,25 @@ class PageTypeService implements SingletonInterface
         ExtensionManagementUtility::addUserTSConfig(
             'options.pageTree.doktypesToShowInNewPageDragArea := addToList(' . $dokType . ')'
         );
+    }
+
+    /**
+     * @param int $dokType
+     * @param string $modelClassName
+     * @return void
+     */
+    public function addPageTypeClassMapping(int $dokType, string $modelClassName)
+    {
+        $this->pageTypeClasses[$modelClassName] = $dokType;
+    }
+
+    /**
+     * @param string $modelClassName
+     * @return int
+     */
+    public function getPageTypeByClass(string $modelClassName): int
+    {
+        return isset($this->pageTypeClasses[$modelClassName]) ? $this->pageTypeClasses[$modelClassName] : 1;
     }
 
     /**

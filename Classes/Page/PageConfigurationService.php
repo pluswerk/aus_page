@@ -74,7 +74,10 @@ class PageConfigurationService implements SingletonInterface
         $pageTypeService = $this->objectManager->get(PageTypeService::class);
         $pageTypeService->registerPageType($configuration['dokType'], $configuration['identifier'], $configuration['title'], $configuration['icon']);
 
-        $this->addTypoScriptMapping($configuration['modelClassName']);
+        if (empty($configuration['modelClassName']) === false && class_exists($configuration['modelClassName'])) {
+            $pageTypeService->addPageTypeClassMapping($configuration['dokType'], $configuration['modelClassName']);
+            $this->addTypoScriptMapping($configuration['modelClassName']);
+        }
 
         /** @var PagePropertyService $pagePropertyService */
         $pagePropertyService = $this->objectManager->get(PagePropertyService::class);
@@ -120,10 +123,8 @@ class PageConfigurationService implements SingletonInterface
      */
     protected function addTypoScriptMapping(string $className = null)
     {
-        if (empty($className) === false && class_exists($className)) {
-            $typoScript = PHP_EOL . 'config.tx_extbase.persistence.classes.' . ltrim($className, '\\') . '.tableName = pages' . PHP_EOL;
-            ExtensionManagementUtility::addTypoScript(PageConfiguration::EXTENSION_KEY, 'setup', $typoScript);
-        }
+        $typoScript = PHP_EOL . 'config.tx_extbase.persistence.classes.' . ltrim($className, '\\') . '.mapping.tableName = pages' . PHP_EOL;
+        ExtensionManagementUtility::addTypoScript(PageConfiguration::EXTENSION_KEY, 'setup', $typoScript);
     }
 
 }
