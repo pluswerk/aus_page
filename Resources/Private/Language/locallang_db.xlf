@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+  <file source-language="en" datatype="plaintext" original="messages">
+    <body>
+
+      <trans-unit id="plugin.OneLevelNavigation.dokType">
+        <source>Page type</source>
+      </trans-unit>
+      <trans-unit id="plugin.OneLevelNavigation.startPage">
+        <source>Start page (pid in root line)</source>
+      </trans-unit>
+      <trans-unit id="plugin.OneLevelNavigation.template">
+        <source>Template</source>
+      </trans-unit>
+
+    </body>
+  </file>
+</xliff>

@@ -106,6 +106,16 @@ class PageTypeService implements SingletonInterface
 
     /**
      * @param int $dokType
+     * @return string
+     */
+    public function getClassByPageType(int $dokType): string
+    {
+        $className = array_search($dokType, $this->pageTypeClasses, true);
+        return $className === false ? '' : $className;
+    }
+
+    /**
+     * @param int $dokType
      * @param string $identifier
      * @param string $iconPath
      * @return void

@@ -1,0 +1,85 @@
+<?php
+namespace AUS\AusPage\Controller;
+
+/***************************************************************
+ *
+ *  Copyright notice
+ *
+ *  (c) 2016 Markus Hölzle <m.hoelzle@andersundsehr.com>, anders und sehr GmbH
+ *
+ *  All rights reserved
+ *
+ *  This script is part of the TYPO3 project. The TYPO3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
+
+use AUS\AusPage\Domain\Repository\AbstractPageRepository;
+use AUS\AusPage\Domain\Repository\DefaultPageRepository;
+use AUS\AusPage\Page\PageTypeService;
+use TYPO3\CMS\Core\Utility\ClassNamingUtility;
+use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+use TYPO3\CMS\Fluid\View\TemplateView;
+
+/**
+ * Class NavigationController
+ *
+ * @author Markus Hölzle <m.hoelzle@andersundsehr.com>
+ * @package AUS\AusPage\Controller
+ */
+class NavigationController extends ActionController
+{
+
+    /**
+     * @return void
+     */
+    public function oneLevelNavigationAction()
+    {
+        $this->settings['dokType'] = (int)$this->settings['dokType'];
+        $this->settings['startPage'] = (int)$this->settings['startPage'];
+        if ($this->settings['dokType'] === 0 && $this->settings['startPage'] === 0) {
+            return;
+        }
+
+        if ($this->settings['dokType'] > 0) {
+            /** @var PageTypeService $pageTypeService */
+            $pageTypeService = $this->objectManager->get(PageTypeService::class);
+            $modelClassName = $pageTypeService->getClassByPageType($this->settings['dokType']);
+            if ($modelClassName !== '') {
+                $repositoryClassName = ClassNamingUtility::translateModelNameToRepositoryName($modelClassName);
+                /** @var AbstractPageRepository $repository */
+                $repository = $this->objectManager->get($repositoryClassName);
+            } else {
+                /** @var DefaultPageRepository $repository */
+                $repository = $this->objectManager->get(DefaultPageRepository::class);
+                $repository->setDokType($this->settings['dokType']);
+            }
+        } else {
+            /** @var DefaultPageRepository $repository */
+            $repository = $this->objectManager->get(DefaultPageRepository::class);
+        }
+
+        if (empty($this->settings['template']) === false) {
+            /** @var TemplateView $view */
+            $view = $this->view;
+            $view->setTemplateRootPaths(array_merge($this->settings['templates'][$this->settings['template']]['templateRootPaths'], $view->getTemplateRootPaths()));
+            $view->setPartialRootPaths($this->settings['templates'][$this->settings['template']]['partialRootPaths']);
+            $view->setLayoutRootPaths($this->settings['templates'][$this->settings['template']]['layoutRootPaths']);
+        }
+
+        $this->view->assign('pages', $repository->findByWhereClause('pages.nav_hide = 0', $this->settings['startPage']));
+    }
+
+}

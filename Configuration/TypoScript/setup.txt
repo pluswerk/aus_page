@@ -1,0 +1,13 @@
+plugin.tx_auspage.view {
+  templateRootPaths.100 = EXT:aus_page/Resources/Private/Templates/
+  partialRootPaths.100 = EXT:aus_page/Resources/Private/Partials/
+  layoutRootPaths.100 = EXT:aus_page/Resources/Private/Layouts/
+}
+
+# Example template
+#plugin.tx_auspage.settings.templates.myOwnTemplate {
+#  title = Blog
+#  templateRootPaths.100 = EXT:aus_page/Resources/Private/Templates/
+#  partialRootPaths.100 = EXT:aus_page/Resources/Private/Partials/
+#  layoutRootPath.100 = EXT:aus_page/Resources/Private/Layouts/
+#}

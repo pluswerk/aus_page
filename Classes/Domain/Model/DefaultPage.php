@@ -26,28 +26,12 @@ namespace AUS\AusPage\Domain\Model;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
-
 /**
- * Class AbstractPage
+ * Class DefaultPage
  *
  * @author Markus Hölzle <m.hoelzle@andersundsehr.com>
  * @package AUS\AusPage\Domain\Model
  */
-abstract class AbstractPage extends AbstractEntity
+class DefaultPage extends AbstractPage
 {
-
-    /**
-     * @var string
-     */
-    protected $title = '';
-
-    /**
-     * @return string
-     */
-    public function getTitle(): string
-    {
-        return (string)$this->title;
-    }
-
 }

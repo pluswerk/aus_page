@@ -1,5 +1,5 @@
 <?php
-namespace AUS\AusPage\Domain\Model;
+namespace AUS\AusPage\Domain\Repository;
 
 /***************************************************************
  *
@@ -26,28 +26,22 @@ namespace AUS\AusPage\Domain\Model;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
-
 /**
- * Class AbstractPage
+ * Class DefaultPageRepository
  *
  * @author Markus Hölzle <m.hoelzle@andersundsehr.com>
- * @package AUS\AusPage\Domain\Model
+ * @package AUS\AusPage\Domain\Repository
  */
-abstract class AbstractPage extends AbstractEntity
+class DefaultPageRepository extends AbstractPageRepository
 {
 
     /**
-     * @var string
+     * @param int $dokType
+     * @return void
      */
-    protected $title = '';
-
-    /**
-     * @return string
-     */
-    public function getTitle(): string
+    public function setDokType(int $dokType)
     {
-        return (string)$this->title;
+        $this->dokType = $dokType;
     }
 
 }

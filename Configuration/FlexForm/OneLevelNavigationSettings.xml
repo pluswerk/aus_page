@@ -1,0 +1,61 @@
+<T3DataStructure>
+  <meta>
+    <langDisable>1</langDisable>
+  </meta>
+  <sheets>
+    <sDEF>
+      <ROOT>
+        <TCEforms>
+          <sheetTitle>Simple one-level navigation</sheetTitle>
+        </TCEforms>
+        <type>array</type>
+        <el>
+          <settings.dokType>
+            <TCEforms>
+              <label>LLL:EXT:aus_page/Resources/Private/Language/locallang_db.xlf:plugin.OneLevelNavigation.dokType</label>
+              <config>
+                <type>select</type>
+                <itemsProcFunc>AUS\AusPage\Backend\FormHelper->addDokTypeOptions</itemsProcFunc>
+                <items type="array">
+                  <numIndex index="0" type="array">
+                    <numIndex index="0">--- all ---</numIndex>
+                    <numIndex index="1">0</numIndex>
+                  </numIndex>
+                </items>
+              </config>
+            </TCEforms>
+          </settings.dokType>
+          <settings.startPage>
+            <TCEforms>
+              <label>LLL:EXT:aus_page/Resources/Private/Language/locallang_db.xlf:plugin.OneLevelNavigation.startPage</label>
+              <config>
+                <type>group</type>
+                <internal_type>db</internal_type>
+                <allowed>pages</allowed>
+                <size>1</size>
+                <maxitems>1</maxitems>
+                <minitems>0</minitems>
+                <show_thumbs>1</show_thumbs>
+              </config>
+            </TCEforms>
+          </settings.startPage>
+          <settings.template>
+            <TCEforms>
+              <label>LLL:EXT:aus_page/Resources/Private/Language/locallang_db.xlf:plugin.OneLevelNavigation.template</label>
+              <config>
+                <type>select</type>
+                <itemsProcFunc>AUS\AusPage\Backend\FormHelper->addTemplateOptions</itemsProcFunc>
+                <items type="array">
+                  <numIndex index="0" type="array">
+                    <numIndex index="0">--- default ---</numIndex>
+                    <numIndex index="1">0</numIndex>
+                  </numIndex>
+                </items>
+              </config>
+            </TCEforms>
+          </settings.template>
+        </el>
+      </ROOT>
+    </sDEF>
+  </sheets>
+</T3DataStructure>

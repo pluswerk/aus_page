@@ -139,9 +139,10 @@ abstract class AbstractPageRepository implements SingletonInterface
         }
         if ($rootLinePid !== 0) {
             $pidList = $this->getContentObject()->getTreeList($rootLinePid, 99, 0, '1=1');
-            if ($pidList) {
-                $whereClause .= ' pid IN(' . $pidList . ') AND ';
+            if ($pidList === '') {
+                return []; // we have no child pages
             }
+            $whereClause .= ' uid IN(' . $pidList . ') AND ';
         }
         $allPageUidArray = array_keys($this->databaseConnection->exec_SELECTgetRows('uid', 'pages', $whereClause . 'doktype = ' . $this->dokType, '', 'sorting ASC', '', 'uid'));
         $pages = [];
