@@ -10,7 +10,7 @@ Configuration in your `aus_project/ext_tables.php`:
     'modelClassName' => \AUS\MyExtension\Domain\Model\MyModel::class, // create TypoScript mapping (optional)
     'title' => 'LLL:EXT:aus_project/Resources/Private/Language/locallang_db.xlf:doktype.news',
     'icon' => 'EXT:aus_project/ext_icon.svg', // SVG, PNG, fontawsome
-    'additionalProperties' => [ // (optional)
+    'additionalProperties' => [ // Add new database fields (optional)
         'my_special_field1' => [
             'label' => 'LLL:EXT:aus_project/Resources/Private/Language/locallang_db.xlf:news.my_special_field1',
             'config' => [
@@ -34,5 +34,6 @@ Configuration in your `aus_project/ext_tables.php`:
             ],
         ],
     ],
+    'showAsAdditionalProperty' => 'property_from_other_dok_type,something_else', // show existing database fields for this dokType
 ]);
 ```

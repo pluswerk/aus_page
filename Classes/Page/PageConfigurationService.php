@@ -78,7 +78,13 @@ class PageConfigurationService implements SingletonInterface
 
         /** @var PagePropertyService $pagePropertyService */
         $pagePropertyService = $this->objectManager->get(PagePropertyService::class);
-        $pagePropertyService->addPageProperties($configuration['dokType'], $configuration['title'], $configuration['additionalProperties']);
+        if (empty($configuration['additionalProperties']) === false) {
+            $pagePropertyService->addPageProperties($configuration['dokType'], $configuration['title'], $configuration['additionalProperties']);
+        }
+        if(empty($configuration['showAsAdditionalProperty']) === false) {
+            $pagePropertyService->moveOrAddExistingPagePropertiesToCurrentDokTypeTab($configuration['dokType'], $configuration['title'], explode(',', $configuration['showAsAdditionalProperty']));
+        }
+        $pagePropertyService->renderTca($configuration['dokType']);
     }
 
     /**

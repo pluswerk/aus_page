@@ -68,7 +68,7 @@ class PageTypeService implements SingletonInterface
             'allowedTables' => '*'
         ];
         // Set pageType as "content dokType"
-        $GLOBALS['TYPO3_CONF_VARS']['FE']['content_doktypes'] = $dokType;
+        $GLOBALS['TYPO3_CONF_VARS']['FE']['content_doktypes'] .= ',' . $dokType;
         // Add the new dokType to the page type selector
         $GLOBALS['TCA']['pages']['columns']['doktype']['config']['items'][] = [$title, $dokType, $iconPath];
         // Add the new dokType to the page type selector

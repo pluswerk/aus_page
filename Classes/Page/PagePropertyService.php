@@ -46,6 +46,11 @@ class PagePropertyService implements SingletonInterface
     protected $databaseSchemaService = null;
 
     /**
+     * @var array
+     */
+    protected $tcaFields = [];
+
+    /**
      * PagePropertyService constructor.
      */
     public function __construct()
@@ -56,21 +61,17 @@ class PagePropertyService implements SingletonInterface
     /**
      * @param int $dokType
      * @param string $title
-     * @param array|null $fields
+     * @param array $fields
      * @return void
      */
-    public function addPageProperties(int $dokType, string $title, array $fields = null)
+    public function addPageProperties(int $dokType, string $title, array $fields)
     {
-        // Add fields to TCA
+        // Add columns section to TCA
         ExtensionManagementUtility::addTCAcolumns('pages', $fields);
         ExtensionManagementUtility::addTCAcolumns('pages_language_overlay', $fields);
 
-        // Show field in special tab
-        $fieldList = implode(',', array_keys($fields));
-        $this->addFieldsToShowItemList($dokType, $title, $fieldList);
-
-        // Make fields ready for localization
-        $GLOBALS['TYPO3_CONF_VARS']['FE']['pageOverlayFields'] .= ',' . $fieldList;
+        // Prepare fields to show them in TCA
+        $this->moveOrAddExistingPagePropertiesToCurrentDokTypeTab($dokType, $title, array_keys($fields));
 
         // Prepare fields for SQL database schema
         foreach ($fields as $fieldName => $config) {
@@ -82,12 +83,30 @@ class PagePropertyService implements SingletonInterface
     /**
      * @param int $dokType
      * @param string $title
-     * @param string $fieldList
+     * @param array $pageProperties
      * @return void
      */
-    protected function addFieldsToShowItemList(int $dokType, string $title, string $fieldList)
+    public function moveOrAddExistingPagePropertiesToCurrentDokTypeTab(int $dokType, string $title, array $pageProperties)
     {
-        $showItem = ',--div--;' . $title . ', ' . $fieldList;
+        if (isset($this->tcaFields[$dokType]) === false) {
+            $this->tcaFields[$dokType] = [
+                'title' => $title,
+                'pageProperties' => $pageProperties,
+            ];
+        } else {
+            $this->tcaFields[$dokType]['pageProperties'] = array_merge($this->tcaFields[$dokType]['pageProperties'], $pageProperties);
+        }
+    }
+
+    /**
+     * @param int $dokType
+     * @return void
+     */
+    public function renderTca(int $dokType)
+    {
+        $this->addFieldsToLocalization($this->tcaFields[$dokType]['pageProperties']);
+
+        $showItem = ',--div--;' . $this->tcaFields[$dokType]['title'] . ', ' . implode(',', array_unique($this->tcaFields[$dokType]['pageProperties']));
 
         // add showItems to pages
         if (isset($GLOBALS['TCA']['pages']['types']['1']['showitem'])) {
@@ -106,6 +125,19 @@ class PagePropertyService implements SingletonInterface
             $pagesTypeDefinition = reset($GLOBALS['TCA']['pages_language_overlay']['types']);
             $GLOBALS['TCA']['pages_language_overlay']['types'][$dokType]['showitem'] = $pagesTypeDefinition['showitem'] . $showItem;
         }
+    }
+
+    /**
+     * @param array $fields
+     * @return void
+     */
+    protected function addFieldsToLocalization(array $fields)
+    {
+        // Make fields ready for localization
+        $pageOverlayFields = explode(',', $GLOBALS['TYPO3_CONF_VARS']['FE']['pageOverlayFields']);
+        $pageOverlayFields = array_merge($pageOverlayFields, $fields);
+        $pageOverlayFields = array_unique($pageOverlayFields);
+        $GLOBALS['TYPO3_CONF_VARS']['FE']['pageOverlayFields'] = implode(',', $pageOverlayFields);
     }
 
 }
