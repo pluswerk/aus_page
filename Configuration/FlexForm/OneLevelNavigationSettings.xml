@@ -18,7 +18,7 @@
                 <itemsProcFunc>AUS\AusPage\Backend\FormHelper->addDokTypeOptions</itemsProcFunc>
                 <items type="array">
                   <numIndex index="0" type="array">
-                    <numIndex index="0">--- all ---</numIndex>
+                    <numIndex index="0">LLL:EXT:aus_page/Resources/Private/Language/locallang_db.xlf:plugin.OneLevelNavigation.dokType.all</numIndex>
                     <numIndex index="1">0</numIndex>
                   </numIndex>
                 </items>
@@ -35,7 +35,7 @@
                 <foreign_table_where> AND pages.doktype = 100</foreign_table_where>
                 <items type="array">
                   <numIndex index="0" type="array">
-                    <numIndex index="0">--- default ---</numIndex>
+                    <numIndex index="0">LLL:EXT:aus_page/Resources/Private/Language/locallang_db.xlf:plugin.OneLevelNavigation.pageCategory.all</numIndex>
                     <numIndex index="1">0</numIndex>
                   </numIndex>
                 </items>
@@ -67,7 +67,7 @@
                 <itemsProcFunc>AUS\AusPage\Backend\FormHelper->addTemplateOptions</itemsProcFunc>
                 <items type="array">
                   <numIndex index="0" type="array">
-                    <numIndex index="0">--- default ---</numIndex>
+                    <numIndex index="0">LLL:EXT:aus_page/Resources/Private/Language/locallang_db.xlf:plugin.OneLevelNavigation.template.default</numIndex>
                     <numIndex index="1">0</numIndex>
                   </numIndex>
                 </items>

@@ -9,14 +9,23 @@
       <trans-unit id="plugin.OneLevelNavigation.dokType">
         <target>Seiten-Typ</target>
       </trans-unit>
+      <trans-unit id="plugin.OneLevelNavigation.dokType.all">
+        <target>--- alle ---</target>
+      </trans-unit>
       <trans-unit id="plugin.OneLevelNavigation.pageCategory">
         <target>Seiten-Kategorie</target>
+      </trans-unit>
+      <trans-unit id="plugin.OneLevelNavigation.pageCategory.all">
+        <target>--- alle ---</target>
       </trans-unit>
       <trans-unit id="plugin.OneLevelNavigation.startPage">
         <target>Start-Seite (pid in root line)</target>
       </trans-unit>
       <trans-unit id="plugin.OneLevelNavigation.template">
         <target>Template</target>
+      </trans-unit>
+      <trans-unit id="plugin.OneLevelNavigation.template.default">
+        <target>--- Standard ---</target>
       </trans-unit>
 
       <trans-unit id="page_category">
