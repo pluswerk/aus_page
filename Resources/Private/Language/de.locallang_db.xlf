@@ -12,12 +12,6 @@
       <trans-unit id="plugin.OneLevelNavigation.dokType.all">
         <target>--- alle ---</target>
       </trans-unit>
-      <trans-unit id="plugin.OneLevelNavigation.pageCategory">
-        <target>Seiten-Kategorie</target>
-      </trans-unit>
-      <trans-unit id="plugin.OneLevelNavigation.pageCategory.all">
-        <target>--- alle ---</target>
-      </trans-unit>
       <trans-unit id="plugin.OneLevelNavigation.startPage">
         <target>Start-Seite (pid in root line)</target>
       </trans-unit>
@@ -28,10 +22,13 @@
         <target>--- Standard ---</target>
       </trans-unit>
 
-      <trans-unit id="page_category">
+      <trans-unit id="tx_auspage_domain_model_pagecategory">
         <target>Seiten-Kategorie</target>
       </trans-unit>
-      <trans-unit id="page_category.category_dok_type">
+      <trans-unit id="tx_auspage_domain_model_pagecategory.title">
+        <target>Titel</target>
+      </trans-unit>
+      <trans-unit id="tx_auspage_domain_model_pagecategory.dok_type">
         <target>Seiten-Typ</target>
       </trans-unit>
 

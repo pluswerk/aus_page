@@ -52,6 +52,11 @@ class PagePropertyService implements SingletonInterface
     protected $tcaFields = [];
 
     /**
+     * @var array
+     */
+    protected $localizationFields = [];
+
+    /**
      * PagePropertyService constructor.
      */
     public function __construct()
@@ -70,8 +75,12 @@ class PagePropertyService implements SingletonInterface
         // Add columns section to TCA
         $this->addTcaColumns($fields);
 
+        // Prepare fields for localization
+        $fieldNames = array_keys($fields);
+        $this->addFieldsToLocalization($dokType, $fieldNames);
+
         // Prepare fields to show them in TCA
-        $this->moveOrAddExistingPagePropertiesToCurrentDokTypeTab($dokType, $title, array_keys($fields));
+        $this->moveOrAddExistingPagePropertiesToCurrentDokTypeTab($dokType, $title, $fieldNames);
 
         // Prepare fields for SQL database schema
         foreach ($fields as $fieldName => $config) {
@@ -128,7 +137,7 @@ class PagePropertyService implements SingletonInterface
     public function renderTca(int $dokType)
     {
         if (isset($this->tcaFields[$dokType])) {
-            $this->addFieldsToLocalization($this->tcaFields[$dokType]['pageProperties']);
+            $this->renderLocalization($dokType);
 
             $showItem = ',--div--;' . $this->tcaFields[$dokType]['title'] . ', ' . implode(',',
                     array_unique($this->tcaFields[$dokType]['pageProperties']));
@@ -154,16 +163,31 @@ class PagePropertyService implements SingletonInterface
     }
 
     /**
+     * @param int $dokType
      * @param array $fields
      * @return void
      */
-    protected function addFieldsToLocalization(array $fields)
+    protected function addFieldsToLocalization(int $dokType, array $fields)
     {
-        // Make fields ready for localization
-        $pageOverlayFields = explode(',', $GLOBALS['TYPO3_CONF_VARS']['FE']['pageOverlayFields']);
-        $pageOverlayFields = array_merge($pageOverlayFields, $fields);
-        $pageOverlayFields = array_unique($pageOverlayFields);
-        $GLOBALS['TYPO3_CONF_VARS']['FE']['pageOverlayFields'] = implode(',', $pageOverlayFields);
+        if (isset($this->localizationFields[$dokType]) === false) {
+            $this->localizationFields[$dokType] = [];
+        }
+        $this->localizationFields[$dokType] = array_merge($fields, $this->localizationFields[$dokType]);
+    }
+
+    /**
+     * @param int $dokType
+     * @return void
+     */
+    protected function renderLocalization(int $dokType)
+    {
+        if (isset($this->localizationFields[$dokType])) {
+            // Make fields ready for localization
+            $pageOverlayFields = explode(',', $GLOBALS['TYPO3_CONF_VARS']['FE']['pageOverlayFields']);
+            $pageOverlayFields = array_merge($pageOverlayFields, $this->localizationFields[$dokType]);
+            $pageOverlayFields = array_unique($pageOverlayFields);
+            $GLOBALS['TYPO3_CONF_VARS']['FE']['pageOverlayFields'] = implode(',', $pageOverlayFields);
+        }
     }
 
 }

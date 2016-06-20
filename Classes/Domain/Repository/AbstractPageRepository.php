@@ -26,6 +26,7 @@ namespace AUS\AusPage\Domain\Repository;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use AUS\AusPage\Domain\Model\PageFilter;
 use AUS\AusPage\Page\PageTypeService;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\ClassNamingUtility;
@@ -128,6 +129,32 @@ abstract class AbstractPageRepository implements SingletonInterface
     }
 
     /**
+     * @param PageFilter $pageFilter
+     * @param int $rootLinePid
+     * @return array
+     */
+    public function findByFilter(PageFilter $pageFilter, int $rootLinePid = 0): array
+    {
+        $conditions = [];
+        if ($pageFilter->getPageCategoryUid() !== 0) {
+            $conditions[] = 'tx_auspage_domain_model_pagecategory.uid = ' . $pageFilter->getPageCategoryUid();
+        }
+        foreach ($pageFilter->getFields() as $fieldName => $fieldValue) {
+            if (is_array($fieldValue)) { // we have to do some magic
+                if (isset($fieldValue['year'])) {
+                    $date = new \DateTime();
+                    $date->setDate((int)$fieldValue['year'], 1, 1);
+                    $date->setTime(0, 0, 0);
+                    $conditions[] = 'pages.' . $fieldName . ' > ' . $date->getTimestamp();
+                    $date->setDate((int)$fieldValue['year'] + 1, 1, 1);
+                    $conditions[] = 'pages.' . $fieldName . ' < ' . $date->getTimestamp();
+                }
+            }
+        }
+        return $this->findByWhereClause(implode(' AND ', $conditions), $rootLinePid);
+    }
+
+    /**
      * @param string $whereClause
      * @param int $rootLinePid
      * @return \AUS\AusPage\Domain\Model\AbstractPage[]
@@ -148,15 +175,8 @@ abstract class AbstractPageRepository implements SingletonInterface
         $whereClause = $whereClause . 'pages.doktype = ' . $this->dokType;
 
         // resolve mm relation to page categories
-        if (strpos($whereClause, 'page_categories.') !== false) {
-            $resource = $this->databaseConnection->exec_SELECT_queryArray([
-                'SELECT' => 'pages.uid',
-                'FROM' => 'pages,tx_auspage_page_pagecategory_mm,pages AS page_categories',
-                'WHERE' => 'pages.uid=tx_auspage_page_pagecategory_mm.uid_local AND page_categories.uid=tx_auspage_page_pagecategory_mm.uid_foreign AND ' . $whereClause,
-                'GROUPBY' => '',
-                'ORDERBY' => 'pages.sorting ASC',
-                'LIMIT' => '',
-            ]);
+        if (strpos($whereClause, 'tx_auspage_domain_model_pagecategory.') !== false) {
+            $resource = $this->databaseConnection->exec_SELECT_mm_query('pages.uid', 'pages', 'tx_auspage_page_pagecategory_mm', 'tx_auspage_domain_model_pagecategory', ' AND ' . $whereClause, '', 'pages.sorting ASC');
             if ($resource) {
                 while ($record = $this->databaseConnection->sql_fetch_assoc($resource)) {
                     $allPageUidArray[] = $record['uid'];

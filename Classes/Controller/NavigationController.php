@@ -26,11 +26,13 @@ namespace AUS\AusPage\Controller;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use AUS\AusPage\Domain\Model\PageFilter;
 use AUS\AusPage\Domain\Repository\AbstractPageRepository;
 use AUS\AusPage\Domain\Repository\DefaultPageRepository;
 use AUS\AusPage\Page\PageTypeService;
 use TYPO3\CMS\Core\Utility\ClassNamingUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+use TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter;
 use TYPO3\CMS\Fluid\View\TemplateView;
 use TYPO3\CMS\Frontend\Page\PageRepository;
 
@@ -46,8 +48,21 @@ class NavigationController extends ActionController
     /**
      * @return void
      */
-    public function oneLevelNavigationAction()
+    protected function initializeOneLevelNavigationAction(){
+        $propertyMappingConfiguration = $this->arguments['filter']->getPropertyMappingConfiguration();
+        $propertyMappingConfiguration->allowProperties('pageCategoryUid', 'fields');
+        $propertyMappingConfiguration->setTypeConverterOption(PersistentObjectConverter::class, PersistentObjectConverter::CONFIGURATION_CREATION_ALLOWED, TRUE);
+    }
+
+    /**
+     * @param PageFilter $filter
+     * @return void
+     */
+    public function oneLevelNavigationAction(PageFilter $filter = null)
     {
+        if ($filter === null) {
+            $filter = $this->objectManager->get(PageFilter::class);
+        }
         $this->settings['dokType'] = (int)$this->settings['dokType'];
         $this->settings['startPage'] = (int)$this->settings['startPage'];
         $this->settings['pageCategory'] = (int)$this->settings['pageCategory'];
@@ -55,13 +70,12 @@ class NavigationController extends ActionController
             return;
         }
 
-        $conditions = ['pages.nav_hide = 0'];
+        // PageCategory
         if ($this->settings['pageCategory'] !== 0) {
-            $conditions[] = 'page_categories.uid = ' . $this->settings['pageCategory'];
-            $firstCategoryPageRecord = $this->getTYPO3PageRepository()->getPage((int)$this->settings['pageCategory']);
-            $this->settings['dokType'] = (int)$firstCategoryPageRecord['category_dok_type'];
+            $filter->setPageCategoryUid($this->settings['pageCategory']);
         }
 
+        // DokType
         if ($this->settings['dokType'] > 0) {
             /** @var PageTypeService $pageTypeService */
             $pageTypeService = $this->objectManager->get(PageTypeService::class);
@@ -88,7 +102,7 @@ class NavigationController extends ActionController
             $view->setLayoutRootPaths($this->settings['templates'][$this->settings['template']]['layoutRootPaths']);
         }
 
-        $this->view->assign('pages', $repository->findByWhereClause(implode(' AND ', $conditions), $this->settings['startPage']));
+        $this->view->assign('pages', $repository->findByFilter($filter, $this->settings['startPage']));
     }
 
     /**
