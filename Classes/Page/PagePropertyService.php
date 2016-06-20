@@ -28,6 +28,7 @@ namespace AUS\AusPage\Page;
 
 use AUS\AusPage\Database\DatabaseSchemaService;
 use TYPO3\CMS\Core\SingletonInterface;
+use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -67,17 +68,39 @@ class PagePropertyService implements SingletonInterface
     public function addPageProperties(int $dokType, string $title, array $fields)
     {
         // Add columns section to TCA
-        ExtensionManagementUtility::addTCAcolumns('pages', $fields);
-        ExtensionManagementUtility::addTCAcolumns('pages_language_overlay', $fields);
+        $this->addTcaColumns($fields);
 
         // Prepare fields to show them in TCA
         $this->moveOrAddExistingPagePropertiesToCurrentDokTypeTab($dokType, $title, array_keys($fields));
 
         // Prepare fields for SQL database schema
         foreach ($fields as $fieldName => $config) {
-            $this->databaseSchemaService->addProcessingField('pages', $fieldName);
-            $this->databaseSchemaService->addProcessingField('pages_language_overlay', $fieldName);
+            $this->addFieldToDatabase($fieldName);
         }
+    }
+
+    /**
+     * @param array $fields
+     * @param array|null $pagesLanguageOverlayOverwrite
+     * @return void
+     */
+    public function addTcaColumns(array $fields, array $pagesLanguageOverlayOverwrite = null)
+    {
+        ExtensionManagementUtility::addTCAcolumns('pages', $fields);
+        if ($pagesLanguageOverlayOverwrite !== null) {
+            ArrayUtility::mergeRecursiveWithOverrule($fields, $pagesLanguageOverlayOverwrite);
+        }
+        ExtensionManagementUtility::addTCAcolumns('pages_language_overlay', $fields);
+    }
+
+    /**
+     * @param string $fieldName
+     * @return void
+     */
+    public function addFieldToDatabase(string $fieldName)
+    {
+        $this->databaseSchemaService->addProcessingField('pages', $fieldName);
+        $this->databaseSchemaService->addProcessingField('pages_language_overlay', $fieldName);
     }
 
     /**

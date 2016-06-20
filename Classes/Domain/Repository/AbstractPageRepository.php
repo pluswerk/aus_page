@@ -134,6 +134,7 @@ abstract class AbstractPageRepository implements SingletonInterface
      */
     public function findByWhereClause(string $whereClause, int $rootLinePid = 0): array
     {
+        $allPageUidArray = [];
         if ($whereClause !== '') {
             $whereClause = $whereClause . ' AND ';
         }
@@ -142,9 +143,29 @@ abstract class AbstractPageRepository implements SingletonInterface
             if ($pidList === '') {
                 return []; // we have no child pages
             }
-            $whereClause .= ' uid IN(' . $pidList . ') AND ';
+            $whereClause .= ' pages.uid IN(' . $pidList . ') AND ';
         }
-        $allPageUidArray = array_keys($this->databaseConnection->exec_SELECTgetRows('uid', 'pages', $whereClause . 'doktype = ' . $this->dokType, '', 'sorting ASC', '', 'uid'));
+        $whereClause = $whereClause . 'pages.doktype = ' . $this->dokType;
+
+        // resolve mm relation to page categories
+        if (strpos($whereClause, 'page_categories.') !== false) {
+            $resource = $this->databaseConnection->exec_SELECT_queryArray([
+                'SELECT' => 'pages.uid',
+                'FROM' => 'pages,tx_auspage_page_pagecategory_mm,pages AS page_categories',
+                'WHERE' => 'pages.uid=tx_auspage_page_pagecategory_mm.uid_local AND page_categories.uid=tx_auspage_page_pagecategory_mm.uid_foreign AND ' . $whereClause,
+                'GROUPBY' => '',
+                'ORDERBY' => 'pages.sorting ASC',
+                'LIMIT' => '',
+            ]);
+            if ($resource) {
+                while ($record = $this->databaseConnection->sql_fetch_assoc($resource)) {
+                    $allPageUidArray[] = $record['uid'];
+                }
+                $this->databaseConnection->sql_free_result($resource);
+            }
+        } else {
+            $allPageUidArray = array_keys($this->databaseConnection->exec_SELECTgetRows('pages.uid', 'pages', $whereClause, '', 'pages.sorting ASC', '', 'uid'));
+        }
         $pages = [];
         foreach($allPageUidArray as $pageUid) {
             $pageRecord = $this->pageRepository->getPage($pageUid);

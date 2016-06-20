@@ -3,14 +3,31 @@
   <file source-language="en" datatype="plaintext" original="messages">
     <body>
 
+      <trans-unit id="plugin.OneLevelNavigation">
+        <source>Page navigation (flat)</source>
+      </trans-unit>
       <trans-unit id="plugin.OneLevelNavigation.dokType">
         <source>Page type</source>
+      </trans-unit>
+      <trans-unit id="plugin.OneLevelNavigation.pageCategory">
+        <source>Page category</source>
       </trans-unit>
       <trans-unit id="plugin.OneLevelNavigation.startPage">
         <source>Start page (pid in root line)</source>
       </trans-unit>
       <trans-unit id="plugin.OneLevelNavigation.template">
         <source>Template</source>
+      </trans-unit>
+
+      <trans-unit id="page_category">
+        <source>Page category</source>
+      </trans-unit>
+      <trans-unit id="page_category.category_dok_type">
+        <source>Page type</source>
+      </trans-unit>
+
+      <trans-unit id="pages.page_categories">
+        <source>Page categories</source>
       </trans-unit>
 
     </body>

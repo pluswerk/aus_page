@@ -32,6 +32,7 @@ use AUS\AusPage\Page\PageTypeService;
 use TYPO3\CMS\Core\Utility\ClassNamingUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Fluid\View\TemplateView;
+use TYPO3\CMS\Frontend\Page\PageRepository;
 
 /**
  * Class NavigationController
@@ -49,8 +50,16 @@ class NavigationController extends ActionController
     {
         $this->settings['dokType'] = (int)$this->settings['dokType'];
         $this->settings['startPage'] = (int)$this->settings['startPage'];
-        if ($this->settings['dokType'] === 0 && $this->settings['startPage'] === 0) {
+        $this->settings['pageCategory'] = (int)$this->settings['pageCategory'];
+        if ($this->settings['dokType'] === 0 && $this->settings['startPage'] === 0 && $this->settings['pageCategory'] === 0) {
             return;
+        }
+
+        $conditions = ['pages.nav_hide = 0'];
+        if ($this->settings['pageCategory'] !== 0) {
+            $conditions[] = 'page_categories.uid = ' . $this->settings['pageCategory'];
+            $firstCategoryPageRecord = $this->getTYPO3PageRepository()->getPage((int)$this->settings['pageCategory']);
+            $this->settings['dokType'] = (int)$firstCategoryPageRecord['category_dok_type'];
         }
 
         if ($this->settings['dokType'] > 0) {
@@ -79,7 +88,15 @@ class NavigationController extends ActionController
             $view->setLayoutRootPaths($this->settings['templates'][$this->settings['template']]['layoutRootPaths']);
         }
 
-        $this->view->assign('pages', $repository->findByWhereClause('pages.nav_hide = 0', $this->settings['startPage']));
+        $this->view->assign('pages', $repository->findByWhereClause(implode(' AND ', $conditions), $this->settings['startPage']));
+    }
+
+    /**
+     * @return PageRepository
+     */
+    protected function getTYPO3PageRepository(): PageRepository
+    {
+        return $GLOBALS['TSFE']->sys_page;
     }
 
 }
