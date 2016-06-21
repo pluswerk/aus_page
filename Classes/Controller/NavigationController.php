@@ -29,7 +29,6 @@ namespace AUS\AusPage\Controller;
 use AUS\AusPage\Domain\Model\PageFilter;
 use AUS\AusPage\Domain\Repository\AbstractPageRepository;
 use AUS\AusPage\Domain\Repository\DefaultPageRepository;
-use AUS\AusPage\Domain\Repository\PageCategoryRepository;
 use AUS\AusPage\Page\PageTypeService;
 use TYPO3\CMS\Core\Utility\ClassNamingUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
