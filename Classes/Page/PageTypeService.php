@@ -26,6 +26,7 @@ namespace AUS\AusPage\Page;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use AUS\AusPage\Configuration\ConfigurationCache;
 use TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider;
 use TYPO3\CMS\Core\Imaging\IconProvider\FontawesomeIconProvider;
 use TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider;
@@ -49,6 +50,22 @@ class PageTypeService implements SingletonInterface
      * @var int[]
      */
     protected $pageTypeClasses = [];
+
+    /**
+     * @var ConfigurationCache
+     */
+    protected $configurationCache = null;
+
+
+    /**
+     * PageTypeService constructor.
+     */
+    public function __construct()
+    {
+        $this->configurationCache = GeneralUtility::makeInstance(ConfigurationCache::class);
+        $configuration = $this->getExtensionCache();
+        $this->pageTypeClasses = $configuration['pageTypeClasses'];
+    }
 
     /**
      * @param int $dokType
@@ -93,6 +110,10 @@ class PageTypeService implements SingletonInterface
     public function addPageTypeClassMapping(int $dokType, string $modelClassName)
     {
         $this->pageTypeClasses[$modelClassName] = $dokType;
+        // store for later usage in extension configuration
+        $configuration = $this->getExtensionCache();
+        $configuration['pageTypeClasses'] = $this->pageTypeClasses;
+        $this->setExtensionCache($configuration);
     }
 
     /**
@@ -136,6 +157,23 @@ class PageTypeService implements SingletonInterface
 
         $GLOBALS['TCA']['pages']['ctrl']['typeicon_classes'][$dokType] = $iconClass;
         $GLOBALS['TCA']['pages_language_overlay']['ctrl']['typeicon_classes'][$dokType] = $iconClass;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getExtensionCache(): array
+    {
+        $configuration = $this->configurationCache->getCachedConfiguration();
+        return is_array($configuration) ? $configuration : [];
+    }
+
+    /**
+     * @param array $configuration
+     */
+    protected function setExtensionCache(array $configuration)
+    {
+        $this->configurationCache->setCachedConfiguration($configuration);
     }
 
 }
