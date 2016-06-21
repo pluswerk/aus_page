@@ -47,6 +47,13 @@ class NavigationController extends ActionController
 {
 
     /**
+     * @var \AUS\AusPage\Domain\Repository\PageCategoryRepository
+     * @inject
+     */
+    protected $categoryRepository = null;
+
+
+    /**
      * @return void
      */
     protected function initializeOneLevelNavigationAction(){
@@ -103,7 +110,11 @@ class NavigationController extends ActionController
             $view->setLayoutRootPaths($this->settings['templates'][$this->settings['template']]['layoutRootPaths']);
         }
 
-        $this->view->assign('pages', $repository->findByFilter($filter, $this->settings['startPage']));
+        $this->view->assignMultiple([
+            'filter' => $filter,
+            'pageCategory' => ($filter->getPageCategoryUid() !== 0 ? $this->categoryRepository->findByUid($filter->getPageCategoryUid()) : null),
+            'pages' => $repository->findByFilter($filter, $this->settings['startPage']),
+        ]);
     }
 
     /**
@@ -117,9 +128,6 @@ class NavigationController extends ActionController
             return;
         }
 
-        /** @var PageCategoryRepository $categoryRepository */
-        $categoryRepository = $this->objectManager->get(PageCategoryRepository::class);
-
         if (empty($this->settings['template']) === false) {
             /** @var TemplateView $view */
             $view = $this->view;
@@ -129,7 +137,7 @@ class NavigationController extends ActionController
             $view->setLayoutRootPaths($this->settings['templates'][$this->settings['template']]['layoutRootPaths']);
         }
 
-        $this->view->assign('pageCategories', $categoryRepository->findByDokType($this->settings['dokType'], $this->settings['startPage']));
+        $this->view->assign('pageCategories', $this->categoryRepository->findByDokType($this->settings['dokType'], $this->settings['startPage']));
     }
 
     /**
