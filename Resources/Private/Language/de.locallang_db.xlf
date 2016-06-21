@@ -3,6 +3,22 @@
   <file target-language="de" datatype="plaintext" original="messages">
     <body>
 
+      <trans-unit id="plugin.OneLevelCategoryNavigation">
+        <target>Seiten-Navigation (flach)</target>
+      </trans-unit>
+      <trans-unit id="plugin.OneLevelCategoryNavigation.dokType">
+        <target>Seiten-Typ</target>
+      </trans-unit>
+      <trans-unit id="plugin.OneLevelCategoryNavigation.startPage">
+        <target>Start-Seite (pid in root line)</target>
+      </trans-unit>
+      <trans-unit id="plugin.OneLevelCategoryNavigation.template">
+        <target>Template</target>
+      </trans-unit>
+      <trans-unit id="plugin.OneLevelCategoryNavigation.template.default">
+        <target>--- Standard ---</target>
+      </trans-unit>
+
       <trans-unit id="plugin.OneLevelNavigation">
         <target>Seiten-Navigation (flach)</target>
       </trans-unit>

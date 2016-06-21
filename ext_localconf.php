@@ -13,6 +13,15 @@ if (!defined('TYPO3_MODE')) {
     []
 );
 
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+    'AUS.' . $_EXTKEY,
+    'OneLevelCategoryNavigation',
+    [
+        'Navigation' => 'oneLevelCategoryNavigation',
+    ],
+    []
+);
+
 
 /** @var \TYPO3\CMS\Extbase\SignalSlot\Dispatcher $signalSlotDispatcher */
 $signalSlotDispatcher = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\SignalSlot\Dispatcher::class);

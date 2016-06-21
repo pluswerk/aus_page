@@ -1,0 +1,7 @@
+<f:if condition="{pageCategories}">
+  <ul>
+    <f:for each="{pageCategories}" as="pageCategory">
+      <li><f:link.page additionalParams="{tx_auspage_onelevelnavigation: '{filter: \'{pageCategoryUid: pageCategory.uid}\'}'}">{pageCategory.title}</f:link.page></li>
+    </f:for>
+  </ul>
+</f:if>

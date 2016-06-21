@@ -4,6 +4,7 @@ if (!defined('TYPO3_MODE')) {
 }
 
 /** @var string $_EXTKEY */
+// Plugin for page navigation
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
     'AUS.' . $_EXTKEY,
     'OneLevelNavigation',
@@ -14,6 +15,20 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$pluginSi
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$pluginSignature] = 'pi_flexform';
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue($pluginSignature,
     'FILE:EXT:' . $_EXTKEY . '/Configuration/FlexForm/OneLevelNavigationSettings.xml');
+
+
+// Plugin for category navigation
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+    'AUS.' . $_EXTKEY,
+    'OneLevelCategoryNavigation',
+    'LLL:EXT:aus_page/Resources/Private/Language/locallang_db.xlf:plugin.OneLevelCategoryNavigation'
+);
+$pluginSignature = 'auspage_onelevelcategorynavigation';
+$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$pluginSignature] = 'select_key,pages,recursive';
+$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$pluginSignature] = 'pi_flexform';
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue($pluginSignature,
+    'FILE:EXT:' . $_EXTKEY . '/Configuration/FlexForm/OneLevelCategoryNavigationSettings.xml');
+
 
 // Add field page_categories
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns('pages', [

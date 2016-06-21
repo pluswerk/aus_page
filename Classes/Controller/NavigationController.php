@@ -29,6 +29,7 @@ namespace AUS\AusPage\Controller;
 use AUS\AusPage\Domain\Model\PageFilter;
 use AUS\AusPage\Domain\Repository\AbstractPageRepository;
 use AUS\AusPage\Domain\Repository\DefaultPageRepository;
+use AUS\AusPage\Domain\Repository\PageCategoryRepository;
 use AUS\AusPage\Page\PageTypeService;
 use TYPO3\CMS\Core\Utility\ClassNamingUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
@@ -103,6 +104,32 @@ class NavigationController extends ActionController
         }
 
         $this->view->assign('pages', $repository->findByFilter($filter, $this->settings['startPage']));
+    }
+
+    /**
+     * @return void
+     */
+    public function oneLevelCategoryNavigationAction()
+    {
+        $this->settings['dokType'] = (int)$this->settings['dokType'];
+        $this->settings['startPage'] = (int)$this->settings['startPage'];
+        if ($this->settings['dokType'] === 0 && $this->settings['startPage'] === 0) {
+            return;
+        }
+
+        /** @var PageCategoryRepository $categoryRepository */
+        $categoryRepository = $this->objectManager->get(PageCategoryRepository::class);
+
+        if (empty($this->settings['template']) === false) {
+            /** @var TemplateView $view */
+            $view = $this->view;
+            $rootPaths = $view->getTemplateRootPaths();
+            $view->setTemplateRootPaths(array_merge($this->settings['templates'][$this->settings['template']]['templateRootPaths'], ($rootPaths !== null ? $rootPaths : [])));
+            $view->setPartialRootPaths($this->settings['templates'][$this->settings['template']]['partialRootPaths']);
+            $view->setLayoutRootPaths($this->settings['templates'][$this->settings['template']]['layoutRootPaths']);
+        }
+
+        $this->view->assign('pageCategories', $categoryRepository->findByDokType($this->settings['dokType'], $this->settings['startPage']));
     }
 
     /**
