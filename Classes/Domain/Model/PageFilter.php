@@ -46,6 +46,11 @@ class PageFilter
     protected $fields = [];
 
     /**
+     * @var int
+     */
+    protected $limit = 0;
+
+    /**
      * @return int
      */
     public function getPageCategoryUid(): int
@@ -72,9 +77,35 @@ class PageFilter
     /**
      * @param array $fields
      */
-    public function setFields($fields)
+    public function setFields(array $fields)
     {
         $this->fields = $fields;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLimit(): int
+    {
+        return $this->limit;
+    }
+
+    /**
+     * @param int $limit
+     */
+    public function setLimit(int $limit)
+    {
+        $this->limit = $limit;
+    }
+
+    /**
+     * @param string $propertyName
+     * @param mixed $propertyValue
+     * @return void
+     */
+    public function _setProperty(string $propertyName, $propertyValue)
+    {
+        $this->{$propertyName} = $propertyValue;
     }
 
 }

@@ -151,15 +151,16 @@ abstract class AbstractPageRepository implements SingletonInterface
                 }
             }
         }
-        return $this->findByWhereClause(implode(' AND ', $conditions), $rootLinePid);
+        return $this->findByWhereClause(implode(' AND ', $conditions), $rootLinePid, $pageFilter->getLimit());
     }
 
     /**
      * @param string $whereClause
      * @param int $rootLinePid
+     * @param int $limit
      * @return \AUS\AusPage\Domain\Model\AbstractPage[]
      */
-    public function findByWhereClause(string $whereClause, int $rootLinePid = 0): array
+    public function findByWhereClause(string $whereClause, int $rootLinePid = 0, int $limit = 0): array
     {
         $allPageUidArray = [];
         if ($whereClause !== '') {
@@ -174,9 +175,15 @@ abstract class AbstractPageRepository implements SingletonInterface
         }
         $whereClause = $whereClause . 'pages.doktype = ' . $this->dokType;
 
+        if ($limit === 0) {
+            $limitString = '';
+        } else {
+            $limitString = (string)$limit;
+        }
+
         // resolve mm relation to page categories
         if (strpos($whereClause, 'tx_auspage_domain_model_pagecategory.') !== false) {
-            $resource = $this->databaseConnection->exec_SELECT_mm_query('pages.uid', 'pages', 'tx_auspage_page_pagecategory_mm', 'tx_auspage_domain_model_pagecategory', ' AND ' . $whereClause, '', 'pages.sorting ASC');
+            $resource = $this->databaseConnection->exec_SELECT_mm_query('pages.uid', 'pages', 'tx_auspage_page_pagecategory_mm', 'tx_auspage_domain_model_pagecategory', ' AND ' . $whereClause, '', 'pages.sorting ASC', $limitString);
             if ($resource) {
                 while ($record = $this->databaseConnection->sql_fetch_assoc($resource)) {
                     $allPageUidArray[] = $record['uid'];
@@ -184,7 +191,7 @@ abstract class AbstractPageRepository implements SingletonInterface
                 $this->databaseConnection->sql_free_result($resource);
             }
         } else {
-            $allPageUidArray = array_keys($this->databaseConnection->exec_SELECTgetRows('pages.uid', 'pages', $whereClause, '', 'pages.sorting ASC', '', 'uid'));
+            $allPageUidArray = array_keys($this->databaseConnection->exec_SELECTgetRows('pages.uid', 'pages', $whereClause, '', 'pages.sorting ASC', $limitString, 'uid'));
         }
         $pages = [];
         foreach($allPageUidArray as $pageUid) {

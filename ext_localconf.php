@@ -8,7 +8,7 @@ if (!defined('TYPO3_MODE')) {
     'AUS.' . $_EXTKEY,
     'OneLevelNavigation',
     [
-        'Navigation' => 'oneLevelNavigation',
+        'Page' => 'oneLevelNavigation',
     ],
     []
 );
@@ -17,7 +17,16 @@ if (!defined('TYPO3_MODE')) {
     'AUS.' . $_EXTKEY,
     'OneLevelCategoryNavigation',
     [
-        'Navigation' => 'oneLevelCategoryNavigation',
+        'Page' => 'oneLevelCategoryNavigation',
+    ],
+    []
+);
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+    'AUS.' . $_EXTKEY,
+    'PageDetail',
+    [
+        'Page' => 'detail',
     ],
     []
 );

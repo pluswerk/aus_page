@@ -5,9 +5,40 @@ plugin.tx_auspage.view {
 }
 
 # Example template
-#plugin.tx_auspage.settings.templates.myOwnTemplate {
-#  title = Blog
-#  templateRootPaths.100 = EXT:aus_page/Resources/Private/Templates/
-#  partialRootPaths.100 = EXT:aus_page/Resources/Private/Partials/
-#  layoutRootPath.100 = EXT:aus_page/Resources/Private/Layouts/
-#}
+/*
+plugin.tx_auspage.settings.templates.myOwnTemplate {
+  title = Blog
+  view {
+    templateRootPaths.100 = EXT:aus_page/Resources/Private/Templates/
+    partialRootPaths.100 = EXT:aus_page/Resources/Private/Partials/
+    layoutRootPath.100 = EXT:aus_page/Resources/Private/Layouts/
+  }
+  settings {
+    pageFilter {
+      limit = 2
+    }
+  }
+}
+
+[globalVar = TSFE:page|doktype = 150]
+  tmpContent < styles.content.get
+  styles.content.get = COA
+  styles.content.get {
+    10 = USER
+    10 {
+      userFunc = TYPO3\CMS\Extbase\Core\Bootstrap->run
+      pluginName = PageDetail
+      extensionName = AusPage
+      controller = Page
+      vendorName = AUS
+      action = detail
+      view.templateRootPaths.200 = EXT:aus_project/Resources/Private/Templates/AusPage/NewsDetailTop/
+    }
+
+    20 < tmpContent
+
+    30 < .10
+    30.view.templateRootPaths.200 = EXT:aus_project/Resources/Private/Templates/AusPage/NewsDetailBottom/
+  }
+[global]
+*/
