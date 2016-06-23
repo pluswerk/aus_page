@@ -31,7 +31,6 @@ use AUS\AusPage\Domain\Model\DefaultPage;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * Class PageConfigurationService
@@ -43,16 +42,10 @@ class PageConfigurationService implements SingletonInterface
 {
 
     /**
-     * @var \TYPO3\CMS\Extbase\Object\ObjectManager
-     */
-    protected $objectManager = null;
-
-    /**
      * PageConfigurationService constructor.
      */
     public function __construct()
     {
-        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $this->addTypoScriptMapping(DefaultPage::class);
     }
 
@@ -73,7 +66,7 @@ class PageConfigurationService implements SingletonInterface
         $this->validateRequiredConfiguration($configuration);
 
         /** @var PageTypeService $pageTypeService */
-        $pageTypeService = $this->objectManager->get(PageTypeService::class);
+        $pageTypeService = GeneralUtility::makeInstance(PageTypeService::class);
         $pageTypeService->registerPageType($configuration['dokType'], $configuration['identifier'], $configuration['title'], $configuration['icon']);
 
         if (empty($configuration['modelClassName']) === false && class_exists($configuration['modelClassName'])) {
@@ -82,7 +75,7 @@ class PageConfigurationService implements SingletonInterface
         }
 
         /** @var PagePropertyService $pagePropertyService */
-        $pagePropertyService = $this->objectManager->get(PagePropertyService::class);
+        $pagePropertyService = GeneralUtility::makeInstance(PagePropertyService::class);
         if (empty($configuration['additionalProperties']) === false) {
             $pagePropertyService->addPageProperties($configuration['dokType'], $configuration['title'], $configuration['additionalProperties']);
         }

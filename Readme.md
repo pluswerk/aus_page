@@ -1,7 +1,7 @@
 Example configuration
 ---------------------
 
-Configuration in your `aus_project/ext_tables.php`:
+Configuration in your `aus_project/ext_localconf.php` (not `ext_tables.php`!):
 ```php
 <?php
 \AUS\AusPage\Configuration\PageConfiguration::addPageType([

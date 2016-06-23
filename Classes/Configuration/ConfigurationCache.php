@@ -79,7 +79,7 @@ class ConfigurationCache implements SingletonInterface
      */
     protected function getCacheIdentifier()
     {
-        return 'aus_page_' . sha1((TYPO3_version . PATH_site . PageConfiguration::EXTENSION_KEY));
+        return 'aus_page_' . sha1(PATH_site . PageConfiguration::EXTENSION_KEY);
     }
 
 }
