@@ -95,7 +95,14 @@ class PageTypeService implements SingletonInterface
         $GLOBALS['TCA']['pages']['columns']['doktype']['config']['items'][] = [$title, $dokType, $iconPath];
         // Add the new dokType to the page type selector
         $GLOBALS['TCA']['pages_language_overlay']['columns']['doktype']['config']['items'][] = [$title, $dokType, $iconPath];
+    }
 
+    /**
+     * @param int $dokType
+     * @return void
+     */
+    public function addPageToBackendDragArea(int $dokType)
+    {
         // Add the new dokType to the list of types available from the new page menu at the top of the page tree
         ExtensionManagementUtility::addUserTSConfig(
             'options.pageTree.doktypesToShowInNewPageDragArea := addToList(' . $dokType . ')'

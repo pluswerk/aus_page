@@ -42,6 +42,21 @@ class PageConfigurationService implements SingletonInterface
 {
 
     /**
+     * @var string
+     */
+    protected $currentExtensionKey = '';
+
+    /**
+     * @var string[]
+     */
+    protected $loadedExtension = [];
+
+    /**
+     * @var array[][][]
+     */
+    protected $loadedConfigurations = [];
+
+    /**
      * PageConfigurationService constructor.
      */
     public function __construct()
@@ -58,31 +73,100 @@ class PageConfigurationService implements SingletonInterface
     }
 
     /**
+     * @param string $extensionKey
+     * @param string $fileName
+     * @return void
+     * @throws \Exception
+     */
+    public function load(string $extensionKey, string $fileName)
+    {
+        $this->currentExtensionKey = $extensionKey;
+        if (isset($this->loadedExtension[$extensionKey]) === false) {
+            $absoluteFilePath = GeneralUtility::getFileAbsFileName('EXT:' . $extensionKey . '/Configuration/AusPage/Configuration.php');
+            if (file_exists($absoluteFilePath)) {
+                require_once($absoluteFilePath);
+            } else {
+                throw new \Exception('Missing configuration file "' . $absoluteFilePath . '"');
+            }
+            $this->loadedExtension[$extensionKey] = $extensionKey;
+        }
+
+        if ($fileName === 'ext_localconf.php') {
+            $this->loadExtLocalConf($extensionKey);
+        } elseif ($fileName === 'ext_tables.php') {
+            $this->loadExtTables($extensionKey);
+        } else {
+            throw new \Exception('Unknown file "' . $fileName . '" could not be loaded');
+        }
+    }
+
+    /**
+     * This call ist just allowed from the configuration file
+     *
      * @param array $configuration
      * @return void
      */
     public function addPageType(array $configuration)
     {
-        $this->validateRequiredConfiguration($configuration);
-
-        /** @var PageTypeService $pageTypeService */
-        $pageTypeService = GeneralUtility::makeInstance(PageTypeService::class);
-        $pageTypeService->registerPageType($configuration['dokType'], $configuration['identifier'], $configuration['title'], $configuration['icon']);
-
-        if (empty($configuration['modelClassName']) === false && class_exists($configuration['modelClassName'])) {
-            $pageTypeService->addPageTypeClassMapping($configuration['dokType'], $configuration['modelClassName']);
-            $this->addTypoScriptMapping($configuration['modelClassName']);
+        if (isset($this->loadedConfigurations[$this->currentExtensionKey]) === false) {
+            $this->loadedConfigurations[$this->currentExtensionKey] = [];
         }
+        if (isset($this->loadedConfigurations[$this->currentExtensionKey]['addPageType']) === false) {
+            $this->loadedConfigurations[$this->currentExtensionKey]['addPageType'] = [];
+        }
+        $this->loadedConfigurations[$this->currentExtensionKey]['addPageType'][] = $configuration;
+    }
 
-        /** @var PagePropertyService $pagePropertyService */
-        $pagePropertyService = GeneralUtility::makeInstance(PagePropertyService::class);
-        if (empty($configuration['additionalProperties']) === false) {
-            $pagePropertyService->addPageProperties($configuration['dokType'], $configuration['title'], $configuration['additionalProperties']);
+    /**
+     * @param string $extensionKey
+     * @return void
+     */
+    protected function loadExtLocalConf(string $extensionKey)
+    {
+        if (isset($this->loadedConfigurations[$extensionKey]['addPageType'])) {
+            foreach ($this->loadedConfigurations[$extensionKey]['addPageType'] as $configuration) {
+                $this->validateRequiredConfiguration($configuration);
+
+                /** @var PageTypeService $pageTypeService */
+                $pageTypeService = GeneralUtility::makeInstance(PageTypeService::class);
+                $pageTypeService->addPageToBackendDragArea($configuration['dokType']);
+
+                if (empty($configuration['modelClassName']) === false && class_exists($configuration['modelClassName'])) {
+                    $pageTypeService->addPageTypeClassMapping($configuration['dokType'], $configuration['modelClassName']);
+                    $this->addTypoScriptMapping($configuration['modelClassName']);
+                }
+            }
         }
-        if(empty($configuration['showAsAdditionalProperty']) === false) {
-            $pagePropertyService->moveOrAddExistingPagePropertiesToCurrentDokTypeTab($configuration['dokType'], $configuration['title'], explode(',', $configuration['showAsAdditionalProperty']));
+    }
+
+    /**
+     * @param string $extensionKey
+     * @return void
+     */
+    protected function loadExtTables(string $extensionKey)
+    {
+        if (isset($this->loadedConfigurations[$extensionKey]['addPageType'])) {
+            foreach ($this->loadedConfigurations[$extensionKey]['addPageType'] as $configuration) {
+                $this->validateRequiredConfiguration($configuration);
+                /** @var PageTypeService $pageTypeService */
+                $pageTypeService = GeneralUtility::makeInstance(PageTypeService::class);
+                $pageTypeService->registerPageType($configuration['dokType'], $configuration['identifier'], $configuration['title'], $configuration['icon']);
+
+                if (empty($configuration['modelClassName']) === false && class_exists($configuration['modelClassName'])) {
+                    $pageTypeService->addPageTypeClassMapping($configuration['dokType'], $configuration['modelClassName']);
+                }
+
+                /** @var PagePropertyService $pagePropertyService */
+                $pagePropertyService = GeneralUtility::makeInstance(PagePropertyService::class);
+                if (empty($configuration['additionalProperties']) === false) {
+                    $pagePropertyService->addPageProperties($configuration['dokType'], $configuration['title'], $configuration['additionalProperties']);
+                }
+                if (empty($configuration['showAsAdditionalProperty']) === false) {
+                    $pagePropertyService->moveOrAddExistingPagePropertiesToCurrentDokTypeTab($configuration['dokType'], $configuration['title'], explode(',', $configuration['showAsAdditionalProperty']));
+                }
+                $pagePropertyService->renderTca($configuration['dokType']);
+            }
         }
-        $pagePropertyService->renderTca($configuration['dokType']);
     }
 
     /**

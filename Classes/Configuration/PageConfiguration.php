@@ -40,6 +40,16 @@ class PageConfiguration
     const EXTENSION_KEY = 'aus_page';
 
     /**
+     * @param string $extensionKey
+     * @param string $fileName
+     * @return void
+     */
+    public static function load(string $extensionKey, string $fileName)
+    {
+        PageConfigurationService::getInstance()->load($extensionKey, $fileName);
+    }
+
+    /**
      * @param array $configuration
      * @return void
      */

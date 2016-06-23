@@ -1,7 +1,23 @@
-Example configuration
----------------------
+# aus_page
 
-Configuration in your `aus_project/ext_localconf.php` (not `ext_tables.php`!):
+## Installation
+
+Put this in your `aus_project/ext_localconf.php`:
+```php
+<?php
+\AUS\AusPage\Configuration\PageConfiguration::load($_EXTKEY, 'ext_localconf.php');
+```
+
+
+Put this in your `aus_project/ext_tables.php`:
+```php
+<?php
+\AUS\AusPage\Configuration\PageConfiguration::load($_EXTKEY, 'ext_tables.php');
+```
+
+## Configuration
+
+Put your configuration in your extension in `aus_project/Configuration/AusPage/Configuration.php`:
 ```php
 <?php
 \AUS\AusPage\Configuration\PageConfiguration::addPageType([

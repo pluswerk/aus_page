@@ -139,8 +139,7 @@ class PagePropertyService implements SingletonInterface
         if (isset($this->tcaFields[$dokType])) {
             $this->renderLocalization($dokType);
 
-            $showItem = ',--div--;' . $this->tcaFields[$dokType]['title'] . ', ' . implode(',',
-                    array_unique($this->tcaFields[$dokType]['pageProperties']));
+            $showItem = ',--div--;' . $this->tcaFields[$dokType]['title'] . ', ' . implode(',', array_unique($this->tcaFields[$dokType]['pageProperties']));
 
             // add showItems to pages
             if (isset($GLOBALS['TCA']['pages']['types']['1']['showitem'])) {
