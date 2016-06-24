@@ -141,7 +141,7 @@ abstract class AbstractPageRepository implements SingletonInterface
         }
         foreach ($pageFilter->getFields() as $fieldName => $fieldValue) {
             if (is_array($fieldValue)) { // we have to do some magic
-                if (isset($fieldValue['year'])) {
+                if (isset($fieldValue['year']) && empty($fieldValue['year']) == false) {
                     $date = new \DateTime();
                     $date->setDate((int)$fieldValue['year'], 1, 1);
                     $date->setTime(0, 0, 0);
@@ -151,16 +151,17 @@ abstract class AbstractPageRepository implements SingletonInterface
                 }
             }
         }
-        return $this->findByWhereClause(implode(' AND ', $conditions), $rootLinePid, $pageFilter->getLimit());
+        return $this->findByWhereClause(implode(' AND ', $conditions), $rootLinePid, $pageFilter->getLimit(), $pageFilter->getOffset());
     }
 
     /**
      * @param string $whereClause
      * @param int $rootLinePid
      * @param int $limit
+     * @param int $offset
      * @return \AUS\AusPage\Domain\Model\AbstractPage[]
      */
-    public function findByWhereClause(string $whereClause, int $rootLinePid = 0, int $limit = 0): array
+    public function findByWhereClause(string $whereClause, int $rootLinePid = 0, int $limit = 0, int $offset = 0): array
     {
         $allPageUidArray = [];
         if ($whereClause !== '') {
@@ -179,6 +180,9 @@ abstract class AbstractPageRepository implements SingletonInterface
             $limitString = '';
         } else {
             $limitString = (string)$limit;
+            if ($offset !== 0) {
+                $limitString = $offset . ', ' . $limitString;
+            }
         }
 
         // resolve mm relation to page categories

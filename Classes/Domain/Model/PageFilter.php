@@ -51,6 +51,11 @@ class PageFilter
     protected $limit = 0;
 
     /**
+     * @var int
+     */
+    protected $offset = 0;
+
+    /**
      * @return int
      */
     public function getPageCategoryUid(): int
@@ -96,6 +101,22 @@ class PageFilter
     public function setLimit(int $limit)
     {
         $this->limit = $limit;
+    }
+
+    /**
+     * @return int
+     */
+    public function getOffset(): int
+    {
+        return $this->offset;
+    }
+
+    /**
+     * @param int $offset
+     */
+    public function setOffset(int $offset)
+    {
+        $this->offset = $offset;
     }
 
     /**
