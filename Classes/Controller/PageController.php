@@ -74,7 +74,8 @@ class PageController extends ActionController
     /**
      * @return void
      */
-    protected function initializeOneLevelNavigationAction(){
+    protected function initializeOneLevelNavigationAction()
+    {
         $propertyMappingConfiguration = $this->arguments['filter']->getPropertyMappingConfiguration();
         $propertyMappingConfiguration->allowProperties('pageCategoryUid', 'fields');
         $propertyMappingConfiguration->setTypeConverterOption(PersistentObjectConverter::class, PersistentObjectConverter::CONFIGURATION_CREATION_ALLOWED, TRUE);
