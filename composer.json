@@ -11,5 +11,8 @@
     "psr-4": {
       "AUS\\AusPage\\": "Classes/"
     }
+  },
+  "require": {
+    "andersundsehr/aus_utility": "*"
   }
 }
