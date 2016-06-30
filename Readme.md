@@ -25,7 +25,7 @@ Put your configuration in your extension in `aus_project/Configuration/AusPage/C
     'identifier' => 'news', // (required)
     'modelClassName' => \AUS\MyExtension\Domain\Model\MyModel::class, // create TypoScript mapping (optional)
     'title' => 'LLL:EXT:aus_project/Resources/Private/Language/locallang_db.xlf:doktype.news',
-    'icon' => 'EXT:aus_project/ext_icon.svg', // SVG, PNG, fontawsome
+    'icon' => 'EXT:aus_project/ext_icon.svg', // SVG, PNG, Font Awesome ('file')
     'additionalProperties' => [ // Add new database fields (optional)
         'my_special_field1' => [
             'label' => 'LLL:EXT:aus_project/Resources/Private/Language/locallang_db.xlf:news.my_special_field1',
