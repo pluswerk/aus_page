@@ -49,7 +49,7 @@ class DatabaseSchemaService implements SingletonInterface
      * @param string $fieldName
      * @return void
      */
-    public function addProcessingField(string $table, string $fieldName)
+    public function addProcessingField($table, $fieldName)
     {
         if (isset($this->processingFields[$table]) === false) {
             $this->processingFields[$table] = [];

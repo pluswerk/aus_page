@@ -74,7 +74,7 @@ class PageTypeService implements SingletonInterface
      * @param string|null $iconPath
      * @return void
      */
-    public function registerPageType(int $dokType, string $identifier, string $title = null, string $iconPath = null)
+    public function registerPageType($dokType, $identifier, $title = null, $iconPath = null)
     {
         if ($title === null || $title === '') {
             $title = $identifier;
@@ -101,7 +101,7 @@ class PageTypeService implements SingletonInterface
      * @param int $dokType
      * @return void
      */
-    public function addPageToBackendDragArea(int $dokType)
+    public function addPageToBackendDragArea($dokType)
     {
         // Add the new dokType to the list of types available from the new page menu at the top of the page tree
         ExtensionManagementUtility::addUserTSConfig(
@@ -114,7 +114,7 @@ class PageTypeService implements SingletonInterface
      * @param string $modelClassName
      * @return void
      */
-    public function addPageTypeClassMapping(int $dokType, string $modelClassName)
+    public function addPageTypeClassMapping($dokType, $modelClassName)
     {
         $this->pageTypeClasses[$modelClassName] = $dokType;
         // store for later usage in extension configuration
@@ -127,7 +127,7 @@ class PageTypeService implements SingletonInterface
      * @param string $modelClassName
      * @return int
      */
-    public function getPageTypeByClass(string $modelClassName)
+    public function getPageTypeByClass($modelClassName)
     {
         return isset($this->pageTypeClasses[$modelClassName]) ? $this->pageTypeClasses[$modelClassName] : 1;
     }
@@ -136,7 +136,7 @@ class PageTypeService implements SingletonInterface
      * @param int $dokType
      * @return string
      */
-    public function getClassByPageType(int $dokType)
+    public function getClassByPageType($dokType)
     {
         $className = array_search($dokType, $this->pageTypeClasses, true);
         return $className === false ? '' : $className;
@@ -148,7 +148,7 @@ class PageTypeService implements SingletonInterface
      * @param string $iconPath
      * @return void
      */
-    protected function registerIcon(int $dokType, string $identifier, string $iconPath)
+    protected function registerIcon($dokType, $identifier, $iconPath)
     {
         $iconClass = 'apps-pagetree-page-' . $identifier;
 

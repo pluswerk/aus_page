@@ -210,7 +210,7 @@ class PageController extends ActionController
      * @param int $dokType
      * @return AbstractPageRepository
      */
-    protected function getPageRepositoryForDokType(int $dokType)
+    protected function getPageRepositoryForDokType($dokType)
     {
         /** @var PageTypeService $pageTypeService */
         $pageTypeService = $this->objectManager->get(PageTypeService::class);

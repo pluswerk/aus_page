@@ -44,7 +44,7 @@ class PageConfiguration
      * @param string $fileName
      * @return void
      */
-    public static function load(string $extensionKey, string $fileName)
+    public static function load($extensionKey, $fileName)
     {
         PageConfigurationService::getInstance()->load($extensionKey, $fileName);
     }
@@ -65,7 +65,7 @@ class PageConfiguration
      * @throws \Exception
      * @todo: Implement & define params
      */
-    public static function addFieldToPage(int $dokType, array $configuration = [])
+    public static function addFieldToPage($dokType, array $configuration = [])
     {
         throw new \Exception('not implemented');
     }

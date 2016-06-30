@@ -66,7 +66,7 @@ class PageFilter
     /**
      * @param int $pageCategoryUid
      */
-    public function setPageCategoryUid(int $pageCategoryUid)
+    public function setPageCategoryUid($pageCategoryUid)
     {
         $this->pageCategoryUid = $pageCategoryUid;
     }
@@ -98,7 +98,7 @@ class PageFilter
     /**
      * @param int $limit
      */
-    public function setLimit(int $limit)
+    public function setLimit($limit)
     {
         $this->limit = $limit;
     }
@@ -114,7 +114,7 @@ class PageFilter
     /**
      * @param int $offset
      */
-    public function setOffset(int $offset)
+    public function setOffset($offset)
     {
         $this->offset = $offset;
     }
@@ -124,7 +124,7 @@ class PageFilter
      * @param mixed $propertyValue
      * @return void
      */
-    public function _setProperty(string $propertyName, $propertyValue)
+    public function _setProperty($propertyName, $propertyValue)
     {
         $this->{$propertyName} = $propertyValue;
     }

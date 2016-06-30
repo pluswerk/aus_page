@@ -78,7 +78,7 @@ class PageConfigurationService implements SingletonInterface
      * @return void
      * @throws \Exception
      */
-    public function load(string $extensionKey, string $fileName)
+    public function load($extensionKey, $fileName)
     {
         $this->currentExtensionKey = $extensionKey;
         if (isset($this->loadedExtension[$extensionKey]) === false) {
@@ -121,7 +121,7 @@ class PageConfigurationService implements SingletonInterface
      * @param string $extensionKey
      * @return void
      */
-    protected function loadExtLocalConf(string $extensionKey)
+    protected function loadExtLocalConf($extensionKey)
     {
         if (isset($this->loadedConfigurations[$extensionKey]['addPageType'])) {
             foreach ($this->loadedConfigurations[$extensionKey]['addPageType'] as $configuration) {
@@ -143,7 +143,7 @@ class PageConfigurationService implements SingletonInterface
      * @param string $extensionKey
      * @return void
      */
-    protected function loadExtTables(string $extensionKey)
+    protected function loadExtTables($extensionKey)
     {
         if (isset($this->loadedConfigurations[$extensionKey]['addPageType'])) {
             foreach ($this->loadedConfigurations[$extensionKey]['addPageType'] as $configuration) {
@@ -200,7 +200,7 @@ class PageConfigurationService implements SingletonInterface
      * @param string $className
      * @return void
      */
-    protected function addTypoScriptMapping(string $className = null)
+    protected function addTypoScriptMapping($className = null)
     {
         $typoScript = PHP_EOL . 'config.tx_extbase.persistence.classes.' . ltrim($className, '\\') . '.mapping.tableName = pages' . PHP_EOL;
         ExtensionManagementUtility::addTypoScript(PageConfiguration::EXTENSION_KEY, 'setup', $typoScript);

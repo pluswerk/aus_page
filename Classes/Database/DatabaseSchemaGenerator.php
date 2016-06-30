@@ -80,7 +80,7 @@ class DatabaseSchemaGenerator implements SingletonInterface
      * @param string $field
      * @return string
      */
-    protected function getDatabaseSchemaForField(string $table, string $field)
+    protected function getDatabaseSchemaForField($table, $field)
     {
         $databaseSchema = '';
         $configType = $GLOBALS['TCA'][$table]['columns'][$field]['config']['type'];

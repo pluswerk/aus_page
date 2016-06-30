@@ -39,7 +39,7 @@ class DefaultPageRepository extends AbstractPageRepository
      * @param int $dokType
      * @return void
      */
-    public function setDokType(int $dokType)
+    public function setDokType($dokType)
     {
         $this->dokType = $dokType;
     }
