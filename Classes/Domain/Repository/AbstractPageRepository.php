@@ -101,7 +101,7 @@ abstract class AbstractPageRepository implements SingletonInterface
     /**
      * @return ContentObjectRenderer
      */
-    protected function getContentObject(): ContentObjectRenderer
+    protected function getContentObject()
     {
         if ($this->contentObject === null) {
             $this->contentObject = $this->objectManager->get(ContentObjectRenderer::class);
@@ -113,7 +113,7 @@ abstract class AbstractPageRepository implements SingletonInterface
      * @param int $rootLinePid
      * @return \AUS\AusPage\Domain\Model\AbstractPage[]
      */
-    public function findAll(int $rootLinePid = 0): array
+    public function findAll(int $rootLinePid = 0)
     {
         return $this->findByWhereClause('', $rootLinePid);
     }
@@ -133,7 +133,7 @@ abstract class AbstractPageRepository implements SingletonInterface
      * @param int $rootLinePid
      * @return array
      */
-    public function findByFilter(PageFilter $pageFilter, int $rootLinePid = 0): array
+    public function findByFilter(PageFilter $pageFilter, int $rootLinePid = 0)
     {
         $conditions = [];
         if ($pageFilter->getPageCategoryUid() !== 0) {
@@ -161,7 +161,7 @@ abstract class AbstractPageRepository implements SingletonInterface
      * @param int $offset
      * @return \AUS\AusPage\Domain\Model\AbstractPage[]
      */
-    public function findByWhereClause(string $whereClause, int $rootLinePid = 0, int $limit = 0, int $offset = 0): array
+    public function findByWhereClause(string $whereClause, int $rootLinePid = 0, int $limit = 0, int $offset = 0)
     {
         $allPageUidArray = [];
         if ($whereClause !== '') {
@@ -211,7 +211,7 @@ abstract class AbstractPageRepository implements SingletonInterface
      * @param $rows
      * @return \AUS\AusPage\Domain\Model\AbstractPage[]
      */
-    protected function mapResultToModel(&$rows): array
+    protected function mapResultToModel(&$rows)
     {
         return $this->dataMapper->map($this->modelClassName, $rows);
     }

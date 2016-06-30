@@ -58,7 +58,7 @@ class DatabaseSchemaGenerator implements SingletonInterface
      * @param array $tables
      * @return string
      */
-    public function getDatabaseSchemaForFields(array $tables): string
+    public function getDatabaseSchemaForFields(array $tables)
     {
         foreach ($tables as $table => &$fields) {
             foreach ($fields as &$field) {
@@ -80,7 +80,7 @@ class DatabaseSchemaGenerator implements SingletonInterface
      * @param string $field
      * @return string
      */
-    protected function getDatabaseSchemaForField(string $table, string $field): string
+    protected function getDatabaseSchemaForField(string $table, string $field)
     {
         $databaseSchema = '';
         $configType = $GLOBALS['TCA'][$table]['columns'][$field]['config']['type'];

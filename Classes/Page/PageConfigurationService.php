@@ -67,7 +67,7 @@ class PageConfigurationService implements SingletonInterface
     /**
      * @return PageConfigurationService
      */
-    public static function getInstance(): PageConfigurationService
+    public static function getInstance()
     {
         return GeneralUtility::makeInstance(PageConfigurationService::class);
     }

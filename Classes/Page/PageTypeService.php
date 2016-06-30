@@ -127,7 +127,7 @@ class PageTypeService implements SingletonInterface
      * @param string $modelClassName
      * @return int
      */
-    public function getPageTypeByClass(string $modelClassName): int
+    public function getPageTypeByClass(string $modelClassName)
     {
         return isset($this->pageTypeClasses[$modelClassName]) ? $this->pageTypeClasses[$modelClassName] : 1;
     }
@@ -136,7 +136,7 @@ class PageTypeService implements SingletonInterface
      * @param int $dokType
      * @return string
      */
-    public function getClassByPageType(int $dokType): string
+    public function getClassByPageType(int $dokType)
     {
         $className = array_search($dokType, $this->pageTypeClasses, true);
         return $className === false ? '' : $className;
@@ -169,7 +169,7 @@ class PageTypeService implements SingletonInterface
     /**
      * @return array
      */
-    protected function getExtensionCache(): array
+    protected function getExtensionCache()
     {
         $configuration = $this->configurationCache->getCachedConfiguration();
         return is_array($configuration) ? $configuration : [];

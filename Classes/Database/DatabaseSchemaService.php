@@ -79,7 +79,7 @@ class DatabaseSchemaService implements SingletonInterface
      * @param string $extensionKey
      * @return array
      */
-    public function addAusPageRequiredDatabaseSchemaForInstallUtility(array $sqlString, $extensionKey): array
+    public function addAusPageRequiredDatabaseSchemaForInstallUtility(array $sqlString, $extensionKey)
     {
         $sqlString[] = $this->getAusPageRequiredDatabaseSchema();
         return [$sqlString, $extensionKey];
@@ -92,7 +92,7 @@ class DatabaseSchemaService implements SingletonInterface
      * @param array $sqlString
      * @return array
      */
-    public function addAusPageRequiredDatabaseSchemaForSqlExpectedSchemaService(array $sqlString): array
+    public function addAusPageRequiredDatabaseSchemaForSqlExpectedSchemaService(array $sqlString)
     {
         $sqlString[] = $this->getAusPageRequiredDatabaseSchema();
         return [$sqlString];

@@ -153,7 +153,7 @@ class PageController extends ActionController
      * @param array $settings
      * @return array
      */
-    protected function mergeSettingsFromTypoScriptTemplate(array $settings): array
+    protected function mergeSettingsFromTypoScriptTemplate(array $settings)
     {
         if (
             empty($settings['template']) === false &&
@@ -198,7 +198,7 @@ class PageController extends ActionController
      * @param array $paths
      * @return array
      */
-    protected function resolvePathArray(array $paths): array
+    protected function resolvePathArray(array $paths)
     {
         foreach ($paths as &$path) {
             $path = GeneralUtility::getFileAbsFileName($path);
@@ -210,7 +210,7 @@ class PageController extends ActionController
      * @param int $dokType
      * @return AbstractPageRepository
      */
-    protected function getPageRepositoryForDokType(int $dokType): AbstractPageRepository
+    protected function getPageRepositoryForDokType(int $dokType)
     {
         /** @var PageTypeService $pageTypeService */
         $pageTypeService = $this->objectManager->get(PageTypeService::class);
@@ -230,7 +230,7 @@ class PageController extends ActionController
     /**
      * @return TypoScriptFrontendController
      */
-    protected function getTypoScriptFrontendController(): TypoScriptFrontendController
+    protected function getTypoScriptFrontendController()
     {
         return $GLOBALS['TSFE'];
     }
@@ -238,7 +238,7 @@ class PageController extends ActionController
     /**
      * @return PageRepository
      */
-    protected function getTYPO3PageRepository(): PageRepository
+    protected function getTYPO3PageRepository()
     {
         return $this->getTypoScriptFrontendController()->sys_page;
     }

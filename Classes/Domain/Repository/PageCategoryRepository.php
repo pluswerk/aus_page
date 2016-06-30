@@ -43,7 +43,7 @@ class PageCategoryRepository extends Repository
      * @param int $storagePid
      * @return QueryResultInterface
      */
-    public function findByDokType(int $dokType = 0, int $storagePid = 0): QueryResultInterface
+    public function findByDokType(int $dokType = 0, int $storagePid = 0)
     {
         $query = $this->createQuery();
         if ($storagePid === 0) {

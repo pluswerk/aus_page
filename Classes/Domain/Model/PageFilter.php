@@ -58,7 +58,7 @@ class PageFilter
     /**
      * @return int
      */
-    public function getPageCategoryUid(): int
+    public function getPageCategoryUid()
     {
         return $this->pageCategoryUid;
     }
@@ -90,7 +90,7 @@ class PageFilter
     /**
      * @return int
      */
-    public function getLimit(): int
+    public function getLimit()
     {
         return $this->limit;
     }
@@ -106,7 +106,7 @@ class PageFilter
     /**
      * @return int
      */
-    public function getOffset(): int
+    public function getOffset()
     {
         return $this->offset;
     }

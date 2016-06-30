@@ -57,7 +57,7 @@ class ConfigurationCache implements SingletonInterface
     /**
      * @return array
      */
-    public function getCachedConfiguration(): array
+    public function getCachedConfiguration()
     {
         return is_array($GLOBALS['aus_page_cache']) ? $GLOBALS['aus_page_cache'] : [];
     }

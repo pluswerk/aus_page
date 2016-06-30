@@ -45,7 +45,7 @@ abstract class AbstractPage extends AbstractEntity
     /**
      * @return string
      */
-    public function getTitle(): string
+    public function getTitle()
     {
         return (string)$this->title;
     }
