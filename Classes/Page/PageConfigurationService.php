@@ -147,9 +147,7 @@ class PageConfigurationService implements SingletonInterface
     {
         if (isset($this->loadedConfigurations[$extensionKey]['addPageType'])) {
             foreach ($this->loadedConfigurations[$extensionKey]['addPageType'] as $configuration) {
-                if ($this->validateRequiredConfiguration($configuration)) {
-                    continue;
-                }
+                $this->validateRequiredConfiguration($configuration);
 
                 /** @var PageTypeService $pageTypeService */
                 $pageTypeService = GeneralUtility::makeInstance(PageTypeService::class);
@@ -174,7 +172,7 @@ class PageConfigurationService implements SingletonInterface
 
     /**
      * @param array $configuration
-     * @return bool
+     * @return void
      * @throws \Exception
      */
     protected function validateRequiredConfiguration(array &$configuration)
@@ -190,17 +188,10 @@ class PageConfigurationService implements SingletonInterface
             throw new \Exception('DokType "' . $configuration['identifier']. '" (' . $configuration['dokType']. ') have to be between 10 and 200!');
         }
 
-        // DokType does already exists!
-        if (isset($GLOBALS['PAGES_TYPES'][$configuration['dokType']])) {
-            return false;
-        }
-
         // identifier
         if (empty($configuration['identifier']) || is_string($configuration['identifier']) === false) {
             throw new \Exception('No Identifier was given!');
         }
-
-        return true;
     }
 
     /**
