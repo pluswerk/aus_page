@@ -188,6 +188,7 @@ class PageConfigurationService implements SingletonInterface
         }
 
         if (isset($GLOBALS['PAGES_TYPES'][$configuration['dokType']])) {
+            // Bugfix for extension installing in backend
             $getEM = GeneralUtility::_GET('tx_extensionmanager_tools_extensionmanagerextensionmanager');
             if ($getEM['action'] !== 'toggleExtensionInstallationState') {
                 throw new \Exception('DokType "' . $configuration['identifier']. '" (' . $configuration['dokType']. ') does already exists!');
