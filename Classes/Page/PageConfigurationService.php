@@ -135,6 +135,13 @@ class PageConfigurationService implements SingletonInterface
                     $pageTypeService->addPageTypeClassMapping($configuration['dokType'], $configuration['modelClassName']);
                     $this->addTypoScriptMapping($configuration['modelClassName']);
                 }
+
+                /** @var PagePropertyService $pagePropertyService */
+                $pagePropertyService = GeneralUtility::makeInstance(PagePropertyService::class);
+                if (empty($configuration['additionalProperties']) === false) {
+                    $pagePropertyService->addFieldsToLocalization($configuration['dokType'], array_keys($configuration['additionalProperties']));
+                }
+                $pagePropertyService->renderLocalization($configuration['dokType']);
             }
         }
     }

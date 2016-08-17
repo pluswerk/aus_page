@@ -166,7 +166,7 @@ class PagePropertyService implements SingletonInterface
      * @param array $fields
      * @return void
      */
-    protected function addFieldsToLocalization($dokType, array $fields)
+    public function addFieldsToLocalization($dokType, array $fields)
     {
         if (isset($this->localizationFields[$dokType]) === false) {
             $this->localizationFields[$dokType] = [];
@@ -178,7 +178,7 @@ class PagePropertyService implements SingletonInterface
      * @param int $dokType
      * @return void
      */
-    protected function renderLocalization($dokType)
+    public function renderLocalization($dokType)
     {
         if (isset($this->localizationFields[$dokType])) {
             // Make fields ready for localization
