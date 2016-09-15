@@ -64,7 +64,12 @@ class FormHelper implements SingletonInterface
         $fullTypoScript = $configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
         /** @var \TYPO3\CMS\Extbase\Service\TypoScriptService $typoScriptService */
         $typoScriptService = $objectManager->get(TypoScriptService::class);
-        $templates = $typoScriptService->convertTypoScriptArrayToPlainArray($fullTypoScript['plugin.']['tx_auspage.']['settings.']['templates.']);
+        $templates = [];
+        if (is_array($fullTypoScript['plugin.']['tx_auspage.']['settings.']['templates.'])) {
+            $templates = $fullTypoScript['plugin.']['tx_auspage.']['settings.']['templates.'];
+        }
+
+        $templates = $typoScriptService->convertTypoScriptArrayToPlainArray($templates);
         foreach ($templates as $key => $template) {
             $config['items'][] = [$template['title'], $key];
         }
