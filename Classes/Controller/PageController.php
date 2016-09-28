@@ -33,6 +33,7 @@ use AUS\AusPage\Page\PageTypeService;
 use TYPO3\CMS\Core\Utility\ClassNamingUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+use TYPO3\CMS\Extbase\Mvc\Controller\MvcPropertyMappingConfiguration;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 use TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter;
 use TYPO3\CMS\Fluid\View\TemplateView;
@@ -76,6 +77,7 @@ class PageController extends ActionController
      */
     protected function initializeOneLevelNavigationAction()
     {
+        /** @var MvcPropertyMappingConfiguration $propertyMappingConfiguration */
         $propertyMappingConfiguration = $this->arguments['filter']->getPropertyMappingConfiguration();
         $propertyMappingConfiguration->allowProperties('pageCategoryUid', 'fields');
         $propertyMappingConfiguration->setTypeConverterOption(PersistentObjectConverter::class, PersistentObjectConverter::CONFIGURATION_CREATION_ALLOWED, TRUE);
