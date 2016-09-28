@@ -1,7 +1,6 @@
 {
   "name": "andersundsehr/aus_page",
   "type": "typo3-cms-extension",
-  "version": "1.0.1",
   "description": "anders und sehr: Page Extension",
   "homepage": "https://bitbucket.org/andersundsehr/aus_page",
   "support": {
