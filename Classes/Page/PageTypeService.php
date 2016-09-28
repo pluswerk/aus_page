@@ -139,7 +139,7 @@ class PageTypeService implements SingletonInterface
     public function getClassByPageType($dokType)
     {
         $className = array_search($dokType, $this->pageTypeClasses, true);
-        return $className === false ? '' : $className;
+        return ($className === false || $className === null) ? '' : $className;
     }
 
     /**
