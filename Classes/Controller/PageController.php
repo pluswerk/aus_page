@@ -189,10 +189,18 @@ class PageController extends ActionController
     {
         if ($view instanceof TemplateView) {
             $rootPaths = $view->getTemplateRootPaths();
-            $view->setTemplateRootPaths(array_merge($this->resolvePathArray($viewSettings['templateRootPaths']),
-                ($rootPaths !== null ? $rootPaths : [])));
-            $view->setPartialRootPaths($this->resolvePathArray($viewSettings['partialRootPaths']));
-            $view->setLayoutRootPaths($this->resolvePathArray($viewSettings['layoutRootPaths']));
+            if (is_array($viewSettings['templateRootPaths'])) {
+                $view->setTemplateRootPaths(array_merge(
+                        $this->resolvePathArray($viewSettings['templateRootPaths']),
+                        ($rootPaths !== null ? $rootPaths : [])
+                ));
+            }
+            if (is_array($viewSettings['partialRootPaths'])) {
+                $view->setPartialRootPaths($this->resolvePathArray($viewSettings['partialRootPaths']));
+            }
+            if (is_array($viewSettings['layoutRootPaths'])) {
+                $view->setLayoutRootPaths($this->resolvePathArray($viewSettings['layoutRootPaths']));
+            }
         }
     }
 

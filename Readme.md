@@ -68,7 +68,7 @@ plugin.tx_auspage.settings.templates.myOwnTemplate {
   view {
     templateRootPaths.100 = EXT:aus_page/Resources/Private/Templates/
     partialRootPaths.100 = EXT:aus_page/Resources/Private/Partials/
-    layoutRootPath.100 = EXT:aus_page/Resources/Private/Layouts/
+    layoutRootPaths.100 = EXT:aus_page/Resources/Private/Layouts/
   }
   settings {
     pageFilter {
