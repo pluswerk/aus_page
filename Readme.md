@@ -15,7 +15,7 @@ Put this in your `aus_project/ext_tables.php`:
 \AUS\AusPage\Configuration\PageConfiguration::load($_EXTKEY, 'ext_tables.php');
 ```
 
-## Configuration
+## Page Type Configuration
 
 Put your configuration in your extension in `aus_project/Configuration/AusPage/Configuration.php`:
 
@@ -55,4 +55,25 @@ Bug: Font Awesome can not be displayed in the page edit. (TYPO3 CMS 7.6.9)
     ],
     'showAsAdditionalProperty' => 'property_from_other_dok_type,something_else', // show existing database fields for this dokType
 ]);
+```
+
+## Plugin Template Configuration
+
+Add a plugin of type "Navigation (flat)" to your page and select a "Template".
+The templates will be defined via TypoScript:
+
+```
+plugin.tx_auspage.settings.templates.myOwnTemplate {
+  title = Blog
+  view {
+    templateRootPaths.100 = EXT:aus_page/Resources/Private/Templates/
+    partialRootPaths.100 = EXT:aus_page/Resources/Private/Partials/
+    layoutRootPath.100 = EXT:aus_page/Resources/Private/Layouts/
+  }
+  settings {
+    pageFilter {
+      limit = 2
+    }
+  }
+}
 ```
