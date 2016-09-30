@@ -26,7 +26,7 @@ Bug: Font Awesome can not be displayed in the page edit. (TYPO3 CMS 7.6.9)
 \AUS\AusPage\Configuration\PageConfiguration::addPageType([
     'dokType' => 125, // (required, unique)
     'identifier' => 'news', // (required)
-    'modelClassName' => \AUS\MyExtension\Domain\Model\MyModel::class, // create TypoScript mapping (optional)
+    'modelClassName' => \AUS\MyExtension\Domain\Model\MyModel::class, // create TypoScript mapping (is needed if you add Properties that will be used in FE ++Repository(with doktype) is needed too)
     'title' => 'LLL:EXT:aus_project/Resources/Private/Language/locallang_db.xlf:doktype.news',
     'icon' => 'EXT:aus_project/ext_icon.svg', // SVG, PNG, Font Awesome ('file')
     'additionalProperties' => [ // Add new database fields (optional)
