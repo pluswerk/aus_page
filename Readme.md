@@ -71,11 +71,25 @@ plugin.tx_auspage.settings.templates.myOwnTemplate {
     layoutRootPaths.100 = EXT:aus_page/Resources/Private/Layouts/
   }
   settings {
+    # Show only sub pages of this page
+    startPage = 42
+    # Limit result to pages with this type
+    dokType = 125
+
     pageFilter {
       # All properties from model \AUS\AusPage\Domain\Model\PageFilter are allowed here
+      # Hint: This fields can be overwritten via GET / POST parameters
+
+      # Limit result count
       limit = 2
+      # Set first result position
       #offset = 3
+      # Limit result to pages with this category
+      #pageCategoryUid = 3
+      # Limit result to a single year
+      #fields.myPagesDateField.year = 2016
     }
+
     # Additional settings are available in Fluid
     #showAllPageUid = 42
   }
