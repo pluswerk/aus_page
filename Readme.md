@@ -72,7 +72,9 @@ plugin.tx_auspage.settings.templates.myOwnTemplate {
   }
   settings {
     pageFilter {
+      # All properties from model \AUS\AusPage\Domain\Model\PageFilter are allowed here
       limit = 2
+      offset = 3
     }
   }
 }
