@@ -163,9 +163,23 @@ class PageController extends ActionController
             empty($settings['templates'][$settings['template']]['settings']) === false &&
             is_array($settings['templates'][$settings['template']]['settings'])
         ) {
+            $this->unsetEmptyValuesFromArray($settings);
             $settings = array_merge_recursive($settings, $settings['templates'][$settings['template']]['settings']);
         }
         return $settings;
+    }
+
+    /**
+     * @param array $settings
+     * @return void
+     */
+    protected function unsetEmptyValuesFromArray(array &$array)
+    {
+        foreach ($array as $key => $value) {
+            if (empty($value)) {
+                unset($array[$key]);
+            }
+        }
     }
 
     /**
