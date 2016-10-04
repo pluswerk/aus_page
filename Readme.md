@@ -74,8 +74,10 @@ plugin.tx_auspage.settings.templates.myOwnTemplate {
     pageFilter {
       # All properties from model \AUS\AusPage\Domain\Model\PageFilter are allowed here
       limit = 2
-      offset = 3
+      #offset = 3
     }
+    # Additional settings are available in Fluid
+    #showAllPageUid = 42
   }
 }
 ```
