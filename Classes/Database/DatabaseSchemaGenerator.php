@@ -53,6 +53,13 @@ class DatabaseSchemaGenerator implements SingletonInterface
         'year',
     ];
 
+    /**
+     * @var array
+     */
+    protected $floatFields = [
+        'double',
+        'double2',
+    ];
 
     /**
      * @param array $tables
@@ -88,16 +95,24 @@ class DatabaseSchemaGenerator implements SingletonInterface
             case 'input':
                 $evalParts = GeneralUtility::trimExplode(',', $GLOBALS['TCA'][$table]['columns'][$field]['config']['eval'], true);
                 $isInteger = false;
+                $isFloat = false;
                 foreach ($evalParts as $evalPart) {
                     if (in_array($evalPart, $this->integerFields)) {
                         $isInteger = true;
+                        break;
+                    } else if (in_array($evalPart, $this->floatFields)) {
+                        $isFloat = true;
                         break;
                     }
                 }
                 if ($isInteger) {
                     $databaseSchema = 'int(11) DEFAULT \'0\' NOT NULL,';
                 } else {
-                    $databaseSchema = 'varchar(511) DEFAULT \'\' NOT NULL,';
+                    if ($isFloat) {
+                        $databaseSchema = 'float DEFAULT \'0\' NOT NULL,';
+                    } else {
+                        $databaseSchema = 'varchar(511) DEFAULT \'\' NOT NULL,';
+                    }
                 }
                 break;
             case 'text':
