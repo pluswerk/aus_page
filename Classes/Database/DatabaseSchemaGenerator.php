@@ -57,7 +57,6 @@ class DatabaseSchemaGenerator implements SingletonInterface
      * @var array
      */
     protected $floatFields = [
-        'double',
         'double2',
     ];
 
@@ -108,7 +107,7 @@ class DatabaseSchemaGenerator implements SingletonInterface
                 if ($isInteger) {
                     $databaseSchema = 'int(11) DEFAULT \'0\' NOT NULL,';
                 } else if ($isFloat) {
-                    $databaseSchema = 'double(6,4) DEFAULT \'0.0000\' NOT NULL,';
+                    $databaseSchema = 'double(6,2) DEFAULT \'0.00\' NOT NULL,';
                 } else {
                     $databaseSchema = 'varchar(511) DEFAULT \'\' NOT NULL,';
                 }
