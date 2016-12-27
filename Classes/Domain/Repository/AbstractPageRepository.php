@@ -43,6 +43,7 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  */
 abstract class AbstractPageRepository implements SingletonInterface
 {
+    const SORTING = 'pages.sorting ASC';
 
     /**
      * @var int
@@ -187,7 +188,7 @@ abstract class AbstractPageRepository implements SingletonInterface
 
         // resolve mm relation to page categories
         if (strpos($whereClause, 'tx_auspage_domain_model_pagecategory.') !== false) {
-            $resource = $this->databaseConnection->exec_SELECT_mm_query('pages.uid', 'pages', 'tx_auspage_page_pagecategory_mm', 'tx_auspage_domain_model_pagecategory', ' AND ' . $whereClause, '', 'pages.sorting ASC', $limitString);
+            $resource = $this->databaseConnection->exec_SELECT_mm_query('pages.uid', 'pages', 'tx_auspage_page_pagecategory_mm', 'tx_auspage_domain_model_pagecategory', ' AND ' . $whereClause, '', static::SORTING, $limitString);
             if ($resource) {
                 while ($record = $this->databaseConnection->sql_fetch_assoc($resource)) {
                     $allPageUidArray[] = $record['uid'];
@@ -195,7 +196,7 @@ abstract class AbstractPageRepository implements SingletonInterface
                 $this->databaseConnection->sql_free_result($resource);
             }
         } else {
-            $allPageUidArray = array_keys($this->databaseConnection->exec_SELECTgetRows('pages.uid', 'pages', $whereClause, '', 'pages.sorting ASC', $limitString, 'uid'));
+            $allPageUidArray = array_keys($this->databaseConnection->exec_SELECTgetRows('pages.uid', 'pages', $whereClause, '', static::SORTING, $limitString, 'uid'));
         }
         $pages = [];
         foreach($allPageUidArray as $pageUid) {
