@@ -17,7 +17,7 @@ Put this in your `aus_project/ext_tables.php`:
 
 ## Page Type Configuration
 
-Put your configuration in your extension in `aus_project/Configuration/AusPage/Configuration.php`:
+Put your configuration in your extension in `Configuration/AusPage/Configuration.php`:
 
 Bug: Font Awesome can not be displayed in the page edit. (TYPO3 CMS 7.6.9)
 
