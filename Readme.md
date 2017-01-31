@@ -102,3 +102,101 @@ plugin.tx_auspage.settings.templates.myOwnTemplate {
   }
 }
 ```
+
+### Using the additional properties
+
+To use all your page properties in a Fluid template in an aus_page plugin you have to create an Extbase Model class
+which extends `\AUS\AusPage\Domain\Model\AbstractPage` and add all your properties and the required getter functions.
+
+Remember to set the right `modelClassName` in your `Configuration.php`!
+
+Example:
+```php
+<?php
+namespace AUS\AusProject\Domain\Model;
+
+/***
+ * This file is part of an "anders und sehr" Extension for TYPO3 CMS.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * (c) 2017 Your Name <y.name@andersundsehr.com>, anders und sehr GmbH
+ ***/
+
+use AUS\AusPage\Domain\Model\AbstractPage;
+use TYPO3\CMS\Extbase\Domain\Model\FileReference;
+
+/**
+ * Class Product
+ *
+ * @package AUS\AusProject\Domain\Model
+ */
+class Product extends AbstractPage
+{
+    /**
+     * @var FileReference
+     */
+    protected $headerImage = null;
+
+    /**
+     * @var string
+     */
+    protected $description = '';
+
+    /**
+     * @return FileReference
+     */
+    public function getHeaderImage(): FileReference
+    {
+        return $this->headerImage;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
+}
+```
+
+
+## Using pages as Extbase Model
+
+If you want to use pages in your extension as an Extbase Model object you have to create a Model class
+which extends `\AUS\AusPage\Domain\Model\AbstractPage` (see above) and a repository class
+which extends `\AUS\AusPage\Domain\Repository\AbstractPageRepository`.
+
+The repository must have set the variable `$dokType`.
+
+Example:
+```php
+<?php
+namespace AUS\AusProject\Domain\Repository;
+
+/***
+ * This file is part of an "anders und sehr" Extension for TYPO3 CMS.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * (c) 2017 Your Name <y.name@andersundsehr.com>, anders und sehr GmbH
+ ***/
+
+use AUS\AusPage\Domain\Repository\AbstractPageRepository;
+
+/**
+ * Class ProductRepository
+ *
+ * @package AUS\AusProject\Domain\Repository
+ */
+class ProductRepository extends AbstractPageRepository
+{
+    /**
+     * @var int
+     */
+    protected $dokType = 125;
+}
+```
