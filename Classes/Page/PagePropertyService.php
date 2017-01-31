@@ -48,6 +48,13 @@ class PagePropertyService implements SingletonInterface
 
     /**
      * @var array
+     * Example:
+     * [
+     *      $dokType => [
+     *          'title' => 'my title',
+     *          'pageProperties' => 'field1,field2,field3',
+     *      ]
+     * ]
      */
     protected $tcaFields = [];
 
@@ -76,15 +83,15 @@ class PagePropertyService implements SingletonInterface
         $this->addTcaColumns($fields);
 
         // Prepare fields for localization
-        $fieldNames = array_keys($fields);
-        $this->addFieldsToLocalization($dokType, $fieldNames);
+        $this->addFieldsToLocalizationIfRequired($dokType, $fields);
 
         // Prepare fields to show them in TCA
+        $fieldNames = array_keys($fields);
         $this->moveOrAddExistingPagePropertiesToCurrentDokTypeTab($dokType, $title, $fieldNames);
 
         // Prepare fields for SQL database schema
         foreach ($fields as $fieldName => $config) {
-            $this->addFieldToDatabase($fieldName);
+            $this->addFieldToDatabase($fieldName, $config);
         }
     }
 
@@ -96,20 +103,32 @@ class PagePropertyService implements SingletonInterface
     public function addTcaColumns(array $fields, array $pagesLanguageOverlayOverwrite = null)
     {
         ExtensionManagementUtility::addTCAcolumns('pages', $fields);
+
         if ($pagesLanguageOverlayOverwrite !== null) {
             ArrayUtility::mergeRecursiveWithOverrule($fields, $pagesLanguageOverlayOverwrite);
         }
-        ExtensionManagementUtility::addTCAcolumns('pages_language_overlay', $fields);
+        $overlayFields = $fields;
+        foreach ($overlayFields as $fieldName => &$fieldConfig) {
+            if (isset($fieldConfig['excludeFromLanguageOverlay']) && $fieldConfig['excludeFromLanguageOverlay'] === true) {
+                unset($overlayFields[$fieldName]);
+            }
+        }
+        if (count($overlayFields) !== 0) {
+            ExtensionManagementUtility::addTCAcolumns('pages_language_overlay', $overlayFields);
+        }
     }
 
     /**
      * @param string $fieldName
+     * @param array $config
      * @return void
      */
-    public function addFieldToDatabase($fieldName)
+    public function addFieldToDatabase($fieldName, $config)
     {
         $this->databaseSchemaService->addProcessingField('pages', $fieldName);
-        $this->databaseSchemaService->addProcessingField('pages_language_overlay', $fieldName);
+        if (!isset($config['excludeFromLanguageOverlay']) || $config['excludeFromLanguageOverlay'] !== true) {
+            $this->databaseSchemaService->addProcessingField('pages_language_overlay', $fieldName);
+        }
     }
 
     /**
@@ -137,26 +156,52 @@ class PagePropertyService implements SingletonInterface
     public function renderTca($dokType)
     {
         if (isset($this->tcaFields[$dokType])) {
-            $this->renderLocalization($dokType);
-
-            $showItem = ',--div--;' . $this->tcaFields[$dokType]['title'] . ', ' . implode(',', array_unique($this->tcaFields[$dokType]['pageProperties']));
+            $tabConfig = ',--div--;' . $this->tcaFields[$dokType]['title'] . ', ';
+            $this->tcaFields[$dokType]['pageProperties'] = array_unique($this->tcaFields[$dokType]['pageProperties']);
 
             // add showItems to pages
+            $pagesShowItems = $tabConfig . implode(',', $this->tcaFields[$dokType]['pageProperties']);
             if (isset($GLOBALS['TCA']['pages']['types']['1']['showitem'])) {
-                $GLOBALS['TCA']['pages']['types'][$dokType]['showitem'] = $GLOBALS['TCA']['pages']['types']['1']['showitem'] . $showItem;
+                $GLOBALS['TCA']['pages']['types'][$dokType]['showitem'] = $GLOBALS['TCA']['pages']['types']['1']['showitem'] . $pagesShowItems;
             } elseif (is_array($GLOBALS['TCA']['pages']['types'])) {
                 // use first entry in types array
                 $pagesTypeDefinition = reset($GLOBALS['TCA']['pages']['types']);
-                $GLOBALS['TCA']['pages']['types'][$dokType]['showitem'] = $pagesTypeDefinition['showitem'] . $showItem;
+                $GLOBALS['TCA']['pages']['types'][$dokType]['showitem'] = $pagesTypeDefinition['showitem'] . $pagesShowItems;
             }
 
             // add showItems to pages_language_overlay
+            $pagesLanguageOverlayFields = [];
+            foreach ($this->tcaFields[$dokType]['pageProperties'] as $pageProperty) {
+                if (is_array($GLOBALS['TCA']['pages_language_overlay']['columns'][$pageProperty])) {
+                    $pagesLanguageOverlayFields[] = $pageProperty;
+                }
+            }
+            $pagesLanguageOverlayShowItems = $tabConfig . implode(',', $pagesLanguageOverlayFields);
             if (isset($GLOBALS['TCA']['pages_language_overlay']['types']['1']['showitem'])) {
-                $GLOBALS['TCA']['pages_language_overlay']['types'][$dokType]['showitem'] = $GLOBALS['TCA']['pages_language_overlay']['types']['1']['showitem'] . $showItem;
+                $GLOBALS['TCA']['pages_language_overlay']['types'][$dokType]['showitem'] = $GLOBALS['TCA']['pages_language_overlay']['types']['1']['showitem'] . $pagesLanguageOverlayShowItems;
             } elseif (is_array($GLOBALS['TCA']['pages_language_overlay']['types'])) {
                 // use first entry in types array
                 $pagesTypeDefinition = reset($GLOBALS['TCA']['pages_language_overlay']['types']);
-                $GLOBALS['TCA']['pages_language_overlay']['types'][$dokType]['showitem'] = $pagesTypeDefinition['showitem'] . $showItem;
+                $GLOBALS['TCA']['pages_language_overlay']['types'][$dokType]['showitem'] = $pagesTypeDefinition['showitem'] . $pagesLanguageOverlayShowItems;
+            }
+
+            $this->renderGlobalLocalizationFields($dokType);
+        }
+    }
+
+    /**
+     * @param int $dokType
+     * @param array $pageProperties
+     * @return void
+     */
+    public function addFieldsToLocalizationIfRequired($dokType, array $pageProperties)
+    {
+        if (isset($this->localizationFields[$dokType]) === false) {
+            $this->localizationFields[$dokType] = [];
+        }
+        foreach ($pageProperties as $pageProperty => &$pagePropertyConfiguration) {
+            if (!isset($pagePropertyConfiguration['excludeFromLanguageOverlay']) || $pagePropertyConfiguration['excludeFromLanguageOverlay'] !== true) {
+                $this->localizationFields[$dokType][] = $pageProperty;
             }
         }
     }
@@ -165,6 +210,8 @@ class PagePropertyService implements SingletonInterface
      * @param int $dokType
      * @param array $fields
      * @return void
+     *
+     * @deprecated This method will be removed in the next major version!
      */
     public function addFieldsToLocalization($dokType, array $fields)
     {
@@ -178,7 +225,7 @@ class PagePropertyService implements SingletonInterface
      * @param int $dokType
      * @return void
      */
-    public function renderLocalization($dokType)
+    public function renderGlobalLocalizationFields($dokType)
     {
         if (isset($this->localizationFields[$dokType])) {
             // Make fields ready for localization

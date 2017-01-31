@@ -46,6 +46,7 @@ Bug: Font Awesome can not be displayed in the page edit. (TYPO3 CMS 7.6.9)
         ],
         'my_special_field3' => [
             'label' => 'Bla!',
+            'excludeFromLanguageOverlay' => true, // special field from aus_page
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectMultipleSideBySide',
@@ -56,6 +57,12 @@ Bug: Font Awesome can not be displayed in the page edit. (TYPO3 CMS 7.6.9)
     'showAsAdditionalProperty' => 'property_from_other_dok_type,something_else', // show existing database fields for this dokType
 ]);
 ```
+
+### Localization
+
+All `additionalProperties` are added to the table `pages_language_overlay` as well.
+If you want to exclude your property from the language overlay just set `'excludeFromLanguageOverlay' => true`.
+
 
 ## Plugin Template Configuration
 
