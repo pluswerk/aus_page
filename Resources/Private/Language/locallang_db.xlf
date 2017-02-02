@@ -42,7 +42,7 @@
         <source>Page category</source>
       </trans-unit>
       <trans-unit id="tx_auspage_domain_model_pagecategory.title">
-        <source>Page type</source>
+        <source>Title</source>
       </trans-unit>
       <trans-unit id="tx_auspage_domain_model_pagecategory.dok_type">
         <source>Page type</source>
