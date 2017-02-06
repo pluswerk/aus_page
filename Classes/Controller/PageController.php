@@ -143,9 +143,15 @@ class PageController extends ActionController
         if (empty($this->settings['template']) === false) {
             $this->mergeViewPaths($this->view, $this->settings['templates'][$this->settings['template']]['view']);
         }
+        $activePageCategoryUid = null;
+        $oneLevelNavigation = GeneralUtility::_GP('tx_auspage_onelevelnavigation');
+        if(isset($oneLevelNavigation['filter']['pageCategoryUid'])){
+            $activePageCategoryUid = (int)$oneLevelNavigation['filter']['pageCategoryUid'];
+        }
 
         $this->view->assignMultiple([
             'settings' => $this->settings,
+            'activePageCategoryUid' => $activePageCategoryUid,
             'pageCategories' => $this->categoryRepository->findByDokType($this->settings['dokType'], $this->settings['startPage']),
         ]);
     }
