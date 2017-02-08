@@ -162,7 +162,7 @@ abstract class AbstractPageRepository implements SingletonInterface
             $pageFilter->getOffset()
         );
         if ($pageFilter->getSelectedPages() !== []) {
-            $this->sortBySelectedPages($pageFilter, $pages);
+            $pages = $this->sortBySelectedPages($pageFilter, $pages);
         }
         return $pages;
     }
