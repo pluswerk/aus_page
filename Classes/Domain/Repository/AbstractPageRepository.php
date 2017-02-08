@@ -152,7 +152,37 @@ abstract class AbstractPageRepository implements SingletonInterface
                 }
             }
         }
-        return $this->findByWhereClause(implode(' AND ', $conditions), $rootLinePid, $pageFilter->getLimit(), $pageFilter->getOffset());
+        if ($pageFilter->getSelectedPages() !== []) {
+            $conditions[] = 'pages.uid IN(' . implode(',', $pageFilter->getSelectedPages()) . ')';
+        }
+        $pages = $this->findByWhereClause(
+            implode(' AND ', $conditions),
+            $rootLinePid,
+            $pageFilter->getLimit(),
+            $pageFilter->getOffset()
+        );
+        if ($pageFilter->getSelectedPages() !== []) {
+            $this->sortBySelectedPages($pageFilter, $pages);
+        }
+        return $pages;
+    }
+
+    /**
+     * @param PageFilter $pageFilter
+     * @param \AUS\AusPage\Domain\Model\AbstractPage[] $pages
+     * @return \AUS\AusPage\Domain\Model\AbstractPage[]
+     */
+    protected function sortBySelectedPages(PageFilter $pageFilter, array $pages): array
+    {
+        $uidList = $pageFilter->getSelectedPages();
+        $pagesResult = [];
+        foreach ($pages as $page) {
+            if (($key = array_search($page->getUid(), $uidList)) !== false) {
+                $pagesResult[$key] = $page;
+            }
+        }
+        ksort($pagesResult);
+        return array_values(array_filter($pagesResult));
     }
 
     /**
@@ -188,7 +218,16 @@ abstract class AbstractPageRepository implements SingletonInterface
 
         // resolve mm relation to page categories
         if (strpos($whereClause, 'tx_auspage_domain_model_pagecategory.') !== false) {
-            $resource = $this->databaseConnection->exec_SELECT_mm_query('pages.uid', 'pages', 'tx_auspage_page_pagecategory_mm', 'tx_auspage_domain_model_pagecategory', ' AND ' . $whereClause, '', static::SORTING, $limitString);
+            $resource = $this->databaseConnection->exec_SELECT_mm_query(
+                'pages.uid',
+                'pages',
+                'tx_auspage_page_pagecategory_mm',
+                'tx_auspage_domain_model_pagecategory',
+                ' AND ' . $whereClause,
+                '',
+                static::SORTING,
+                $limitString
+            );
             if ($resource) {
                 while ($record = $this->databaseConnection->sql_fetch_assoc($resource)) {
                     $allPageUidArray[] = $record['uid'];
@@ -196,10 +235,20 @@ abstract class AbstractPageRepository implements SingletonInterface
                 $this->databaseConnection->sql_free_result($resource);
             }
         } else {
-            $allPageUidArray = array_keys($this->databaseConnection->exec_SELECTgetRows('pages.uid', 'pages', $whereClause, '', static::SORTING, $limitString, 'uid'));
+            $allPageUidArray = array_keys(
+                $this->databaseConnection->exec_SELECTgetRows(
+                    'pages.uid',
+                    'pages',
+                    $whereClause,
+                    '',
+                    static::SORTING,
+                    $limitString,
+                    'uid'
+                )
+            );
         }
         $pages = [];
-        foreach($allPageUidArray as $pageUid) {
+        foreach ($allPageUidArray as $pageUid) {
             $pageRecord = $this->pageRepository->getPage($pageUid);
             if ($pageRecord) {
                 $pages[] = $pageRecord;

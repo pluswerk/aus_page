@@ -104,6 +104,10 @@ class PageController extends ActionController
         if ($this->settings['pageCategory'] !== 0) {
             $filter->setPageCategoryUid($this->settings['pageCategory']);
         }
+        // SelectedPages
+        if ($this->settings['selectedPages']) {
+            $filter->setSelectedPages($this->settings['selectedPages']);
+        }
 
         // DokType
         if ($this->settings['dokType'] > 0) {
@@ -176,7 +180,7 @@ class PageController extends ActionController
     }
 
     /**
-     * @param array $settings
+     * @param array $array
      * @return void
      */
     protected function unsetEmptyValuesFromArray(array &$array)

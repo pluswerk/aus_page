@@ -19,6 +19,25 @@
         <source>--- default ---</source>
       </trans-unit>
 
+      <trans-unit id="plugin.OneLevelSelectedNavigation">
+        <source>Page Select navigation (flat)</source>
+      </trans-unit>
+      <trans-unit id="plugin.OneLevelSelectedNavigation.dokType">
+        <source>Page type</source>
+      </trans-unit>
+      <trans-unit id="plugin.OneLevelSelectedNavigation.dokType.all">
+        <source>--- all ---</source>
+      </trans-unit>
+      <trans-unit id="plugin.OneLevelSelectedNavigation.selectedPages">
+        <source>Select and sort pages</source>
+      </trans-unit>
+      <trans-unit id="plugin.OneLevelSelectedNavigation.template">
+        <source>Template</source>
+      </trans-unit>
+      <trans-unit id="plugin.OneLevelSelectedNavigation.template.default">
+        <source>--- default ---</source>
+      </trans-unit>
+
       <trans-unit id="plugin.OneLevelNavigation">
         <source>Page navigation (flat)</source>
       </trans-unit>

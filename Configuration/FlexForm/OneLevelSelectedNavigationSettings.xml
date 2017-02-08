@@ -1,0 +1,70 @@
+<T3DataStructure>
+  <meta>
+    <langDisable>1</langDisable>
+  </meta>
+  <sheets>
+    <sDEF>
+      <ROOT>
+        <TCEforms>
+          <sheetTitle>Simple one-level navigation</sheetTitle>
+        </TCEforms>
+        <type>array</type>
+        <el>
+          <settings.dokType>
+            <TCEforms>
+              <label>LLL:EXT:aus_page/Resources/Private/Language/locallang_db.xlf:plugin.OneLevelSelectedNavigation.dokType</label>
+              <config>
+                <type>select</type>
+                <itemsProcFunc>AUS\AusPage\Backend\FormHelper->addDokTypeOptions</itemsProcFunc>
+                <items type="array">
+                  <numIndex index="0" type="array">
+                    <numIndex index="0">LLL:EXT:aus_page/Resources/Private/Language/locallang_db.xlf:plugin.OneLevelSelectedNavigation.dokType.all</numIndex>
+                    <numIndex index="1">0</numIndex>
+                  </numIndex>
+                </items>
+              </config>
+            </TCEforms>
+          </settings.dokType>
+          <settings.selectedPages>
+            <TCEforms>
+              <label>LLL:EXT:aus_page/Resources/Private/Language/locallang_db.xlf:plugin.OneLevelSelectedNavigation.selectedPages</label>
+              <config>
+                <type>group</type>
+                <internal_type>db</internal_type>
+                <allowed>pages</allowed>
+                <size>3</size>
+                <autoSizeMax>20</autoSizeMax>
+                <minitems>0</minitems>
+                <maxitems>999999</maxitems>
+                <show_thumbs>0</show_thumbs>
+                <disable_controls>allowedTables</disable_controls>
+                <appearance>file</appearance>
+                <wizards>
+                  <suggest>
+                    <type>suggest</type>
+                  </suggest>
+                </wizards>
+              </config>
+            </TCEforms>
+          </settings.selectedPages>
+          <settings.template>
+            <TCEforms>
+              <label>LLL:EXT:aus_page/Resources/Private/Language/locallang_db.xlf:plugin.OneLevelSelectedNavigation.template</label>
+              <config>
+                <type>select</type>
+                <renderType>selectSingle</renderType>
+                <itemsProcFunc>AUS\AusPage\Backend\FormHelper->addTemplateOptions</itemsProcFunc>
+                <items type="array">
+                  <numIndex index="0" type="array">
+                    <numIndex index="0">LLL:EXT:aus_page/Resources/Private/Language/locallang_db.xlf:plugin.OneLevelSelectedNavigation.template.default</numIndex>
+                    <numIndex index="1">0</numIndex>
+                  </numIndex>
+                </items>
+              </config>
+            </TCEforms>
+          </settings.template>
+        </el>
+      </ROOT>
+    </sDEF>
+  </sheets>
+</T3DataStructure>
