@@ -56,6 +56,11 @@ class PageFilter
     protected $offset = 0;
 
     /**
+     * @var int[]
+     */
+    protected $selectedPages = [];
+
+    /**
      * @return int
      */
     public function getPageCategoryUid()
@@ -129,4 +134,22 @@ class PageFilter
         $this->{$propertyName} = $propertyValue;
     }
 
+    /**
+     * @return int[]
+     */
+    public function getSelectedPages(): array
+    {
+        return $this->selectedPages;
+    }
+
+    /**
+     * @param string|int[] $selectedPages
+     */
+    public function setSelectedPages($selectedPages)
+    {
+        if (is_string($selectedPages)) {
+            $selectedPages = array_filter(array_map('intval', explode(',', $selectedPages)));
+        }
+        $this->selectedPages = $selectedPages;
+    }
 }

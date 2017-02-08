@@ -2,8 +2,21 @@
 if (!defined('TYPO3_MODE')) {
     die('Access denied.');
 }
-
 /** @var string $_EXTKEY */
+
+
+// Plugin for selected page navigation
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+    'AUS.' . $_EXTKEY,
+    'OneLevelSelectedNavigation',
+    'LLL:EXT:aus_page/Resources/Private/Language/locallang_db.xlf:plugin.OneLevelSelectedNavigation'
+);
+$pluginSignature = 'auspage_onelevelselectednavigation';
+$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$pluginSignature] = 'select_key,pages,recursive';
+$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$pluginSignature] = 'pi_flexform';
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue($pluginSignature,
+    'FILE:EXT:' . $_EXTKEY . '/Configuration/FlexForm/OneLevelSelectedNavigationSettings.xml');
+
 // Plugin for page navigation
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
     'AUS.' . $_EXTKEY,
