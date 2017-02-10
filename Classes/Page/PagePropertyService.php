@@ -109,7 +109,7 @@ class PagePropertyService implements SingletonInterface
         }
         $overlayFields = $fields;
         foreach ($overlayFields as $fieldName => &$fieldConfig) {
-            if (isset($fieldConfig['excludeFromLanguageOverlay']) && $fieldConfig['excludeFromLanguageOverlay'] === true) {
+            if (!$this->shouldFieldBeAddedToLocalization($fieldConfig)) {
                 unset($overlayFields[$fieldName]);
             }
         }
@@ -126,7 +126,7 @@ class PagePropertyService implements SingletonInterface
     public function addFieldToDatabase($fieldName, $config)
     {
         $this->databaseSchemaService->addProcessingField('pages', $fieldName);
-        if (!isset($config['excludeFromLanguageOverlay']) || $config['excludeFromLanguageOverlay'] !== true) {
+        if ($this->shouldFieldBeAddedToLocalization($config)) {
             $this->databaseSchemaService->addProcessingField('pages_language_overlay', $fieldName);
         }
     }
@@ -200,7 +200,7 @@ class PagePropertyService implements SingletonInterface
             $this->localizationFields[$dokType] = [];
         }
         foreach ($pageProperties as $pageProperty => &$pagePropertyConfiguration) {
-            if (!isset($pagePropertyConfiguration['excludeFromLanguageOverlay']) || $pagePropertyConfiguration['excludeFromLanguageOverlay'] !== true) {
+            if ($this->shouldFieldBeAddedToLocalization($pagePropertyConfiguration)) {
                 $this->localizationFields[$dokType][] = $pageProperty;
             }
         }
@@ -236,4 +236,23 @@ class PagePropertyService implements SingletonInterface
         }
     }
 
+    /**
+     * @param array $fieldConfig
+     * @return bool
+     */
+    protected function shouldFieldBeAddedToLocalization(array $fieldConfig)
+    {
+        $shouldFieldBeAddedToLocalization = true;
+        if (isset($fieldConfig['excludeFromLanguageOverlay']) && $fieldConfig['excludeFromLanguageOverlay'] === true) {
+            // false if manually excluded
+            $shouldFieldBeAddedToLocalization = false;
+        } elseif (
+            ($fieldConfig['config']['type'] === 'select' || $fieldConfig['config']['type'] === 'inline') &&
+            !empty($fieldConfig['config']['MM'])
+        ) {
+            // false if field has an mm relation table (we can't handle one mm table with "pages" and "pages_language_overlay" table)
+            $shouldFieldBeAddedToLocalization = false;
+        }
+        return $shouldFieldBeAddedToLocalization;
+    }
 }

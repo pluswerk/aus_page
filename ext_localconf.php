@@ -56,3 +56,12 @@ $signalSlotDispatcher->connect(
     \AUS\AusPage\Database\DatabaseSchemaService::class,
     'addAusPageRequiredDatabaseSchemaForInstallUtility'
 );
+$signalSlotDispatcher->connect(
+    \TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper::class,
+    'afterMappingSingleRow',
+    \AUS\AusPage\Domain\Repository\Service\FalMappingService::class,
+    'remapFalFields'
+);
+$GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper::class] = array(
+    'className' => \AUS\AusPage\XClasses\DataMapper::class,
+);

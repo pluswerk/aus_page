@@ -258,12 +258,11 @@ abstract class AbstractPageRepository implements SingletonInterface
     }
 
     /**
-     * @param $rows
+     * @param array $rows
      * @return \AUS\AusPage\Domain\Model\AbstractPage[]
      */
     protected function mapResultToModel(&$rows)
     {
         return $this->dataMapper->map($this->modelClassName, $rows);
     }
-
 }
