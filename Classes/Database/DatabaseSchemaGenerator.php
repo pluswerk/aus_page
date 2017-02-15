@@ -78,7 +78,7 @@ class DatabaseSchemaGenerator implements SingletonInterface
         $view = $objectManager->get(StandaloneView::class);
         $view->setTemplatePathAndFilename(GeneralUtility::getFileAbsFileName('EXT:aus_page/Resources/Private/SqlTemplates/DatabaseSchema.html'));
         $view->assign('tables', $tables);
-        return $view->render();
+        return trim($view->render());
     }
 
     /**
