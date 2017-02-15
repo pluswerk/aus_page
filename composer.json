@@ -12,7 +12,6 @@
     }
   },
   "require": {
-    "php": ">=7",
-    "andersundsehr/aus_utility": "*"
+    "php": ">=7"
   }
 }

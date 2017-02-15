@@ -25,10 +25,47 @@ return array(
         '1' => array('showitem' => ''),
     ),
     'columns' => array(
-        'sys_language_uid' => \AUS\AusUtility\Configuration\TcaUtility::getDefaultFieldConfig('sys_language_uid'),
-        'l10n_parent' => \AUS\AusUtility\Configuration\TcaUtility::getDefaultFieldConfig('l10n_parent', 'tx_auspage_domain_model_pagecategory'),
-        'l10n_diffsource' => \AUS\AusUtility\Configuration\TcaUtility::getDefaultFieldConfig('l10n_diffsource'),
-        'hidden' => \AUS\AusUtility\Configuration\TcaUtility::getDefaultFieldConfig('hidden'),
+        'sys_language_uid' => [
+            'exclude' => 1,
+            'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.language',
+            'config' => [
+                'type' => 'select',
+                'renderType' => 'selectSingle',
+                'foreign_table' => 'sys_language',
+                'foreign_table_where' => 'ORDER BY sys_language.title',
+                'items' => [
+                    ['LLL:EXT:lang/locallang_general.xlf:LGL.allLanguages', -1],
+                    ['LLL:EXT:lang/locallang_general.xlf:LGL.default_value', 0]
+                ],
+                'default' => 0,
+                'showIconTable' => true,
+            ],
+        ],
+        'l10n_parent' => [
+            'displayCond' => 'FIELD:sys_language_uid:>:0',
+            'exclude' => 1,
+            'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.l18n_parent',
+            'config' => [
+                'type' => 'select',
+                'renderType' => 'selectSingle',
+                'items' => [
+                    ['', 0],
+                ],
+                'foreign_table' => 'tx_auspage_domain_model_pagecategory',
+                'foreign_table_where' => 'AND tx_auspage_domain_model_pagecategory.pid=###CURRENT_PID### AND tx_auspage_domain_model_pagecategory.sys_language_uid IN (-1,0)',
+            ],
+        ],
+        'l10n_diffsource' => [
+            'config' => [
+                'type' => 'passthrough',
+            ],
+        ],
+        'hidden' => [
+            'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.hidden',
+            'config' => [
+                'type' => 'check',
+            ],
+        ],
 
         'title' => array(
             'exclude' => 0,
