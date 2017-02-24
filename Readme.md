@@ -135,7 +135,7 @@ use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 class Product extends AbstractPage
 {
     /**
-     * @var FileReference
+     * @var \TYPO3\CMS\Extbase\Domain\Model\FileReference
      */
     protected $headerImage = null;
 
