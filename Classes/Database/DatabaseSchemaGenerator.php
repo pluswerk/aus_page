@@ -113,7 +113,7 @@ class DatabaseSchemaGenerator implements SingletonInterface
                 }
                 break;
             case 'text':
-                $databaseSchema = 'text NOT NULL,';
+                $databaseSchema = 'text,';
                 break;
             case 'check':
                 $databaseSchema = 'tinyint(1) unsigned DEFAULT \'0\' NOT NULL,';
