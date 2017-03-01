@@ -52,7 +52,11 @@ class PagePropertyService implements SingletonInterface
      * [
      *      $dokType => [
      *          'title' => 'my title',
-     *          'pageProperties' => 'field1,field2,field3',
+     *          'pageProperties' => ['field1', 'field2', 'field3'],
+     *          'tabs' => [
+     *              'tab1' => ['field1', 'field2', 'field3'],
+     *              'tab2' => ['field3', 'field4', 'field5'],
+     *           ],
      *      ]
      * ]
      */
@@ -73,11 +77,10 @@ class PagePropertyService implements SingletonInterface
 
     /**
      * @param int $dokType
-     * @param string $title
      * @param array $fields
      * @return void
      */
-    public function addPageProperties($dokType, $title, array $fields)
+    public function addPageProperties($dokType, array $fields)
     {
         // Add columns section to TCA
         $this->addTcaColumns($fields);
@@ -87,7 +90,7 @@ class PagePropertyService implements SingletonInterface
 
         // Prepare fields to show them in TCA
         $fieldNames = array_keys($fields);
-        $this->moveOrAddExistingPagePropertiesToCurrentDokTypeTab($dokType, $title, $fieldNames);
+        $this->moveOrAddPagePropertiesToDokType($dokType, $fieldNames);
 
         // Prepare fields for SQL database schema
         foreach ($fields as $fieldName => $config) {
@@ -133,20 +136,50 @@ class PagePropertyService implements SingletonInterface
 
     /**
      * @param int $dokType
-     * @param string $title
-     * @param array $pageProperties
      * @return void
      */
-    public function moveOrAddExistingPagePropertiesToCurrentDokTypeTab($dokType, $title, array $pageProperties)
+    protected function initDokType($dokType)
     {
         if (isset($this->tcaFields[$dokType]) === false) {
             $this->tcaFields[$dokType] = [
-                'title' => $title,
-                'pageProperties' => $pageProperties,
+                'title' => '',
+                'pageProperties' => [],
+                'tabs' => [],
             ];
-        } else {
-            $this->tcaFields[$dokType]['pageProperties'] = array_merge($this->tcaFields[$dokType]['pageProperties'], $pageProperties);
         }
+    }
+
+    /**
+     * @param int $dokType
+     * @param string $title
+     * @return void
+     */
+    public function setDokTypeTitle($dokType, $title)
+    {
+        $this->initDokType($dokType);
+        $this->tcaFields[$dokType]['title'] = $title;
+    }
+
+    /**
+     * @param int $dokType
+     * @param array $tabs
+     * @return void
+     */
+    public function addBackendTabs($dokType, array $tabs)
+    {
+        $this->initDokType($dokType);
+        $this->tcaFields[$dokType]['tabs'] = array_merge($this->tcaFields[$dokType]['tabs'], $tabs);
+    }
+
+    /**
+     * @param int $dokType
+     * @param array $pageProperties
+     * @return void
+     */
+    public function moveOrAddPagePropertiesToDokType($dokType, array $pageProperties)
+    {
+        $this->initDokType($dokType);
+        $this->tcaFields[$dokType]['pageProperties'] = array_merge($this->tcaFields[$dokType]['pageProperties'], $pageProperties);
     }
 
     /**
@@ -156,11 +189,11 @@ class PagePropertyService implements SingletonInterface
     public function renderTca($dokType)
     {
         if (isset($this->tcaFields[$dokType])) {
-            $tabConfig = ',--div--;' . $this->tcaFields[$dokType]['title'] . ', ';
             $this->tcaFields[$dokType]['pageProperties'] = array_unique($this->tcaFields[$dokType]['pageProperties']);
 
             // add showItems to pages
-            $pagesShowItems = $tabConfig . implode(',', $this->tcaFields[$dokType]['pageProperties']);
+            $pagesShowItems = $this->getDokTypeTabConfiguration($dokType, $this->tcaFields[$dokType]['pageProperties']);
+
             if (isset($GLOBALS['TCA']['pages']['types']['1']['showitem'])) {
                 $GLOBALS['TCA']['pages']['types'][$dokType]['showitem'] = $GLOBALS['TCA']['pages']['types']['1']['showitem'] . $pagesShowItems;
             } elseif (is_array($GLOBALS['TCA']['pages']['types'])) {
@@ -176,7 +209,7 @@ class PagePropertyService implements SingletonInterface
                     $pagesLanguageOverlayFields[] = $pageProperty;
                 }
             }
-            $pagesLanguageOverlayShowItems = $tabConfig . implode(',', $pagesLanguageOverlayFields);
+            $pagesLanguageOverlayShowItems = $this->getDokTypeTabConfiguration($dokType, $pagesLanguageOverlayFields);
             if (isset($GLOBALS['TCA']['pages_language_overlay']['types']['1']['showitem'])) {
                 $GLOBALS['TCA']['pages_language_overlay']['types'][$dokType]['showitem'] = $GLOBALS['TCA']['pages_language_overlay']['types']['1']['showitem'] . $pagesLanguageOverlayShowItems;
             } elseif (is_array($GLOBALS['TCA']['pages_language_overlay']['types'])) {
@@ -187,6 +220,41 @@ class PagePropertyService implements SingletonInterface
 
             $this->renderGlobalLocalizationFields($dokType);
         }
+    }
+
+    /**
+     * @param int $dokType
+     * @param array $fields
+     * @return string
+     */
+    protected function getDokTypeTabConfiguration($dokType, array $fields)
+    {
+        $tabPrefix = '--div--;';
+        $defaultTabTitle = $this->tcaFields[$dokType]['title'];
+        $tabsToRender = [];
+        $processedFields = [];
+
+        foreach ($this->tcaFields[$dokType]['tabs'] as $tabTitle => $tabFields) {
+            foreach ($tabFields as $tabField) {
+                if (in_array($tabField, $fields)) {
+                    if (!isset($tabsToRender[$tabTitle])) {
+                        $tabsToRender[$tabTitle] = $tabPrefix . $tabTitle;
+                    }
+                    $tabsToRender[$tabTitle] .= ',' . $tabField;
+                    $processedFields[] = $tabField;
+                }
+            }
+        }
+
+        foreach ($fields as $field) {
+            if (!in_array($field, $processedFields)) {
+                if (!isset($tabsToRender[$defaultTabTitle])) {
+                    $tabsToRender[$defaultTabTitle] = $tabPrefix . $defaultTabTitle;
+                }
+                $tabsToRender[$defaultTabTitle] .= ',' . $field;
+            }
+        }
+        return ',' . implode(',', $tabsToRender);
     }
 
     /**

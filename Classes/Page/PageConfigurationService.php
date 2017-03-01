@@ -161,14 +161,18 @@ class PageConfigurationService implements SingletonInterface
             foreach ($this->loadedConfigurations[$extensionKey]['addPageType'] as $configuration) {
                 $this->validateRequiredConfiguration($configuration);
                 $pageTypeService->registerPageType($configuration['dokType'], $configuration['identifier'], $configuration['title'], $configuration['icon']);
+                $pagePropertyService->setDokTypeTitle($configuration['dokType'], $configuration['title']);
                 if (empty($configuration['modelClassName']) === false && class_exists($configuration['modelClassName'])) {
                     $pageTypeService->addPageTypeClassMapping($configuration['dokType'], $configuration['modelClassName']);
                 }
+                if (empty($configuration['additionalTabs']) === false) {
+                    $pagePropertyService->addBackendTabs($configuration['dokType'], $configuration['additionalTabs']);
+                }
                 if (empty($configuration['additionalProperties']) === false) {
-                    $pagePropertyService->addPageProperties($configuration['dokType'], $configuration['title'], $configuration['additionalProperties']);
+                    $pagePropertyService->addPageProperties($configuration['dokType'], $configuration['additionalProperties']);
                 }
                 if (empty($configuration['showAsAdditionalProperty']) === false) {
-                    $pagePropertyService->moveOrAddExistingPagePropertiesToCurrentDokTypeTab($configuration['dokType'], $configuration['title'], explode(',', $configuration['showAsAdditionalProperty']));
+                    $pagePropertyService->moveOrAddPagePropertiesToDokType($configuration['dokType'], explode(',', $configuration['showAsAdditionalProperty']));
                 }
             }
             foreach ($this->loadedConfigurations[$extensionKey]['addPageType'] as $configuration) {
