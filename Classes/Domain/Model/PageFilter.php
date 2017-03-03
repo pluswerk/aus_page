@@ -65,7 +65,7 @@ class PageFilter
      */
     public function getPageCategoryUid()
     {
-        return $this->pageCategoryUid;
+        return (int)$this->pageCategoryUid;
     }
 
     /**
@@ -73,7 +73,7 @@ class PageFilter
      */
     public function setPageCategoryUid($pageCategoryUid)
     {
-        $this->pageCategoryUid = $pageCategoryUid;
+        $this->pageCategoryUid = (int)$pageCategoryUid;
     }
 
     /**
@@ -97,7 +97,7 @@ class PageFilter
      */
     public function getLimit()
     {
-        return $this->limit;
+        return (int)$this->limit;
     }
 
     /**
@@ -105,7 +105,7 @@ class PageFilter
      */
     public function setLimit($limit)
     {
-        $this->limit = $limit;
+        $this->limit = (int)$limit;
     }
 
     /**
@@ -113,7 +113,7 @@ class PageFilter
      */
     public function getOffset()
     {
-        return $this->offset;
+        return (int)$this->offset;
     }
 
     /**
@@ -121,7 +121,7 @@ class PageFilter
      */
     public function setOffset($offset)
     {
-        $this->offset = $offset;
+        $this->offset = (int)$offset;
     }
 
     /**
