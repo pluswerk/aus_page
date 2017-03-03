@@ -27,10 +27,8 @@ namespace AUS\AusPage\Controller;
  ***************************************************************/
 
 use AUS\AusPage\Domain\Model\PageFilter;
-use AUS\AusPage\Domain\Repository\AbstractPageRepository;
 use AUS\AusPage\Domain\Repository\DefaultPageRepository;
-use AUS\AusPage\Page\PageTypeService;
-use TYPO3\CMS\Core\Utility\ClassNamingUtility;
+use AUS\AusPage\Service\RepositoryService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\Controller\MvcPropertyMappingConfiguration;
@@ -38,7 +36,6 @@ use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 use TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter;
 use TYPO3\CMS\Fluid\View\TemplateView;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
-use TYPO3\CMS\Frontend\Page\PageRepository;
 
 /**
  * Class PageController
@@ -65,7 +62,9 @@ class PageController extends ActionController
         if (empty($this->settings['template']) === false) {
             $this->mergeViewPaths($this->view, $this->settings['templates'][$this->settings['template']]['view']);
         }
-        $repository = $this->getPageRepositoryForDokType((int)$this->getTypoScriptFrontendController()->page['doktype']);
+        /** @var RepositoryService $repositoryService */
+        $repositoryService = $this->objectManager->get(RepositoryService::class);
+        $repository = $repositoryService->getPageRepositoryForDokType((int)$this->getTypoScriptFrontendController()->page['doktype']);
         $this->view->assignMultiple([
             'settings' => $this->settings,
             'page' => $repository->findByUid((int)$this->getTypoScriptFrontendController()->id),
@@ -111,7 +110,9 @@ class PageController extends ActionController
 
         // DokType
         if ($this->settings['dokType'] > 0) {
-            $repository = $this->getPageRepositoryForDokType($this->settings['dokType']);
+            /** @var RepositoryService $repositoryService */
+            $repositoryService = $this->objectManager->get(RepositoryService::class);
+            $repository = $repositoryService->getPageRepositoryForDokType($this->settings['dokType']);
         } else {
             /** @var DefaultPageRepository $repository */
             $repository = $this->objectManager->get(DefaultPageRepository::class);
@@ -241,40 +242,10 @@ class PageController extends ActionController
     }
 
     /**
-     * @param int $dokType
-     * @return AbstractPageRepository
-     */
-    protected function getPageRepositoryForDokType($dokType)
-    {
-        /** @var PageTypeService $pageTypeService */
-        $pageTypeService = $this->objectManager->get(PageTypeService::class);
-        $modelClassName = $pageTypeService->getClassByPageType($dokType);
-        if ($modelClassName !== '') {
-            $repositoryClassName = ClassNamingUtility::translateModelNameToRepositoryName($modelClassName);
-            /** @var AbstractPageRepository $repository */
-            $repository = $this->objectManager->get($repositoryClassName);
-        } else {
-            /** @var DefaultPageRepository $repository */
-            $repository = $this->objectManager->get(DefaultPageRepository::class);
-            $repository->setDokType($dokType);
-        }
-        return $repository;
-    }
-
-    /**
      * @return TypoScriptFrontendController
      */
     protected function getTypoScriptFrontendController()
     {
         return $GLOBALS['TSFE'];
     }
-
-    /**
-     * @return PageRepository
-     */
-    protected function getTYPO3PageRepository()
-    {
-        return $this->getTypoScriptFrontendController()->sys_page;
-    }
-
 }
