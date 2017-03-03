@@ -1,7 +1,10 @@
-plugin.tx_auspage.view {
-  templateRootPaths.100 = EXT:aus_page/Resources/Private/Templates/
-  partialRootPaths.100 = EXT:aus_page/Resources/Private/Partials/
-  layoutRootPaths.100 = EXT:aus_page/Resources/Private/Layouts/
+plugin.tx_auspage {
+  view {
+    templateRootPaths.100 = EXT:aus_page/Resources/Private/Templates/
+    partialRootPaths.100 = EXT:aus_page/Resources/Private/Partials/
+    layoutRootPaths.100 = EXT:aus_page/Resources/Private/Layouts/
+  }
+  features.skipDefaultArguments = 1
 }
 
 # Example template
