@@ -43,7 +43,10 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  */
 abstract class AbstractPageRepository implements SingletonInterface
 {
-    const SORTING = 'pages.sorting ASC';
+    /**
+     * @var string
+     */
+    protected $defaultSorting = 'pages.sorting ASC';
 
     /**
      * @var int
@@ -225,7 +228,7 @@ abstract class AbstractPageRepository implements SingletonInterface
                 'tx_auspage_domain_model_pagecategory',
                 ' AND ' . $whereClause,
                 '',
-                static::SORTING,
+                $this->defaultSorting,
                 $limitString
             );
             if ($resource) {
@@ -241,7 +244,7 @@ abstract class AbstractPageRepository implements SingletonInterface
                     'pages',
                     $whereClause,
                     '',
-                    static::SORTING,
+                    $this->defaultSorting,
                     $limitString,
                     'uid'
                 )
