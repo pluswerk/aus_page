@@ -1,9 +1,15 @@
-<ul>
-  <f:for each="{pages}" as="page">
-    <li><f:link.page pageUid="{page.uid}">{page.title}</f:link.page></li>
-  </f:for>
-</ul>
+<f:layout name="Default" />
 
-<f:if condition="{settings.showAllPageUid}">
-  <f:link.page pageUid="{settings.showAllPageUid}">Please translate: Show all</f:link.page>
-</f:if>
+<f:section name="Main">
+
+  <ul>
+    <f:for each="{pages}" as="page">
+    <li><f:link.page pageUid="{page.uid}">{page.title}</f:link.page></li>
+    </f:for>
+  </ul>
+
+  <f:if condition="{settings.showAllPageUid}">
+    <f:link.page pageUid="{settings.showAllPageUid}">Please translate: Show all</f:link.page>
+  </f:if>
+
+</f:section>
