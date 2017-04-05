@@ -29,6 +29,7 @@ namespace AUS\AusPage\Controller;
 use AUS\AusPage\Domain\Model\PageFilter;
 use AUS\AusPage\Domain\Repository\DefaultPageRepository;
 use AUS\AusPage\Service\RepositoryService;
+use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\Controller\MvcPropertyMappingConfiguration;
@@ -175,7 +176,7 @@ class PageController extends ActionController
             is_array($settings['templates'][$settings['template']]['settings'])
         ) {
             $this->unsetEmptyValuesFromArray($settings);
-            $settings = array_merge_recursive($settings, $settings['templates'][$settings['template']]['settings']);
+            ArrayUtility::mergeRecursiveWithOverrule($settings, $settings['templates'][$settings['template']]['settings']);
         }
         return $settings;
     }
