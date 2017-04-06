@@ -12,7 +12,10 @@ Put this in your `aus_project/ext_localconf.php`:
 Put this in a new file `aus_project/Configuration/TCA/Overrides/AusPage.php`:
 ```php
 <?php
-\AUS\AusPage\Configuration\PageConfiguration::load($_EXTKEY, 'TCA/Overrides');
+defined('TYPO3_MODE') || die('Access denied.');
+call_user_func(function () {
+    \AUS\AusPage\Configuration\PageConfiguration::load('my_extension_key', 'TCA/Overrides');
+});
 ```
 
 ## Page Type Configuration
