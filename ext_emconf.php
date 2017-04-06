@@ -1,5 +1,4 @@
 <?php
-
 /** @var string $_EXTKEY */
 $EM_CONF[$_EXTKEY] = [
     'title' => 'anders und sehr: Page Extension',
@@ -12,7 +11,7 @@ $EM_CONF[$_EXTKEY] = [
     'uploadfolder' => '0',
     'createDirs' => '',
     'clearCacheOnLoad' => false,
-    'version' => '1.5.8',
+    'version' => '1.5.9',
     'constraints' => [
         'depends' => [
             'typo3' => '7.6.9-8.7.99',

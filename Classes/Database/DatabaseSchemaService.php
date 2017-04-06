@@ -60,7 +60,7 @@ class DatabaseSchemaService implements SingletonInterface
     /**
      * Get schema SQL
      *
-     * This method needs ext_localconf and ext_tables loaded!
+     * This method needs ext_localconf and TCA/Overrides loaded!
      *
      * @return string Cache framework SQL
      */

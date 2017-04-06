@@ -9,10 +9,10 @@ Put this in your `aus_project/ext_localconf.php`:
 ```
 
 
-Put this in your `aus_project/ext_tables.php`:
+Put this in a new file `aus_project/Configuration/TCA/Overrides/AusPage.php`:
 ```php
 <?php
-\AUS\AusPage\Configuration\PageConfiguration::load($_EXTKEY, 'ext_tables.php');
+\AUS\AusPage\Configuration\PageConfiguration::load($_EXTKEY, 'TCA/Overrides');
 ```
 
 ## Page Type Configuration

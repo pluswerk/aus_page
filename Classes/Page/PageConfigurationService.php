@@ -93,8 +93,8 @@ class PageConfigurationService implements SingletonInterface
 
         if ($fileName === 'ext_localconf.php') {
             $this->loadExtLocalConf($extensionKey);
-        } elseif ($fileName === 'ext_tables.php') {
-            $this->loadExtTables($extensionKey);
+        } elseif ($fileName === 'TCA/Overrides' || $fileName === 'ext_tables.php') {
+            $this->loadTcaOverrides($extensionKey);
         } else {
             throw new \Exception('Unknown file "' . $fileName . '" could not be loaded');
         }
@@ -150,7 +150,7 @@ class PageConfigurationService implements SingletonInterface
      * @param string $extensionKey
      * @return void
      */
-    protected function loadExtTables($extensionKey)
+    protected function loadTcaOverrides($extensionKey)
     {
         if (isset($this->loadedConfigurations[$extensionKey]['addPageType'])) {
             /** @var PageTypeService $pageTypeService */
