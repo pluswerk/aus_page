@@ -216,10 +216,11 @@ class PageController extends ActionController
         if ($view instanceof TemplateView) {
             $rootPaths = $view->getTemplateRootPaths();
             if (is_array($viewSettings['templateRootPaths'])) {
-                $view->setTemplateRootPaths(array_merge(
+                $view->setTemplateRootPaths(array_reverse(array_merge(
                     ($rootPaths !== null ? $rootPaths : []),
                     $this->resolvePathArray($viewSettings['templateRootPaths'])
-                ));
+
+                ),true));
             }
             if (is_array($viewSettings['partialRootPaths'])) {
                 $view->setPartialRootPaths($this->resolvePathArray($viewSettings['partialRootPaths']));
