@@ -1,4 +1,5 @@
 <?php
+
 namespace AUS\AusPage\Domain\Repository;
 
 /***************************************************************
@@ -208,11 +209,11 @@ abstract class AbstractPageRepository implements SingletonInterface
             }
             $whereClause .= ' pages.uid IN(' . $pidList . ') AND ';
         }
-        $whereClause = $whereClause . 'pages.doktype = ' . $this->dokType;
+        $whereClause .= 'pages.doktype = ' . $this->dokType;
+        $whereClause .= $this->pageRepository->enableFields('pages');
 
-        if ($limit === 0) {
-            $limitString = '';
-        } else {
+        $limitString = '';
+        if ($limit !== 0) {
             $limitString = (string)$limit;
             if ($offset !== 0) {
                 $limitString = $offset . ', ' . $limitString;
