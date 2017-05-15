@@ -158,7 +158,8 @@ class PageConfigurationService implements SingletonInterface
      * @param string $extensionKey
      * @return void
      */
-    protected function loadExtTables($extensionKey) {
+    protected function loadExtTables($extensionKey)
+    {
         if (isset($this->loadedConfigurations[$extensionKey]['addPageType'])) {
             /** @var PageTypeService $pageTypeService */
             $pageTypeService = GeneralUtility::makeInstance(PageTypeService::class);

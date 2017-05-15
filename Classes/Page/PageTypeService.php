@@ -170,7 +170,8 @@ class PageTypeService implements SingletonInterface
      * @param string $identifier
      * @return void
      */
-    protected function assignIconToTCA($dokType, $identifier) {
+    protected function assignIconToTCA($dokType, $identifier)
+    {
         $iconClass = $this->getIconClass($identifier);
         $GLOBALS['TCA']['pages']['ctrl']['typeicon_classes'][$dokType] = $iconClass;
         $GLOBALS['TCA']['pages_language_overlay']['ctrl']['typeicon_classes'][$dokType] = $iconClass;
@@ -180,7 +181,8 @@ class PageTypeService implements SingletonInterface
      * @param string $identifier
      * @return string
      */
-    protected function getIconClass($identifier) {
+    protected function getIconClass($identifier)
+    {
         return 'apps-pagetree-page-' . $identifier;
     }
 
