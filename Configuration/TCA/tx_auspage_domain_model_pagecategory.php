@@ -13,7 +13,7 @@ return array(
             'disabled' => 'hidden',
         ),
         'searchFields' => 'title,',
-        'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('aus_page') . 'Resources/Pubic/Icons/PageCategory.svg'
+        'iconfile' => 'EXT:aus_page/Resources/Pubic/Icons/PageCategory.svg'
     ),
     'interface' => array(
         'showRecordFieldList' => 'hidden,title,dok_type',
