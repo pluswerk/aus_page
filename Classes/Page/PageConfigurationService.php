@@ -95,12 +95,15 @@ class PageConfigurationService implements SingletonInterface
         if ($fileName === 'ext_localconf.php') {
             $this->loadExtLocalConf($extensionKey);
         } elseif ($fileName === 'TCA/Overrides') {
-            $this->loadTcaOverrides($extensionKey);
-        } elseif ($fileName === 'ext_tables.php') {
+            // use 'TCA/Overrides' since typo3 8
             if (VersionNumberUtility::convertVersionNumberToInteger(TYPO3_branch) >= VersionNumberUtility::convertVersionNumberToInteger('8.0')) {
-                $this->loadExtTables($extensionKey);
-            } else {
-                $this->loadExtTables($extensionKey);
+                $this->loadTcaOverrides($extensionKey);
+            }
+        } elseif ($fileName === 'ext_tables.php') {
+            $this->loadExtTables($extensionKey);
+
+            // legacy support for TYPO3 7
+            if (VersionNumberUtility::convertVersionNumberToInteger(TYPO3_branch) < VersionNumberUtility::convertVersionNumberToInteger('8.0')) {
                 $this->loadTcaOverrides($extensionKey);
             }
         } else {
