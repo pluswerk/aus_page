@@ -19,7 +19,7 @@ return array(
         'showRecordFieldList' => 'hidden,title,dok_type',
     ),
     'types' => array(
-        '1' => array('showitem' => 'title,dok_type,--div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,hidden;;1'),
+        '1' => array('showitem' => 'title,dok_type,--div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,hidden'),
     ),
     'palettes' => array(
         '1' => array('showitem' => ''),
