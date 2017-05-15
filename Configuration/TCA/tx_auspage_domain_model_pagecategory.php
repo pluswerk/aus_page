@@ -38,6 +38,7 @@ return array(
                     ['LLL:EXT:lang/locallang_general.xlf:LGL.default_value', 0]
                 ],
                 'default' => 0,
+                'showIconTable' => true, // Legacy support for TYPO3 version <= 7.6
                 'fieldWizard' => [
                     'selectIcons' => [
                         'disabled' => false,
