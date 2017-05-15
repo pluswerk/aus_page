@@ -8,8 +8,13 @@ Put this in your `aus_project/ext_localconf.php`:
 \AUS\AusPage\Configuration\PageConfiguration::load($_EXTKEY, 'ext_localconf.php');
 ```
 
+Put this in your `aus_project/ext_tables.php`:
+```php
+<?php
+\AUS\AusPage\Configuration\PageConfiguration::load($_EXTKEY, 'ext_tables.php');
+```
 
-Put this in a new file `aus_project/Configuration/TCA/Overrides/AusPage.php`:
+Put this in a new file `aus_project/Configuration/TCA/Overrides/AusPage.php` (since TYPO3 8):
 ```php
 <?php
 defined('TYPO3_MODE') || die('Access denied.');

@@ -31,6 +31,7 @@ use AUS\AusPage\Domain\Model\DefaultPage;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 
 /**
  * Class PageConfigurationService
@@ -93,8 +94,18 @@ class PageConfigurationService implements SingletonInterface
 
         if ($fileName === 'ext_localconf.php') {
             $this->loadExtLocalConf($extensionKey);
-        } elseif ($fileName === 'TCA/Overrides' || $fileName === 'ext_tables.php') {
-            $this->loadTcaOverrides($extensionKey);
+        } elseif ($fileName === 'TCA/Overrides') {
+            // use 'TCA/Overrides' since typo3 8
+            if (VersionNumberUtility::convertVersionNumberToInteger(TYPO3_branch) >= VersionNumberUtility::convertVersionNumberToInteger('8.0')) {
+                $this->loadTcaOverrides($extensionKey);
+            }
+        } elseif ($fileName === 'ext_tables.php') {
+            $this->loadExtTables($extensionKey);
+
+            // legacy support for TYPO3 7
+            if (VersionNumberUtility::convertVersionNumberToInteger(TYPO3_branch) < VersionNumberUtility::convertVersionNumberToInteger('8.0')) {
+                $this->loadTcaOverrides($extensionKey);
+            }
         } else {
             throw new \Exception('Unknown file "' . $fileName . '" could not be loaded');
         }
@@ -142,6 +153,22 @@ class PageConfigurationService implements SingletonInterface
                     $pagePropertyService->addFieldsToLocalizationIfRequired($configuration['dokType'], $configuration['additionalProperties']);
                 }
                 $pagePropertyService->renderGlobalLocalizationFields($configuration['dokType']);
+            }
+        }
+    }
+
+    /**
+     * @param string $extensionKey
+     * @return void
+     */
+    protected function loadExtTables($extensionKey)
+    {
+        if (isset($this->loadedConfigurations[$extensionKey]['addPageType'])) {
+            /** @var PageTypeService $pageTypeService */
+            $pageTypeService = GeneralUtility::makeInstance(PageTypeService::class);
+
+            foreach ($this->loadedConfigurations[$extensionKey]['addPageType'] as $configuration) {
+                $pageTypeService->registerIcon($configuration['identifier'], $configuration['icon']);
             }
         }
     }

@@ -82,7 +82,7 @@ class PageTypeService implements SingletonInterface
         if ($iconPath === null || $iconPath === '') {
             $iconPath = static::ICON_DEFAULT_PATH;
         }
-        $this->registerIcon($dokType, $identifier, $iconPath);
+        $this->assignIconToTCA($dokType, $identifier);
 
         // Add the new dokType to the list of page types
         $GLOBALS['PAGES_TYPES'][$dokType] = [
@@ -146,14 +146,13 @@ class PageTypeService implements SingletonInterface
     }
 
     /**
-     * @param int $dokType
      * @param string $identifier
      * @param string $iconPath
      * @return void
      */
-    protected function registerIcon($dokType, $identifier, $iconPath)
+    public function registerIcon($identifier, $iconPath)
     {
-        $iconClass = 'apps-pagetree-page-' . $identifier;
+        $iconClass = $this->getIconClass($identifier);
 
         /* @var IconRegistry $iconRegistry */
         $iconRegistry = GeneralUtility::makeInstance(IconRegistry::class);
@@ -164,9 +163,27 @@ class PageTypeService implements SingletonInterface
         } else {
             $iconRegistry->registerIcon($iconClass, BitmapIconProvider::class, ['source' => $iconPath]);
         }
+    }
 
+    /**
+     * @param int $dokType
+     * @param string $identifier
+     * @return void
+     */
+    protected function assignIconToTCA($dokType, $identifier)
+    {
+        $iconClass = $this->getIconClass($identifier);
         $GLOBALS['TCA']['pages']['ctrl']['typeicon_classes'][$dokType] = $iconClass;
         $GLOBALS['TCA']['pages_language_overlay']['ctrl']['typeicon_classes'][$dokType] = $iconClass;
+    }
+
+    /**
+     * @param string $identifier
+     * @return string
+     */
+    protected function getIconClass($identifier)
+    {
+        return 'apps-pagetree-page-' . $identifier;
     }
 
     /**
