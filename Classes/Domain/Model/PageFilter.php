@@ -1,4 +1,5 @@
 <?php
+
 namespace AUS\AusPage\Domain\Model;
 
 /***************************************************************
@@ -59,6 +60,11 @@ class PageFilter
      * @var int[]
      */
     protected $selectedPages = [];
+
+    /**
+     * @var bool
+     */
+    protected $sortRecursive = false;
 
     /**
      * @return int
@@ -151,5 +157,21 @@ class PageFilter
             $selectedPages = array_filter(array_map('intval', explode(',', $selectedPages)));
         }
         $this->selectedPages = $selectedPages;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSortRecursive()
+    {
+        return (bool)$this->sortRecursive;
+    }
+
+    /**
+     * @param bool $sortRecursive
+     */
+    public function setSortRecursive($sortRecursive)
+    {
+        $this->sortRecursive = (bool)$sortRecursive;
     }
 }

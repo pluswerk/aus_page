@@ -35,6 +35,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
+use TYPO3\CMS\Frontend\Page\PageRepository;
 
 /**
  * Abstract repository for objects which are "pages"
@@ -70,6 +71,11 @@ abstract class AbstractPageRepository implements SingletonInterface
     protected $pageRepository = null;
 
     /**
+     * @var \TYPO3\CMS\Frontend\Page\PageRepository
+     */
+    protected $pageRepositoryShowHidden = null;
+
+    /**
      * @var ObjectManager
      */
     protected $objectManager = null;
@@ -94,6 +100,8 @@ abstract class AbstractPageRepository implements SingletonInterface
         $this->pageRepository = $GLOBALS['TSFE']->sys_page;
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $this->dataMapper = $this->objectManager->get(DataMapper::class);
+        $this->pageRepositoryShowHidden = $this->objectManager->get(PageRepository::class);
+        $this->pageRepositoryShowHidden->init(false);
 
         $this->modelClassName = ClassNamingUtility::translateRepositoryNameToModelName(get_class($this));
         if ($this->dokType === 1) {
@@ -159,11 +167,13 @@ abstract class AbstractPageRepository implements SingletonInterface
         if ($pageFilter->getSelectedPages() !== []) {
             $conditions[] = 'pages.uid IN(' . implode(',', $pageFilter->getSelectedPages()) . ')';
         }
+
         $pages = $this->findByWhereClause(
             implode(' AND ', $conditions),
             $rootLinePid,
             $pageFilter->getLimit(),
-            $pageFilter->getOffset()
+            $pageFilter->getOffset(),
+            $pageFilter->isSortRecursive()
         );
         if ($pageFilter->getSelectedPages() !== []) {
             $pages = $this->sortBySelectedPages($pageFilter, $pages);
@@ -194,9 +204,10 @@ abstract class AbstractPageRepository implements SingletonInterface
      * @param int $rootLinePid
      * @param int $limit
      * @param int $offset
+     * @param bool $sortRecursive
      * @return \AUS\AusPage\Domain\Model\AbstractPage[]
      */
-    public function findByWhereClause($whereClause, $rootLinePid = 0, $limit = 0, $offset = 0)
+    public function findByWhereClause($whereClause, $rootLinePid = 0, $limit = 0, $offset = 0, $sortRecursive = false)
     {
         $allPageUidArray = [];
         if ($whereClause !== '') {
@@ -251,6 +262,14 @@ abstract class AbstractPageRepository implements SingletonInterface
                 )
             );
         }
+
+        if ($sortRecursive && $rootLinePid) {
+            //In $flattenedTree are the uids in order, but there are also some uids that we don't want
+            $flattenedTree = $this->getAllPagesInOrder($rootLinePid);
+            //In $allPageUidArray are all uids that we want, but they are not in the Order that we want.
+            //With array_intersect we get only the uids what we want and in they are in order.
+            $allPageUidArray = array_intersect($flattenedTree, $allPageUidArray);
+        }
         $pages = [];
         foreach ($allPageUidArray as $pageUid) {
             $pageRecord = $this->pageRepository->getPage($pageUid);
@@ -259,6 +278,21 @@ abstract class AbstractPageRepository implements SingletonInterface
             }
         }
         return $this->mapResultToModel($pages);
+    }
+
+    /**
+     * @param int $pageUid
+     * @param int[] $result
+     * @return \int[]
+     * @internal param array $tree
+     */
+    public function getAllPagesInOrder($pageUid = 1, array $result = [])
+    {
+        $result[] = (int)$pageUid;
+        foreach ($this->pageRepositoryShowHidden->getMenu($pageUid) as $page) {
+            $result = $this->getAllPagesInOrder($page['uid'], $result);
+        }
+        return $result;
     }
 
     /**
