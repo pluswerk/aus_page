@@ -1,4 +1,5 @@
 <?php
+
 namespace AUS\AusPage\Domain\Repository\Service;
 
 /***************************************************************

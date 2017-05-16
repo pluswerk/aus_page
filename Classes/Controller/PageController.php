@@ -1,4 +1,5 @@
 <?php
+
 namespace AUS\AusPage\Controller;
 
 /***************************************************************
@@ -151,7 +152,7 @@ class PageController extends ActionController
         }
         $activePageCategoryUid = null;
         $oneLevelNavigation = GeneralUtility::_GP('tx_auspage_onelevelnavigation');
-        if(isset($oneLevelNavigation['filter']['pageCategoryUid'])){
+        if (isset($oneLevelNavigation['filter']['pageCategoryUid'])) {
             $activePageCategoryUid = (int)$oneLevelNavigation['filter']['pageCategoryUid'];
         }
 
@@ -220,7 +221,7 @@ class PageController extends ActionController
                     ($rootPaths !== null ? $rootPaths : []),
                     $this->resolvePathArray($viewSettings['templateRootPaths'])
 
-                ),true));
+                ), true));
             }
             if (is_array($viewSettings['partialRootPaths'])) {
                 $view->setPartialRootPaths($this->resolvePathArray($viewSettings['partialRootPaths']));
