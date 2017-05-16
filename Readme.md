@@ -107,6 +107,8 @@ plugin.tx_auspage.settings.templates.myOwnTemplate {
       #pageCategoryUid = 3
       # Limit result to a single year
       #fields.myPagesDateField.year = 2016
+      # Sort Recursive (default: '')
+      sortRecursive =
     }
 
     # Additional settings are available in Fluid
