@@ -27,6 +27,7 @@ namespace AUS\AusPage\Domain\Repository;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use AUS\AusPage\Domain\Model\MMConfig;
 use AUS\AusPage\Domain\Model\PageFilter;
 use AUS\AusPage\Page\PageTypeService;
 use TYPO3\CMS\Core\SingletonInterface;
@@ -149,31 +150,50 @@ abstract class AbstractPageRepository implements SingletonInterface
     public function findByFilter(PageFilter $pageFilter, $rootLinePid = 0)
     {
         $conditions = [];
-        if ($pageFilter->getPageCategoryUid() !== 0) {
-            $conditions[] = 'tx_auspage_domain_model_pagecategory.uid = ' . $pageFilter->getPageCategoryUid();
-        }
+        $mmConfigs = [];
         foreach ($pageFilter->getFields() as $fieldName => $fieldValue) {
-            if (is_array($fieldValue)) { // we have to do some magic
-                if (isset($fieldValue['year']) && empty($fieldValue['year']) == false) {
-                    $date = new \DateTime();
-                    $date->setDate((int)$fieldValue['year'], 1, 1);
-                    $date->setTime(0, 0, 0);
-                    $conditions[] = 'pages.' . $fieldName . ' > ' . $date->getTimestamp();
-                    $date->setDate((int)$fieldValue['year'] + 1, 1, 1);
-                    $conditions[] = 'pages.' . $fieldName . ' < ' . $date->getTimestamp();
+
+            if (isset($GLOBALS['TCA']['pages']['columns'][$fieldName]['config'])) {
+                if (is_string($fieldValue)) {
+                    $TCAConfig = $GLOBALS['TCA']['pages']['columns'][$fieldName]['config'];
+                    if (isset($TCAConfig['MM']) && isset($TCAConfig['foreign_table'])) {
+                        if ($fieldValue === (string)(int)$fieldValue) {
+                            $mmConfig = $this->objectManager->get(MMConfig::class);
+                            $mmConfig->setMMTable($TCAConfig['MM']);
+                            $mmConfig->setForeignTable($TCAConfig['foreign_table']);
+                            $mmConfig->setCompareValue($fieldValue);
+                            $mmConfigs[] = $mmConfig;
+                        } else {
+                            continue;
+                        }
+                    } else {
+                        $conditions[] = 'pages.' . $fieldName . ' = ' . $this->databaseConnection->quoteStr($fieldValue, 'pages');
+                    }
+                }
+                if (is_array($fieldValue)) {
+                    //interpret as Date:
+                    if (isset($fieldValue['year']) && empty($fieldValue['year']) == false) {
+                        //year must equal $fieldValue['year']
+                        $date = new \DateTime();
+                        $date->setDate((int)$fieldValue['year'], 1, 1);
+                        $date->setTime(0, 0, 0);
+                        $conditions[] = 'pages.' . $fieldName . ' > ' . $date->getTimestamp();
+                        $date->setDate((int)$fieldValue['year'] + 1, 1, 1);
+                        $conditions[] = 'pages.' . $fieldName . ' < ' . $date->getTimestamp();
+                    }
                 }
             }
         }
         if ($pageFilter->getSelectedPages() !== []) {
-            $conditions[] = 'pages.uid IN(' . implode(',', $pageFilter->getSelectedPages()) . ')';
+            $conditions[] = 'pages.uid IN(' . implode(',', $this->databaseConnection->cleanIntArray($pageFilter->getSelectedPages())) . ')';
         }
-
         $pages = $this->findByWhereClause(
             implode(' AND ', $conditions),
             $rootLinePid,
             $pageFilter->getLimit(),
             $pageFilter->getOffset(),
-            $pageFilter->isSortRecursive()
+            $pageFilter->isSortRecursive(),
+            $mmConfigs
         );
         if ($pageFilter->getSelectedPages() !== []) {
             $pages = $this->sortBySelectedPages($pageFilter, $pages);
@@ -205,11 +225,13 @@ abstract class AbstractPageRepository implements SingletonInterface
      * @param int $limit
      * @param int $offset
      * @param bool $sortRecursive
+     * @param MMConfig[] $mmConfigs
      * @return \AUS\AusPage\Domain\Model\AbstractPage[]
      */
-    public function findByWhereClause($whereClause, $rootLinePid = 0, $limit = 0, $offset = 0, $sortRecursive = false)
+    public function findByWhereClause($whereClause, $rootLinePid = 0, $limit = 0, $offset = 0, $sortRecursive = false, array $mmConfigs = [])
     {
-        $allPageUidArray = [];
+        /** @var int[]|null $allPageUidArray */
+        $allPageUidArray = null;
         if ($whereClause !== '') {
             $whereClause = $whereClause . ' AND ';
         }
@@ -232,22 +254,9 @@ abstract class AbstractPageRepository implements SingletonInterface
         }
 
         // resolve mm relation to page categories
-        if (strpos($whereClause, 'tx_auspage_domain_model_pagecategory.') !== false) {
-            $resource = $this->databaseConnection->exec_SELECT_mm_query(
-                'pages.uid',
-                'pages',
-                'tx_auspage_page_pagecategory_mm',
-                'tx_auspage_domain_model_pagecategory',
-                ' AND ' . $whereClause,
-                '',
-                $this->defaultSorting,
-                $limitString
-            );
-            if ($resource) {
-                while ($record = $this->databaseConnection->sql_fetch_assoc($resource)) {
-                    $allPageUidArray[] = $record['uid'];
-                }
-                $this->databaseConnection->sql_free_result($resource);
+        if (!empty($mmConfigs)) {
+            foreach ($mmConfigs as $mmConfig) {
+                $allPageUidArray = $this->executeMMConfig($mmConfig, $whereClause, $limitString, $allPageUidArray);
             }
         } else {
             $allPageUidArray = array_keys(
@@ -278,6 +287,41 @@ abstract class AbstractPageRepository implements SingletonInterface
             }
         }
         return $this->mapResultToModel($pages);
+    }
+
+    /**
+     * @param MMConfig $mmConfig
+     * @param $whereClause
+     * @param $limitString
+     * @param $allPageUidArray
+     * @return array|null
+     */
+    protected function executeMMConfig(MMConfig $mmConfig, $whereClause, $limitString, $allPageUidArray)
+    {
+        $resource = $this->databaseConnection->exec_SELECT_mm_query(
+            'pages.uid',
+            'pages',
+            $mmConfig->getMMTable(),
+            $mmConfig->getForeignTable(),
+            ' AND ' . $mmConfig->getWhereClause() . ' AND ' . $whereClause,
+            '',
+            $this->defaultSorting,
+            $limitString
+        );
+        if ($resource) {
+            $tempPageUidArray = [];
+            while ($record = $this->databaseConnection->sql_fetch_assoc($resource)) {
+                $tempPageUidArray[] = $record['uid'];
+            }
+            $this->databaseConnection->sql_free_result($resource);
+
+            if ($allPageUidArray === null) {
+                $allPageUidArray = $tempPageUidArray;
+            } else {
+                $allPageUidArray = array_intersect($allPageUidArray, $tempPageUidArray);
+            }
+        }
+        return $allPageUidArray;
     }
 
     /**
