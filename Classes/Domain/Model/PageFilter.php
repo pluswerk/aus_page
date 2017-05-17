@@ -38,6 +38,7 @@ class PageFilter
 
     /**
      * @var int
+     * @deprecated
      */
     protected $pageCategoryUid = 0;
 
@@ -68,14 +69,16 @@ class PageFilter
 
     /**
      * @return int
+     * @deprecated
      */
     public function getPageCategoryUid()
     {
-        return (int)$this->pageCategoryUid;
+        return isset($this->fields['page_categories']) ? $this->fields['page_categories'] : $this->pageCategoryUid;
     }
 
     /**
      * @param int $pageCategoryUid
+     * @deprecated
      */
     public function setPageCategoryUid($pageCategoryUid)
     {
@@ -87,7 +90,16 @@ class PageFilter
      */
     public function getFields()
     {
-        return $this->fields;
+        return array_merge(
+            [
+                /*
+                 * include legacy tx_auspage_onelevelnavigation[filter][pageCategoryUid]
+                 * replace it with include legacy tx_auspage_onelevelnavigation[filter][fields][page_category]
+                 */
+                'page_categories' => $this->pageCategoryUid
+            ],
+            $this->fields
+        );
     }
 
     /**

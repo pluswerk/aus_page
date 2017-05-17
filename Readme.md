@@ -103,12 +103,16 @@ plugin.tx_auspage.settings.templates.myOwnTemplate {
       limit = 2
       # Set first result position
       #offset = 3
-      # Limit result to pages with this category
-      #pageCategoryUid = 3
-      # Limit result to a single year
-      #fields.myPagesDateField.year = 2016
       # Sort Recursive (default: '')
       sortRecursive =
+      # Limit result to a single year
+      #fields.your_specified_field.year = 2016
+      # Limit result to pages with this category
+      #fields.page_categories = 3
+      # Limit result to pages with this your_specified_field (mm relation possible)
+      #fields.your_specified_field = 3
+      # !!!DEPRECATED Limit result to pages with this category
+      #pageCategoryUid = 3 # replace this with the above
     }
 
     # Additional settings are available in Fluid
@@ -116,6 +120,30 @@ plugin.tx_auspage.settings.templates.myOwnTemplate {
   }
 }
 ```
+
+### Using Filters
+
+```xml
+<form method="GET" action="">
+  <f:form.select name="tx_auspage_onelevelnavigation[filter][fields][company]" options="{companies}"
+                 prependOptionValue=""
+                 prependOptionLabel="{f:translate(key: 'ext_name.all_companies', extensionName: 'ext_name')}"
+                 value="{currentFilterParams.fields.company}"
+                 class="input input__select js-news__input"/>
+  <f:form.select name="tx_auspage_onelevelnavigation[filter][fields][page_categories]" options="{categories}"
+                 optionValueField="uid" optionLabelField="title"
+                 prependOptionValue=""
+                 prependOptionLabel="{f:translate(key: 'ext_name.all_categories', extensionName: 'ext_name')}"
+                 value="{currentFilterParams.fields.page_categories}"
+                 class="input input__select js-news__input"/>
+  <f:form.select name="tx_auspage_onelevelnavigation[filter][fields][date][year]" options="{years}"
+                 prependOptionValue=""
+                 prependOptionLabel="{f:translate(key: 'ext_name.all_years', extensionName: 'ext_name')}"
+                 value="{currentFilterParams.fields.date.year}"
+                 class="input input__select js-news__input"/>
+  </form>
+```
+
 
 ### Using the additional properties
 
