@@ -24,6 +24,11 @@ Put your configuration in your extension in `Configuration/AusPage/Configuration
 
 Bug: Font Awesome can not be displayed in the page edit. (TYPO3 CMS 7.6.9)
 
+Update: Some general fields can be used now without long TCA entries:
+        input, slider (params: lower end, upper end, steps), text, rte, date, colorPicker, headerImage, teaserImage
+        <br> Difference between headerImage and teaserImage are the field names.
+
+
 ```php
 <?php
 \AUS\AusPage\Configuration\PageConfiguration::addPageType([
@@ -60,6 +65,13 @@ Bug: Font Awesome can not be displayed in the page edit. (TYPO3 CMS 7.6.9)
                 'size' => 10,
             ],
         ],
+        'my_input' => \AUS\AusPage\Utility\AusPageTcaUtility::input([
+                    'label' => 'LLL:EXT:aus_project/Resources/Private/Language/locallang_db.xlf:pages.input',
+                ]),
+        'my_colorpicker' => \AUS\AusPage\Utility\AusPageTcaUtility::colorPicker([
+                    'label' => 'LLL:EXT:aus_project/Resources/Private/Language/locallang_db.xlf:pages.colorpicker',
+                ]),
+        'my_slider' => \AUS\AusPage\Utility\AusPageTcaUtility::slider(-20, 20, 1),
     ],
     'showAsAdditionalProperty' => 'property_from_other_dok_type,something_else', // show existing database fields for this dokType
 ]);
@@ -206,4 +218,10 @@ class ProductRepository extends AbstractPageRepository
      */
     protected $dokType = 125;
 }
+```
+
+## Using TCA Utility
+
+Get your "Configuration.php"-architecture going and instead of adding every additionalProperty as own TCA entry, just type:
+```php
 ```
