@@ -29,6 +29,11 @@ Put your configuration in your extension in `Configuration/AusPage/Configuration
 
 Bug: Font Awesome can not be displayed in the page edit. (TYPO3 CMS 7.6.9)
 
+Update: Some general fields can be used now without long TCA entries:
+        input, slider (params: lower end, upper end, steps), text, rte, date, colorPicker, headerImage, teaserImage
+        <br> Difference between headerImage and teaserImage are the field names.
+
+
 ```php
 <?php
 \AUS\AusPage\Configuration\PageConfiguration::addPageType([
@@ -42,29 +47,53 @@ Bug: Font Awesome can not be displayed in the page edit. (TYPO3 CMS 7.6.9)
         'LLL:EXT:aus_project/Resources/Private/Language/locallang_db.xlf:doktype.news.tab.bar' => ['my_special_field3', 'property_from_other_dok_type'],
     ],
     'additionalProperties' => [ // Add new database fields (optional)
-        'my_special_field1' => [
-            'label' => 'LLL:EXT:aus_project/Resources/Private/Language/locallang_db.xlf:news.my_special_field1',
-            'config' => [
-                'type' => 'input',
+        'my_text' => \AUS\AusPage\Utility\AusPageTcaUtility::text([
+                            'label' => 'LLL:EXT:aus_project/Resources/Private/Language/locallang_db.xlf:pages.text',
+                        ]),
+        'my_input' => \AUS\AusPage\Utility\AusPageTcaUtility::input([
+                    'label' => 'LLL:EXT:aus_project/Resources/Private/Language/locallang_db.xlf:pages.input',
+                ]),
+        'my_colorpicker' => \AUS\AusPage\Utility\AusPageTcaUtility::colorPicker([
+                    'label' => 'LLL:EXT:aus_project/Resources/Private/Language/locallang_db.xlf:pages.colorpicker',
+                ]),
+        'my_slider' => \AUS\AusPage\Utility\AusPageTcaUtility::slider([
+                    'label' => 'LLL:EXT:aus_project/Resources/Private/Language/locallang_db.xlf:pages.slider',
+                ], -20, 20, 1),
+        'my_image' => \AUS\AusPage\Utility\AusPageTcaUtility::image([
+                            'label' => 'LLL:EXT:aus_project/Resources/Private/Language/locallang_db.xlf:pages.image',
+                        ], 'my_image'),
+        'my_select' => \AUS\AusPage\Utility\AusPageTcaUtility::select(
+            [
+                'label' => 'LLL:EXT:aus_project/Resources/Private/Language/locallang_db.xlf:pages.image',
             ],
-        ],
-        'my_special_field2' => [
-            'label' => 'LLL:EXT:aus_project/Resources/Private/Language/locallang_db.xlf:news.my_special_field2',
-            'config' => [
-                'type' => 'text',
-                'size' => 10,
-                'eval' => 'int',
-            ],
-        ],
-        'my_special_field3' => [
-            'label' => 'Bla!',
-            'excludeFromLanguageOverlay' => true, // special field from aus_page
-            'config' => [
-                'type' => 'select',
-                'renderType' => 'selectMultipleSideBySide',
-                'size' => 10,
-            ],
-        ],
+            [
+                ['Item 1', 0],
+                ['Item 2', 1],
+            ]),
+            // Default TCA does also work:
+            'my_special_field1' => [
+                        'label' => 'LLL:EXT:aus_project/Resources/Private/Language/locallang_db.xlf:news.my_special_field1',
+                        'config' => [
+                            'type' => 'input',
+                        ],
+                    ],
+                    'my_special_field2' => [
+                        'label' => 'LLL:EXT:aus_project/Resources/Private/Language/locallang_db.xlf:news.my_special_field2',
+                        'config' => [
+                            'type' => 'text',
+                            'size' => 10,
+                            'eval' => 'int',
+                        ],
+                    ],
+                    'my_special_field3' => [
+                        'label' => 'Bla!',
+                        'excludeFromLanguageOverlay' => true, // special field from aus_page
+                        'config' => [
+                            'type' => 'select',
+                            'renderType' => 'selectMultipleSideBySide',
+                            'size' => 10,
+                        ],
+                    ],
     ],
     'showAsAdditionalProperty' => 'property_from_other_dok_type,something_else', // show existing database fields for this dokType
 ]);
