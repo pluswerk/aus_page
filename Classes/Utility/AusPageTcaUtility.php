@@ -18,7 +18,7 @@ class AusPageTcaUtility
      * @param array $config
      * @return array
      */
-    public static function input($config)
+    public static function input(array $config)
     {
         $tca = [
             'label' => 'Headline',
@@ -29,11 +29,18 @@ class AusPageTcaUtility
                 'eval' => 'trim'
             ],
         ];
-        ArrayUtility::mergeRecursiveWithOverrule($tca, $config);
+        \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($tca, $config);
         return $tca;
     }
 
-    public static function slider(int $lower, int $upper, int $step)
+    /**
+     * @param array $config
+     * @param int $lower
+     * @param int $upper
+     * @param int $step
+     * @return array
+     */
+    public static function slider(array $config, int $lower, int $upper, int $step)
     {
         $tca = [
             'label' => 'Slider',
@@ -48,14 +55,19 @@ class AusPageTcaUtility
                 'default' => 0,
                 'slider' => [
                     'step' => $step,
-                    'width' => 200,
+                    'width' => 400,
                 ],
             ],
         ];
+        \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($tca, $config);
         return $tca;
     }
 
-    public static function text($config)
+    /**
+     * @param array $config
+     * @return array
+     */
+    public static function text(array $config)
     {
         $tca = [
             'label' => 'Text',
@@ -67,10 +79,14 @@ class AusPageTcaUtility
                 'eval' => 'trim'
             ],
         ];
-        ArrayUtility::mergeRecursiveWithOverrule($tca, $config);
+        \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($tca, $config);
         return $tca;
     }
 
+    /**
+     * @param $config
+     * @return array
+     */
     public static function rte($config)
     {
         $tca = [
@@ -81,11 +97,15 @@ class AusPageTcaUtility
                 'enableRichtext' => true,
             ],
         ];
-        ArrayUtility::mergeRecursiveWithOverrule($tca, $config);
+        \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($tca, $config);
         return $tca;
     }
 
-    public static function date($config)
+    /**
+     * @param array $config
+     * @return array
+     */
+    public static function date(array $config)
     {
         $tca = [
             'label' => 'Date',
@@ -96,11 +116,15 @@ class AusPageTcaUtility
                 'eval' => 'date',
             ]
         ];
-        ArrayUtility::mergeRecursiveWithOverrule($tca, $config);
+        \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($tca, $config);
         return $tca;
     }
 
-    public static function colorPicker($config)
+    /**
+     * @param array $config
+     * @return array
+     */
+    public static function colorPicker(array $config)
     {
         $tca = [
             'exclude' => 0,
@@ -123,18 +147,23 @@ class AusPageTcaUtility
                 ]
             ]
         ];
-        ArrayUtility::mergeRecursiveWithOverrule($tca, $config);
+        \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($tca, $config);
         return $tca;
     }
 
-    public static function headerImage($config)
+    /**
+     * @param array $config
+     * @param string $fieldName
+     * @return array
+     */
+    public static function image(array $config, string $fieldName)
     {
         $tca = [
             'label' => 'Header Image',
             'exclude' => 0,
             'excludeFromLanguageOverlay' => true,
             'config' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getFileFieldTCAConfig(
-                'header_image',
+                $fieldName,
                 [
                     'maxitems' => 1,
                     'overrideChildTca' => [
@@ -148,31 +177,27 @@ class AusPageTcaUtility
                 $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext']
             )
         ];
-        ArrayUtility::mergeRecursiveWithOverrule($tca, $config);
+        \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($tca, $config);
         return $tca;
     }
 
-    public static function teaserImage($config)
+    /**
+     * @param array $config
+     * @param array $fields
+     * @return array
+     */
+    public static function select(array $config, array $fields)
     {
         $tca = [
-            'exclude' => 0,
-            'label' => 'Teaser Image',
-            'config' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getFileFieldTCAConfig(
-                'teaser_image',
-                [
-                    'maxitems' => 1,
-                    'overrideChildTca' => [
-                        'types' => array(
-                            \TYPO3\CMS\Core\Resource\File::FILETYPE_IMAGE => [
-                                'showitem' => '--palette--;LLL:EXT:lang/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.imageoverlayPalette;imageoverlayPalette,--palette--;;filePalette',
-                            ],
-                        ),
-                    ],
-                ],
-                $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext']
-            ),
+            'label' => 'Select',
+            'exclude' => 1,
+            'config' => [
+                'type' => 'select',
+                'renderType' => 'selectSingle',
+                'items' => $fields
+            ],
         ];
-        ArrayUtility::mergeRecursiveWithOverrule($tca, $config);
+        \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($tca, $config);
         return $tca;
     }
 }

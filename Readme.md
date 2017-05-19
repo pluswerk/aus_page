@@ -8,8 +8,13 @@ Put this in your `aus_project/ext_localconf.php`:
 \AUS\AusPage\Configuration\PageConfiguration::load($_EXTKEY, 'ext_localconf.php');
 ```
 
+Put this in your `aus_project/ext_tables.php`:
+```php
+<?php
+\AUS\AusPage\Configuration\PageConfiguration::load($_EXTKEY, 'ext_tables.php');
+```
 
-Put this in a new file `aus_project/Configuration/TCA/Overrides/AusPage.php`:
+Put this in a new file `aus_project/Configuration/TCA/Overrides/AusPage.php` (since TYPO3 8):
 ```php
 <?php
 defined('TYPO3_MODE') || die('Access denied.');
@@ -42,36 +47,53 @@ Update: Some general fields can be used now without long TCA entries:
         'LLL:EXT:aus_project/Resources/Private/Language/locallang_db.xlf:doktype.news.tab.bar' => ['my_special_field3', 'property_from_other_dok_type'],
     ],
     'additionalProperties' => [ // Add new database fields (optional)
-        'my_special_field1' => [
-            'label' => 'LLL:EXT:aus_project/Resources/Private/Language/locallang_db.xlf:news.my_special_field1',
-            'config' => [
-                'type' => 'input',
-            ],
-        ],
-        'my_special_field2' => [
-            'label' => 'LLL:EXT:aus_project/Resources/Private/Language/locallang_db.xlf:news.my_special_field2',
-            'config' => [
-                'type' => 'text',
-                'size' => 10,
-                'eval' => 'int',
-            ],
-        ],
-        'my_special_field3' => [
-            'label' => 'Bla!',
-            'excludeFromLanguageOverlay' => true, // special field from aus_page
-            'config' => [
-                'type' => 'select',
-                'renderType' => 'selectMultipleSideBySide',
-                'size' => 10,
-            ],
-        ],
+        'my_text' => \AUS\AusPage\Utility\AusPageTcaUtility::text([
+                            'label' => 'LLL:EXT:aus_project/Resources/Private/Language/locallang_db.xlf:pages.text',
+                        ]),
         'my_input' => \AUS\AusPage\Utility\AusPageTcaUtility::input([
                     'label' => 'LLL:EXT:aus_project/Resources/Private/Language/locallang_db.xlf:pages.input',
                 ]),
         'my_colorpicker' => \AUS\AusPage\Utility\AusPageTcaUtility::colorPicker([
                     'label' => 'LLL:EXT:aus_project/Resources/Private/Language/locallang_db.xlf:pages.colorpicker',
                 ]),
-        'my_slider' => \AUS\AusPage\Utility\AusPageTcaUtility::slider(-20, 20, 1),
+        'my_slider' => \AUS\AusPage\Utility\AusPageTcaUtility::slider([
+                    'label' => 'LLL:EXT:aus_project/Resources/Private/Language/locallang_db.xlf:pages.slider',
+                ], -20, 20, 1),
+        'my_image' => \AUS\AusPage\Utility\AusPageTcaUtility::image([
+                            'label' => 'LLL:EXT:aus_project/Resources/Private/Language/locallang_db.xlf:pages.image',
+                        ], 'my_image'),
+        'my_select' => \AUS\AusPage\Utility\AusPageTcaUtility::select(
+            [
+                'label' => 'LLL:EXT:aus_project/Resources/Private/Language/locallang_db.xlf:pages.image',
+            ],
+            [
+                ['Item 1', 0],
+                ['Item 2', 1],
+            ]),
+            // Default TCA does also work:
+            'my_special_field1' => [
+                        'label' => 'LLL:EXT:aus_project/Resources/Private/Language/locallang_db.xlf:news.my_special_field1',
+                        'config' => [
+                            'type' => 'input',
+                        ],
+                    ],
+                    'my_special_field2' => [
+                        'label' => 'LLL:EXT:aus_project/Resources/Private/Language/locallang_db.xlf:news.my_special_field2',
+                        'config' => [
+                            'type' => 'text',
+                            'size' => 10,
+                            'eval' => 'int',
+                        ],
+                    ],
+                    'my_special_field3' => [
+                        'label' => 'Bla!',
+                        'excludeFromLanguageOverlay' => true, // special field from aus_page
+                        'config' => [
+                            'type' => 'select',
+                            'renderType' => 'selectMultipleSideBySide',
+                            'size' => 10,
+                        ],
+                    ],
     ],
     'showAsAdditionalProperty' => 'property_from_other_dok_type,something_else', // show existing database fields for this dokType
 ]);
@@ -110,10 +132,16 @@ plugin.tx_auspage.settings.templates.myOwnTemplate {
       limit = 2
       # Set first result position
       #offset = 3
-      # Limit result to pages with this category
-      #pageCategoryUid = 3
+      # Sort Recursive (default: '')
+      sortRecursive =
       # Limit result to a single year
-      #fields.myPagesDateField.year = 2016
+      #fields.your_specified_field.year = 2016
+      # Limit result to pages with this category
+      #fields.page_categories = 3
+      # Limit result to pages with this your_specified_field (mm relation possible)
+      #fields.your_specified_field = 3
+      # !!!DEPRECATED Limit result to pages with this category
+      #pageCategoryUid = 3 # replace this with the above
     }
 
     # Additional settings are available in Fluid
@@ -121,6 +149,30 @@ plugin.tx_auspage.settings.templates.myOwnTemplate {
   }
 }
 ```
+
+### Using Filters
+
+```xml
+<form method="GET" action="">
+  <f:form.select name="tx_auspage_onelevelnavigation[filter][fields][company]" options="{companies}"
+                 prependOptionValue=""
+                 prependOptionLabel="{f:translate(key: 'ext_name.all_companies', extensionName: 'ext_name')}"
+                 value="{currentFilterParams.fields.company}"
+                 class="input input__select js-news__input"/>
+  <f:form.select name="tx_auspage_onelevelnavigation[filter][fields][page_categories]" options="{categories}"
+                 optionValueField="uid" optionLabelField="title"
+                 prependOptionValue=""
+                 prependOptionLabel="{f:translate(key: 'ext_name.all_categories', extensionName: 'ext_name')}"
+                 value="{currentFilterParams.fields.page_categories}"
+                 class="input input__select js-news__input"/>
+  <f:form.select name="tx_auspage_onelevelnavigation[filter][fields][date][year]" options="{years}"
+                 prependOptionValue=""
+                 prependOptionLabel="{f:translate(key: 'ext_name.all_years', extensionName: 'ext_name')}"
+                 value="{currentFilterParams.fields.date.year}"
+                 class="input input__select js-news__input"/>
+  </form>
+```
+
 
 ### Using the additional properties
 
@@ -218,10 +270,4 @@ class ProductRepository extends AbstractPageRepository
      */
     protected $dokType = 125;
 }
-```
-
-## Using TCA Utility
-
-Get your "Configuration.php"-architecture going and instead of adding every additionalProperty as own TCA entry, just type:
-```php
 ```
