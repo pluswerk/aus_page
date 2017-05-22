@@ -58,6 +58,16 @@ class PageFilter
     protected $offset = 0;
 
     /**
+     * @var int
+     */
+    protected $pageTreeDepth = 99;
+
+    /**
+     * @var int
+     */
+    protected $pageTreeBegin = 0;
+
+    /**
      * @var int[]
      */
     protected $selectedPages = [];
@@ -185,5 +195,21 @@ class PageFilter
     public function setSortRecursive($sortRecursive)
     {
         $this->sortRecursive = (bool)$sortRecursive;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPageTreeDepth()
+    {
+        return (int)$this->pageTreeDepth;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPageTreeBegin()
+    {
+        return (int)$this->pageTreeBegin;
     }
 }

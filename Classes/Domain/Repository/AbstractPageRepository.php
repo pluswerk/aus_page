@@ -193,7 +193,9 @@ abstract class AbstractPageRepository implements SingletonInterface
             $pageFilter->getLimit(),
             $pageFilter->getOffset(),
             $pageFilter->isSortRecursive(),
-            $mmConfigs
+            $mmConfigs,
+            $pageFilter->getPageTreeDepth(),
+            $pageFilter->getPageTreeBegin()
         );
         if ($pageFilter->getSelectedPages() !== []) {
             $pages = $this->sortBySelectedPages($pageFilter, $pages);
@@ -226,17 +228,27 @@ abstract class AbstractPageRepository implements SingletonInterface
      * @param int $offset
      * @param bool $sortRecursive
      * @param MMConfig[] $mmConfigs
+     * @param int $pageTreeDepth
+     * @param int $pageTreeBegin
      * @return \AUS\AusPage\Domain\Model\AbstractPage[]
      */
-    public function findByWhereClause($whereClause, $rootLinePid = 0, $limit = 0, $offset = 0, $sortRecursive = false, array $mmConfigs = [])
-    {
+    public function findByWhereClause(
+        $whereClause,
+        $rootLinePid = 0,
+        $limit = 0,
+        $offset = 0,
+        $sortRecursive = false,
+        array $mmConfigs = [],
+        $pageTreeDepth = 99,
+        $pageTreeBegin = 0
+    ) {
         /** @var int[]|null $allPageUidArray */
         $allPageUidArray = null;
         if ($whereClause !== '') {
             $whereClause = $whereClause . ' AND ';
         }
         if ($rootLinePid !== 0) {
-            $pidList = $this->getContentObject()->getTreeList($rootLinePid, 99, 0, '1=1');
+            $pidList = $this->getContentObject()->getTreeList($rootLinePid, $pageTreeDepth, $pageTreeBegin, '1=1');
             if ($pidList === '') {
                 return []; // we have no child pages
             }

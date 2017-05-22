@@ -132,14 +132,20 @@ plugin.tx_auspage.settings.templates.myOwnTemplate {
       limit = 2
       # Set first result position
       #offset = 3
+      # The number of page levels to descend. If you want to descend infinitely, just set this to 100 or so. Should be at least "1" since zero will just make the function return (no decend...)
+      #pageTreeDepth = 99
+      # Is an integer that determines at which page level in the tree to start collecting uid's. Zero means 'start right away', 1 = 'next level and out'
+      #pageTreeBegin = 0
       # Sort Recursive (default: '')
       sortRecursive =
+
       # Limit result to a single year
       #fields.your_specified_field.year = 2016
       # Limit result to pages with this category
       #fields.page_categories = 3
       # Limit result to pages with this your_specified_field (mm relation possible)
       #fields.your_specified_field = 3
+
       # !!!DEPRECATED Limit result to pages with this category
       #pageCategoryUid = 3 # replace this with the above
     }
