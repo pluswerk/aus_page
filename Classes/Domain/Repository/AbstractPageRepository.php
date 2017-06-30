@@ -152,12 +152,22 @@ abstract class AbstractPageRepository implements SingletonInterface
         $conditions = [];
         $mmConfigs = [];
         foreach ($pageFilter->getFields() as $fieldName => $fieldValue) {
-
             if (isset($GLOBALS['TCA']['pages']['columns'][$fieldName]['config'])) {
-                if (is_string($fieldValue)) {
+                if (is_array($fieldValue)) {
+                    //interpret as Date:
+                    if (isset($fieldValue['year']) && empty($fieldValue['year']) == false) {
+                        //year must equal $fieldValue['year']
+                        $date = new \DateTime();
+                        $date->setDate((int)$fieldValue['year'], 1, 1);
+                        $date->setTime(0, 0, 0);
+                        $conditions[] = 'pages.' . $fieldName . ' > ' . $date->getTimestamp();
+                        $date->setDate((int)$fieldValue['year'] + 1, 1, 1);
+                        $conditions[] = 'pages.' . $fieldName . ' < ' . $date->getTimestamp();
+                    }
+                } else {
                     $TCAConfig = $GLOBALS['TCA']['pages']['columns'][$fieldName]['config'];
                     if (isset($TCAConfig['MM']) && isset($TCAConfig['foreign_table'])) {
-                        if ($fieldValue === (string)(int)$fieldValue) {
+                        if ((string)$fieldValue === (string)(int)$fieldValue) {
                             $mmConfig = $this->objectManager->get(MMConfig::class);
                             $mmConfig->setMMTable($TCAConfig['MM']);
                             $mmConfig->setForeignTable($TCAConfig['foreign_table']);
@@ -170,23 +180,13 @@ abstract class AbstractPageRepository implements SingletonInterface
                         $conditions[] = 'pages.' . $fieldName . ' = ' . $this->databaseConnection->quoteStr($fieldValue, 'pages');
                     }
                 }
-                if (is_array($fieldValue)) {
-                    //interpret as Date:
-                    if (isset($fieldValue['year']) && empty($fieldValue['year']) == false) {
-                        //year must equal $fieldValue['year']
-                        $date = new \DateTime();
-                        $date->setDate((int)$fieldValue['year'], 1, 1);
-                        $date->setTime(0, 0, 0);
-                        $conditions[] = 'pages.' . $fieldName . ' > ' . $date->getTimestamp();
-                        $date->setDate((int)$fieldValue['year'] + 1, 1, 1);
-                        $conditions[] = 'pages.' . $fieldName . ' < ' . $date->getTimestamp();
-                    }
-                }
             }
         }
+
         if ($pageFilter->getSelectedPages() !== []) {
             $conditions[] = 'pages.uid IN(' . implode(',', $this->databaseConnection->cleanIntArray($pageFilter->getSelectedPages())) . ')';
         }
+
         $pages = $this->findByWhereClause(
             implode(' AND ', $conditions),
             $rootLinePid,
@@ -200,6 +200,7 @@ abstract class AbstractPageRepository implements SingletonInterface
         if ($pageFilter->getSelectedPages() !== []) {
             $pages = $this->sortBySelectedPages($pageFilter, $pages);
         }
+
         return $pages;
     }
 
@@ -298,6 +299,7 @@ abstract class AbstractPageRepository implements SingletonInterface
                 $pages[] = $pageRecord;
             }
         }
+
         return $this->mapResultToModel($pages);
     }
 

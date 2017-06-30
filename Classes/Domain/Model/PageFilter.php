@@ -100,16 +100,11 @@ class PageFilter
      */
     public function getFields()
     {
-        return array_merge(
-            [
-                /*
-                 * include legacy tx_auspage_onelevelnavigation[filter][pageCategoryUid]
-                 * replace it with include legacy tx_auspage_onelevelnavigation[filter][fields][page_category]
-                 */
-                'page_categories' => $this->pageCategoryUid
-            ],
-            $this->fields
-        );
+        /*
+         * include legacy tx_auspage_onelevelnavigation[filter][pageCategoryUid]
+         * replace it with include legacy tx_auspage_onelevelnavigation[filter][fields][page_category]
+        */
+        return ($this->pageCategoryUid > 0) ? array_merge(['page_categories' => $this->pageCategoryUid], $this->fields) : $this->fields;
     }
 
     /**
