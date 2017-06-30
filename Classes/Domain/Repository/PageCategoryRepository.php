@@ -38,6 +38,9 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  */
 class PageCategoryRepository extends Repository
 {
+    protected $defaultOrderings = array(
+        'sorting' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_ASCENDING,
+    );
 
     /**
      * @param int $dokType
