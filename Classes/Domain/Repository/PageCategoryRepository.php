@@ -61,5 +61,4 @@ class PageCategoryRepository extends Repository
         }
         return $query->execute();
     }
-
 }

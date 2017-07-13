@@ -44,5 +44,4 @@ class DefaultPageRepository extends AbstractPageRepository
     {
         $this->dokType = $dokType;
     }
-
 }

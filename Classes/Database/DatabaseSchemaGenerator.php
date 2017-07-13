@@ -126,5 +126,4 @@ class DatabaseSchemaGenerator implements SingletonInterface
         }
         return $databaseSchema;
     }
-
 }

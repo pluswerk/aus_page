@@ -222,7 +222,7 @@ class PageConfigurationService implements SingletonInterface
         if (is_int($configuration['dokType']) === false) {
             throw new \Exception('DokType have to be an integer!');
         }
-        if ($configuration['dokType'] < 11 || $configuration['dokType'] > 199 ) {
+        if ($configuration['dokType'] < 11 || $configuration['dokType'] > 199) {
             throw new \Exception('DokType "' . $configuration['identifier']. '" (' . $configuration['dokType']. ') have to be between 10 and 200!');
         }
 
@@ -249,5 +249,4 @@ class PageConfigurationService implements SingletonInterface
         $typoScript = PHP_EOL . 'config.tx_extbase.persistence.classes.' . ltrim($className, '\\') . '.mapping.tableName = pages' . PHP_EOL;
         ExtensionManagementUtility::addTypoScript(PageConfiguration::EXTENSION_KEY, 'setup', $typoScript);
     }
-
 }

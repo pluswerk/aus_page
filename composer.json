@@ -6,6 +6,11 @@
   "support": {
     "source": "https://bitbucket.org/andersundsehr/aus_page"
   },
+  "extra": {
+    "grumphp": {
+      "config-default-path": "vendor/pluswerk/grumphp-config/grumphp.yml"
+    }
+  },
   "autoload": {
     "psr-4": {
       "AUS\\AusPage\\": "Classes/"
@@ -13,5 +18,8 @@
   },
   "require": {
     "php": ">=7"
+  },
+  "require-dev": {
+    "pluswerk/grumphp-config": "2.*"
   }
 }
