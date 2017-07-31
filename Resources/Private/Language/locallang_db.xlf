@@ -6,6 +6,10 @@
       <trans-unit id="plugin.OneLevelCategoryNavigation">
         <source>Page category navigation (flat)</source>
       </trans-unit>
+      <trans-unit id="plugin.OneLevelNavigationNonCached">
+        <source>Page category navigation (flat, non cached)</source>
+      </trans-unit>
+
       <trans-unit id="plugin.OneLevelCategoryNavigation.dokType">
         <source>Page type</source>
       </trans-unit>

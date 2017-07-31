@@ -2,8 +2,8 @@
 if (!defined('TYPO3_MODE')) {
     die('Access denied.');
 }
-
 /** @var string $_EXTKEY */
+
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
     'AUS.' . $_EXTKEY,
     'OneLevelSelectedNavigation',
@@ -13,7 +13,6 @@ if (!defined('TYPO3_MODE')) {
     []
 );
 
-/** @var string $_EXTKEY */
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
     'AUS.' . $_EXTKEY,
     'OneLevelNavigation',
@@ -21,6 +20,16 @@ if (!defined('TYPO3_MODE')) {
         'Page' => 'oneLevelNavigation',
     ],
     []
+);
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+    'AUS.' . $_EXTKEY,
+    'OneLevelNavigationNonCached',
+    [
+        'Page' => 'oneLevelNavigation',
+    ],
+    [
+        'Page' => 'oneLevelNavigation',
+    ]
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
