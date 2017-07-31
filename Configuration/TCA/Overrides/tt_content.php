@@ -4,8 +4,7 @@ if (!defined('TYPO3_MODE')) {
 }
 
 call_user_func(function ($_EXTKEY) {
-
-// Plugin for selected page navigation
+    // Plugin for selected page navigation
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
         'AUS.' . $_EXTKEY,
         'OneLevelSelectedNavigation',
@@ -17,7 +16,7 @@ call_user_func(function ($_EXTKEY) {
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue($pluginSignature,
         'FILE:EXT:' . $_EXTKEY . '/Configuration/FlexForm/OneLevelSelectedNavigationSettings.xml');
 
-// Plugin for page navigation
+    // Plugin for page navigation
     foreach (['OneLevelNavigation', 'OneLevelNavigationNonCached'] as $pluginName) {
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
             'AUS.' . $_EXTKEY,
@@ -31,8 +30,7 @@ call_user_func(function ($_EXTKEY) {
             'FILE:EXT:' . $_EXTKEY . '/Configuration/FlexForm/OneLevelNavigationSettings.xml');
     }
 
-
-// Plugin for category navigation
+    // Plugin for category navigation
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
         'AUS.' . $_EXTKEY,
         'OneLevelCategoryNavigation',

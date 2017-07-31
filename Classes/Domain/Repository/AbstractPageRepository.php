@@ -164,6 +164,15 @@ abstract class AbstractPageRepository implements SingletonInterface
                         $date->setDate((int)$fieldValue['year'] + 1, 1, 1);
                         $conditions[] = 'pages.' . $fieldName . ' < ' . $date->getTimestamp();
                     }
+
+                    if (isset($fieldValue['from']) && !empty($fieldValue['from'])) {
+                        $date = \DateTime::createFromFormat('Y-m-d', $fieldValue['from']);
+                        $conditions[] = 'pages.' . $fieldName . ' > ' . $date->getTimestamp();
+                    }
+                    if (isset($fieldValue['to']) && !empty($fieldValue['to'])) {
+                        $date = \DateTime::createFromFormat('Y-m-d', $fieldValue['to']);
+                        $conditions[] = 'pages.' . $fieldName . ' < ' . $date->getTimestamp();
+                    }
                 } else {
                     $TCAConfig = $GLOBALS['TCA']['pages']['columns'][$fieldName]['config'];
                     if (isset($TCAConfig['MM']) && isset($TCAConfig['foreign_table'])) {
