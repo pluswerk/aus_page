@@ -41,6 +41,9 @@
       <trans-unit id="plugin.OneLevelNavigation">
         <target>Seiten-Navigation (flach)</target>
       </trans-unit>
+      <trans-unit id="plugin.OneLevelNavigationNonCached">
+        <target>Seiten-Navigation (flach, ohne cache)</target>
+      </trans-unit>
       <trans-unit id="plugin.OneLevelNavigation.dokType">
         <target>Seiten-Typ</target>
       </trans-unit>

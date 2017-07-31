@@ -21,6 +21,16 @@ if (!defined('TYPO3_MODE')) {
     ],
     []
 );
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+    'AUS.' . $_EXTKEY,
+    'OneLevelNavigationNonCached',
+    [
+        'Page' => 'oneLevelNavigation',
+    ],
+    [
+        'Page' => 'oneLevelNavigation',
+    ]
+);
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
     'AUS.' . $_EXTKEY,
