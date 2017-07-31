@@ -141,6 +141,10 @@ plugin.tx_auspage.settings.templates.myOwnTemplate {
 
       # Limit result to a single year
       #fields.your_specified_field.year = 2016
+      # Limit result to a minimum date
+      #fields.your_specified_field.dateFrom = 2017-11-02
+      # Limit result to a maximum date
+      #fields.your_specified_field.dateTo = 2017-12-03
       # Limit result to pages with this category
       #fields.page_categories = 3
       # Limit result to pages with this your_specified_field (mm relation possible)
@@ -176,7 +180,14 @@ plugin.tx_auspage.settings.templates.myOwnTemplate {
                  prependOptionLabel="{f:translate(key: 'ext_name.all_years', extensionName: 'ext_name')}"
                  value="{currentFilterParams.fields.date.year}"
                  class="input input__select js-news__input"/>
-  </form>
+
+  <f:form.textfield name="tx_auspage_onelevelnavigation[filter][fields][date][from]"
+                    value="{currentFilterParams.fields.date.from}"
+                    class="input input__input"/>
+  <f:form.textfield name="tx_auspage_onelevelnavigation[filter][fields][date][to]"
+                    value="{currentFilterParams.fields.date.to}"
+                    class="input input__input"/>
+</form>
 ```
 
 
