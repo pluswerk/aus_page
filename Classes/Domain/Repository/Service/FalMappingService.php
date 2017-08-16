@@ -120,6 +120,13 @@ class FalMappingService implements SingletonInterface
             $propertyName = $columnMapping[$columnName]['mapOnProperty'];
         } else {
             $propertyName = GeneralUtility::underscoredToLowerCamelCase($columnName);
+
+            // If a property should be set by a mapping AND by a native value, we use the mapping because its more explicit defined.
+            // This case does just appear by some crazy configuration stuff.
+            // A better way would be to check if the property is really defined in de AusPage configuration, but this is not loaded at this point.
+            if ($this->isPropertyOverriddenByMapping($propertyName, $columnMapping)) {
+                return;
+            }
         }
         if ($object->_hasProperty($propertyName)) {
             if ($columnDefinition['config']['foreign_table'] === 'sys_file_reference') {
@@ -157,6 +164,20 @@ class FalMappingService implements SingletonInterface
             }
         }
         return $value;
+    }
+
+    /**
+     * @param string $propertyName
+     * @param string[][] $columnMapping
+     * @return bool
+     */
+    protected function isPropertyOverriddenByMapping($propertyName, $columnMapping) {
+        foreach ($columnMapping as $column) {
+            if ($column['mapOnProperty'] === $propertyName) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
