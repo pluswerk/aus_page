@@ -98,5 +98,4 @@ class DatabaseSchemaService implements SingletonInterface
         $sqlString[] = $this->getAusPageRequiredDatabaseSchema();
         return [$sqlString];
     }
-
 }

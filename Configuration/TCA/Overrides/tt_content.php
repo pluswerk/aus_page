@@ -13,8 +13,10 @@ call_user_func(function ($_EXTKEY) {
     $pluginSignature = 'auspage_onelevelselectednavigation';
     $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$pluginSignature] = 'select_key,pages,recursive';
     $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$pluginSignature] = 'pi_flexform';
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue($pluginSignature,
-        'FILE:EXT:' . $_EXTKEY . '/Configuration/FlexForm/OneLevelSelectedNavigationSettings.xml');
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
+        $pluginSignature,
+        'FILE:EXT:' . $_EXTKEY . '/Configuration/FlexForm/OneLevelSelectedNavigationSettings.xml'
+    );
 
     // Plugin for page navigation
     foreach (['OneLevelNavigation', 'OneLevelNavigationNonCached'] as $pluginName) {
@@ -26,9 +28,12 @@ call_user_func(function ($_EXTKEY) {
         $pluginSignature = 'auspage_onelevelnavigation';
         $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$pluginSignature] = 'select_key,pages,recursive';
         $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$pluginSignature] = 'pi_flexform';
-        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue($pluginSignature,
-            'FILE:EXT:' . $_EXTKEY . '/Configuration/FlexForm/OneLevelNavigationSettings.xml');
+        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
+            $pluginSignature,
+            'FILE:EXT:' . $_EXTKEY . '/Configuration/FlexForm/OneLevelNavigationSettings.xml'
+        );
     }
+
 
     // Plugin for category navigation
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
@@ -39,6 +44,8 @@ call_user_func(function ($_EXTKEY) {
     $pluginSignature = 'auspage_onelevelcategorynavigation';
     $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$pluginSignature] = 'select_key,pages,recursive';
     $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$pluginSignature] = 'pi_flexform';
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue($pluginSignature,
-        'FILE:EXT:' . $_EXTKEY . '/Configuration/FlexForm/OneLevelCategoryNavigationSettings.xml');
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
+        $pluginSignature,
+        'FILE:EXT:' . $_EXTKEY . '/Configuration/FlexForm/OneLevelCategoryNavigationSettings.xml'
+    );
 }, 'aus_page');

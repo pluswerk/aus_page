@@ -82,5 +82,4 @@ class ConfigurationCache implements SingletonInterface
     {
         return 'aus_page_' . sha1(PATH_site . PageConfiguration::EXTENSION_KEY);
     }
-
 }

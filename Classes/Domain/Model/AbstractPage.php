@@ -50,5 +50,4 @@ abstract class AbstractPage extends AbstractEntity
     {
         return (string)$this->title;
     }
-
 }
