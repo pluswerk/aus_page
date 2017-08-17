@@ -315,8 +315,7 @@ class PagePropertyService implements SingletonInterface
         if (isset($fieldConfig['excludeFromLanguageOverlay']) && $fieldConfig['excludeFromLanguageOverlay'] === true) {
             // false if manually excluded
             $shouldFieldBeAddedToLocalization = false;
-        } elseif (
-            ($fieldConfig['config']['type'] === 'select' || $fieldConfig['config']['type'] === 'inline') &&
+        } elseif (($fieldConfig['config']['type'] === 'select' || $fieldConfig['config']['type'] === 'inline') &&
             !empty($fieldConfig['config']['MM'])
         ) {
             // false if field has an mm relation table (we can't handle one mm table with "pages" and "pages_language_overlay" table)

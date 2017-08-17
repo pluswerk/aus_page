@@ -81,7 +81,7 @@ class PageController extends ActionController
         /** @var MvcPropertyMappingConfiguration $propertyMappingConfiguration */
         $propertyMappingConfiguration = $this->arguments['filter']->getPropertyMappingConfiguration();
         $propertyMappingConfiguration->allowProperties('pageCategoryUid', 'fields');
-        $propertyMappingConfiguration->setTypeConverterOption(PersistentObjectConverter::class, PersistentObjectConverter::CONFIGURATION_CREATION_ALLOWED, TRUE);
+        $propertyMappingConfiguration->setTypeConverterOption(PersistentObjectConverter::class, PersistentObjectConverter::CONFIGURATION_CREATION_ALLOWED, true);
     }
 
     /**
@@ -170,8 +170,7 @@ class PageController extends ActionController
      */
     protected function mergeSettingsFromTypoScriptTemplate(array $settings)
     {
-        if (
-            empty($settings['template']) === false &&
+        if (empty($settings['template']) === false &&
             empty($settings['templates'][$settings['template']]) === false &&
             empty($settings['templates'][$settings['template']]['settings']) === false &&
             is_array($settings['templates'][$settings['template']]['settings'])
@@ -220,7 +219,6 @@ class PageController extends ActionController
                 $view->setTemplateRootPaths(array_reverse(array_merge(
                     ($rootPaths !== null ? $rootPaths : []),
                     $this->resolvePathArray($viewSettings['templateRootPaths'])
-
                 ), true));
             }
             if (is_array($viewSettings['partialRootPaths'])) {

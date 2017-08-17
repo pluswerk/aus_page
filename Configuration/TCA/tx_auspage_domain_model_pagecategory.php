@@ -1,12 +1,12 @@
 <?php
 return array(
     'ctrl' => array(
-        'title'	=> 'LLL:EXT:aus_page/Resources/Private/Language/locallang_db.xlf:tx_auspage_domain_model_pagecategory',
+        'title' => 'LLL:EXT:aus_page/Resources/Private/Language/locallang_db.xlf:tx_auspage_domain_model_pagecategory',
         'label' => 'title',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
         'cruser_id' => 'cruser_id',
-        'dividers2tabs' => TRUE,
+        'dividers2tabs' => true,
         'sortby' => 'sorting',
         'delete' => 'deleted',
         'enablecolumns' => array(

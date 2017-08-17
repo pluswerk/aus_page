@@ -202,5 +202,4 @@ class PageTypeService implements SingletonInterface
     {
         $this->configurationCache->setCachedConfiguration($configuration);
     }
-
 }

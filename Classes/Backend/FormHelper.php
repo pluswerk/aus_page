@@ -76,5 +76,4 @@ class FormHelper implements SingletonInterface
         }
         return $config;
     }
-
 }

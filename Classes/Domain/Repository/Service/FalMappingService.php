@@ -171,7 +171,8 @@ class FalMappingService implements SingletonInterface
      * @param string[][] $columnMapping
      * @return bool
      */
-    protected function isPropertyOverriddenByMapping($propertyName, $columnMapping) {
+    protected function isPropertyOverriddenByMapping($propertyName, $columnMapping)
+    {
         foreach ($columnMapping as $column) {
             if ($column['mapOnProperty'] === $propertyName) {
                 return true;

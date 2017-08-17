@@ -79,5 +79,4 @@ class PageCategory extends AbstractEntity
     {
         $this->dokType = $dokType;
     }
-
 }

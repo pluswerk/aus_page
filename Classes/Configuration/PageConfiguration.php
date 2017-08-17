@@ -70,5 +70,4 @@ class PageConfiguration
     {
         throw new \Exception('not implemented');
     }
-
 }
