@@ -2,13 +2,15 @@
 
 ## Installation
 
+#### ext_localconf.php
 Put this in your `aus_project/ext_localconf.php`:
 ```php
 <?php
 \AUS\AusPage\Configuration\PageConfiguration::load($_EXTKEY, 'ext_localconf.php');
 ```
 
-Put this in your `aus_project/ext_tables.php`:
+#### ext_tables.php / TCA Overrides
+Put this in your `aus_project/ext_tables.php` (TYPO3 <= 7):
 ```php
 <?php
 \AUS\AusPage\Configuration\PageConfiguration::load($_EXTKEY, 'ext_tables.php');
