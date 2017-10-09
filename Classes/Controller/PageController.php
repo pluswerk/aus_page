@@ -80,7 +80,7 @@ class PageController extends ActionController
     {
         /** @var MvcPropertyMappingConfiguration $propertyMappingConfiguration */
         $propertyMappingConfiguration = $this->arguments['filter']->getPropertyMappingConfiguration();
-        $propertyMappingConfiguration->allowProperties('pageCategoryUid', 'fields');
+        $propertyMappingConfiguration->allowProperties('pageCategoryUid', 'fields' , 'offset');
         $propertyMappingConfiguration->setTypeConverterOption(PersistentObjectConverter::class, PersistentObjectConverter::CONFIGURATION_CREATION_ALLOWED, true);
     }
 
