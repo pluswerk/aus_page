@@ -7,6 +7,9 @@ return array(
         'crdate' => 'crdate',
         'cruser_id' => 'cruser_id',
         'dividers2tabs' => true,
+        'languageField' => 'sys_language_uid',
+        'transOrigPointerField' => 'l10n_parent',
+        'transOrigDiffSourceField' => 'l10n_diffsource',
         'sortby' => 'sorting',
         'delete' => 'deleted',
         'enablecolumns' => array(
@@ -16,10 +19,10 @@ return array(
         'iconfile' => 'EXT:aus_page/Resources/Pubic/Icons/PageCategory.svg'
     ),
     'interface' => array(
-        'showRecordFieldList' => 'hidden,title,dok_type',
+        'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, title, dok_type',
     ),
     'types' => array(
-        '1' => array('showitem' => 'title,dok_type,--div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,hidden'),
+        '1' => array('showitem' => 'title,dok_type,--div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,hidden,sys_language_uid;;;;1-1-1,l10n_parent,l10n_diffsource'),
     ),
     'palettes' => array(
         '1' => array('showitem' => ''),

@@ -12,7 +12,7 @@ call_user_func(function () {
                 'type' => 'select',
                 'renderType' => 'selectMultipleSideBySide',
                 'foreign_table' => 'tx_auspage_domain_model_pagecategory',
-                'foreign_table_where' => ' AND tx_auspage_domain_model_pagecategory.dok_type = ###REC_FIELD_doktype###',
+                'foreign_table_where' => ' AND tx_auspage_domain_model_pagecategory.dok_type = ###REC_FIELD_doktype### AND tx_auspage_domain_model_pagecategory.sys_language_uid = 0',
                 'MM' => 'tx_auspage_page_pagecategory_mm',
                 'enableMultiSelectFilterTextfield' => true,
                 'size' => 7,
