@@ -264,12 +264,10 @@ abstract class AbstractPageRepository implements SingletonInterface
         }
         if ($rootLinePid !== 0) {
             $pidList = $this->getContentObject()->getTreeList($rootLinePid, $pageTreeDepth, $pageTreeBegin, '1=1');
-
             // addMountPointPages
             if ($this->runAddMountPages) {
                 $pidList = $this->addMountPointPages($pidList);
             }
-
             if ($pidList === '') {
                 return []; // we have no child pages
             }
@@ -327,7 +325,8 @@ abstract class AbstractPageRepository implements SingletonInterface
      * @param $pidList
      * @return string
      */
-    protected function addMountPointPages($pidList) {
+    protected function addMountPointPages($pidList)
+    {
         $pidListArray = GeneralUtility::trimExplode(',', $pidList, true);
         foreach ($pidListArray as $pid) {
             // mount_pid_ol = 1: pid exists already in pidList
