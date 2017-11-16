@@ -91,6 +91,11 @@ abstract class AbstractPageRepository implements SingletonInterface
      */
     protected $dataMapper;
 
+    /**
+     * @var bool
+     */
+    protected $runAddMountPages = false;
+
 
     /**
      * initializeObject
@@ -259,6 +264,10 @@ abstract class AbstractPageRepository implements SingletonInterface
         }
         if ($rootLinePid !== 0) {
             $pidList = $this->getContentObject()->getTreeList($rootLinePid, $pageTreeDepth, $pageTreeBegin, '1=1');
+            // addMountPointPages
+            if ($this->runAddMountPages) {
+                $pidList = $this->addMountPointPages($pidList);
+            }
             if ($pidList === '') {
                 return []; // we have no child pages
             }
@@ -310,6 +319,29 @@ abstract class AbstractPageRepository implements SingletonInterface
         }
 
         return $this->mapResultToModel($pages);
+    }
+
+    /**
+     * @param $pidList
+     * @return string
+     */
+    protected function addMountPointPages($pidList)
+    {
+        $pidListArray = GeneralUtility::trimExplode(',', $pidList, true);
+        foreach ($pidListArray as $pid) {
+            // mount_pid_ol = 1: pid exists already in pidList
+            $whereClause = 'uid = ' . $pid . ' AND mount_pid_ol = 0' . $this->pageRepository->enableFields('pages');
+            $res = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('*', 'pages', $whereClause, '', '', 1);
+            if ($res && $mount_pid = $res[0]['mount_pid']) {
+                $whereClause = 'uid = ' . $mount_pid . ' AND doktype = ' . $this->dokType . $this->pageRepository->enableFields('pages');
+                $res = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('*', 'pages', $whereClause, '', '', 1);
+                if ($res) {
+                    $pidListArray[] = $mount_pid;
+                }
+            }
+        }
+        $pidListArray = array_unique($pidListArray);
+        return implode(',', $pidListArray);
     }
 
     /**
