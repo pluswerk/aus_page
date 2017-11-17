@@ -61,4 +61,27 @@ class RepositoryService implements SingletonInterface
         }
         return $repository;
     }
+
+    /**
+     * Get mount point page doctype
+     *
+     * @param $pid
+     * @param $dokType
+     * @return int
+     */
+    public function getMountPointPageDokType($pid, $dokType)
+    {
+        // doktype=7: current page has doctpye 'mount point'
+        $whereClause = 'uid = ' . $pid . ' AND doktype = 7 AND mount_pid AND mount_pid_ol = 0';
+        $res = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('*', 'pages', $whereClause, '', '', 1);
+        if ($res) {
+            $mount_pid = $res[0]['mount_pid'];
+            $whereClause = 'uid = ' . $mount_pid . ' AND doktype' . $GLOBALS['TSFE']->sys_page->enableFields('pages');
+            $res = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('*', 'pages', $whereClause, '', '', 1);
+            if ($res) {
+                $dokType = $res[0]['doktype'];
+            }
+        }
+        return (int)$dokType;
+    }
 }

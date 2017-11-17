@@ -66,10 +66,21 @@ class PageController extends ActionController
         }
         /** @var RepositoryService $repositoryService */
         $repositoryService = $this->objectManager->get(RepositoryService::class);
-        $repository = $repositoryService->getPageRepositoryForDokType((int)$this->getTypoScriptFrontendController()->page['doktype']);
+
+        $pid = (int)$this->getTypoScriptFrontendController()->id;
+        $dokType = (int)$this->getTypoScriptFrontendController()->page['doktype'];
+
+        // found mount point doktype if set
+        $dokType = $repositoryService->getMountPointPageDokType($pid, $dokType);
+        $repository = $repositoryService->getPageRepositoryForDokType($dokType);
+
+        // found mount point page id
+        $pid = $repository->getMountPointPageUid($pid, $dokType);
+        $page = $repository->findByUid($pid);
+
         $this->view->assignMultiple([
             'settings' => $this->settings,
-            'page' => $repository->findByUid((int)$this->getTypoScriptFrontendController()->id),
+            'page' => $page,
         ]);
     }
 
@@ -127,11 +138,24 @@ class PageController extends ActionController
             $this->mergePageFilterSettingsFromSettings($filter, $this->settings);
         }
 
+        $pages = $repository->findByFilter($filter, $this->settings['startPage']);
+
+        /* mappedPages as mount point pages */
+        $mappedPages = array();
+        foreach ($pages as $page) {
+            if ($ausPagePluginId = $this->settings['languageAusPageIdMapping'][$this->settings['dokType']][$GLOBALS['TSFE']->sys_language_uid]) {
+                if ($mappedPage = $repository->getMappedPageWithMountPid($repository->getAllPagesInOrder($ausPagePluginId), $page->getUid())) {
+                    $mappedPages[$page->getUid()]['mappedPage'] = $mappedPage;
+                }
+            }
+        }
+
         $this->view->assignMultiple([
             'settings' => $this->settings,
             'filter' => $filter,
             'pageCategory' => ($filter->getPageCategoryUid() !== 0 ? $this->categoryRepository->findByUid($filter->getPageCategoryUid()) : null),
-            'pages' => $repository->findByFilter($filter, $this->settings['startPage']),
+            'pages' => $pages,
+            'mappedPages' => $mappedPages,
         ]);
     }
 
