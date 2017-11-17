@@ -19,6 +19,7 @@ use TYPO3\CMS\Core\Utility\ClassNamingUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
+use TYPO3\CMS\Frontend\Page\PageRepository;
 
 /**
  * Class GetPageViewHelper
@@ -47,6 +48,9 @@ class RepositoryService implements SingletonInterface
      */
     public function getPageRepositoryForDokType($dokType)
     {
+        // get mount point page doktype if set
+        $dokType = $this->getMountPointPageDokType($dokType);
+
         /** @var PageTypeService $pageTypeService */
         $pageTypeService = $this->objectManager->get(PageTypeService::class);
         $modelClassName = $pageTypeService->getClassByPageType($dokType);
@@ -65,14 +69,12 @@ class RepositoryService implements SingletonInterface
     /**
      * Get mount point page doctype
      *
-     * @param $pid
-     * @param $dokType
+     * @param int $dokType
      * @return int
      */
-    public function getMountPointPageDokType($pid, $dokType)
+    protected function getMountPointPageDokType($dokType)
     {
-        // doktype=7: current page has doctpye 'mount point'
-        $whereClause = 'uid = ' . $pid . ' AND doktype = 7 AND mount_pid AND mount_pid_ol = 0';
+        $whereClause = 'uid = ' . $GLOBALS['TSFE']->id . ' AND doktype = ' . PageRepository::DOKTYPE_MOUNTPOINT . ' AND mount_pid AND mount_pid_ol = 0';
         $res = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('*', 'pages', $whereClause, '', '', 1);
         if ($res) {
             $mount_pid = $res[0]['mount_pid'];

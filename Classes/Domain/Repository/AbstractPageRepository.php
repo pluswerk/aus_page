@@ -144,7 +144,7 @@ abstract class AbstractPageRepository implements SingletonInterface
      */
     public function findByUid($pageUid)
     {
-        return $this->findByWhereClause('uid = ' . (int)$pageUid)[0];
+        return $this->findByWhereClause('uid = ' . $this->getMountPointPageUid((int)$pageUid))[0];
     }
 
     /**
@@ -369,7 +369,7 @@ abstract class AbstractPageRepository implements SingletonInterface
 
     /**
      * @param $pidList
-     * @return mixed
+     * @return array
      */
     protected function addMountPointPages($pidList)
     {
@@ -458,24 +458,17 @@ abstract class AbstractPageRepository implements SingletonInterface
     }
 
     /**
-     * Get mount point page pid for the given doctype
+     * Get mount point page pid
      *
      * @param $pid
-     * @param $dokType
      * @return int
      */
-    public function getMountPointPageUid($pid, $dokType)
+    protected function getMountPointPageUid($pid)
     {
-        // doktype=7: current page hat doktype 'mount point'
-        $whereClause = 'uid = ' . $pid . ' AND doktype = 7 AND mount_pid AND mount_pid_ol = 0';
+        $whereClause = 'uid = ' . $pid . ' AND doktype = ' . PageRepository::DOKTYPE_MOUNTPOINT . ' AND mount_pid AND mount_pid_ol = 0';
         $res = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('*', 'pages', $whereClause, '', '', 1);
         if ($res) {
-            $mount_pid = $res[0]['mount_pid'];
-            $whereClause = 'uid = ' . $mount_pid . ' AND doktype = ' . $dokType . $this->pageRepository->enableFields('pages');
-            $res = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('*', 'pages', $whereClause, '', '', 1);
-            if ($res) {
-                $pid = $mount_pid;
-            }
+            $pid = $res[0]['mount_pid'];
         }
         return (int)$pid;
     }

@@ -66,21 +66,10 @@ class PageController extends ActionController
         }
         /** @var RepositoryService $repositoryService */
         $repositoryService = $this->objectManager->get(RepositoryService::class);
-
-        $pid = (int)$this->getTypoScriptFrontendController()->id;
-        $dokType = (int)$this->getTypoScriptFrontendController()->page['doktype'];
-
-        // found mount point doktype if set
-        $dokType = $repositoryService->getMountPointPageDokType($pid, $dokType);
-        $repository = $repositoryService->getPageRepositoryForDokType($dokType);
-
-        // found mount point page id
-        $pid = $repository->getMountPointPageUid($pid, $dokType);
-        $page = $repository->findByUid($pid);
-
+        $repository = $repositoryService->getPageRepositoryForDokType((int)$this->getTypoScriptFrontendController()->page['doktype']);
         $this->view->assignMultiple([
             'settings' => $this->settings,
-            'page' => $page,
+            'page' => $repository->findByUid((int)$this->getTypoScriptFrontendController()->id),
         ]);
     }
 
@@ -140,10 +129,13 @@ class PageController extends ActionController
 
         $pages = $repository->findByFilter($filter, $this->settings['startPage']);
 
-        /* mappedPages as mount point pages */
+        /*
+         * extra $mappedPages as mount point pages
+         * the mount point pages are to be searched and mapped only for pages with the defined doktype and langauge
+         */
         $mappedPages = array();
-        foreach ($pages as $page) {
-            if ($ausPagePluginId = $this->settings['languageAusPageIdMapping'][$this->settings['dokType']][$GLOBALS['TSFE']->sys_language_uid]) {
+        if ($ausPagePluginId = $this->settings['languageAusPageIdMapping'][$this->settings['dokType']][$GLOBALS['TSFE']->sys_language_uid]) {
+            foreach ($pages as $page) {
                 if ($mappedPage = $repository->getMappedPageWithMountPid($repository->getAllPagesInOrder($ausPagePluginId), $page->getUid())) {
                     $mappedPages[$page->getUid()]['mappedPage'] = $mappedPage;
                 }
