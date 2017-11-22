@@ -74,6 +74,9 @@ class RepositoryService implements SingletonInterface
      */
     protected function getMountPointPageDokType($dokType)
     {
+        //@todo: m.hoelzle will think about it
+        throw new \Exception('Funktioniert nicht bei z.B. CLI Tasks');
+
         $whereClause = 'uid = ' . $GLOBALS['TSFE']->id . ' AND doktype = ' . PageRepository::DOKTYPE_MOUNTPOINT . ' AND mount_pid AND mount_pid_ol = 0';
         $res = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('*', 'pages', $whereClause, '', '', 1);
         if ($res) {
