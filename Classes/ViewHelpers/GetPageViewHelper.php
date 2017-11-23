@@ -38,7 +38,7 @@ class GetPageViewHelper extends AbstractViewHelper
         if (!isset(static::$firstLevelCache[$pageUid])) {
             /** @var RepositoryService $repositoryService */
             $repositoryService = $this->objectManager->get(RepositoryService::class);
-            $repository = $repositoryService->getPageRepositoryForDokType((int)$tsfe->page['doktype']);
+            $repository = $repositoryService->getPageRepositoryForPageRecord($tsfe->page);
             static::$firstLevelCache[$pageUid] = $repository->findByUid($pageUid);
         }
         return static::$firstLevelCache[$pageUid];

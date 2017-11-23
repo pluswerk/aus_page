@@ -14,11 +14,15 @@ namespace AUS\AusPage\Service;
 use AUS\AusPage\Domain\Repository\AbstractPageRepository;
 use AUS\AusPage\Domain\Repository\DefaultPageRepository;
 use AUS\AusPage\Page\PageTypeService;
+use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\ClassNamingUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
+use TYPO3\CMS\Frontend\Page\PageRepository;
 
 /**
  * Class GetPageViewHelper
@@ -60,5 +64,44 @@ class RepositoryService implements SingletonInterface
             $repository->setDokType($dokType);
         }
         return $repository;
+    }
+
+    /**
+     * @param array $pageRecord
+     * @return AbstractPageRepository
+     */
+    public function getPageRepositoryForPageRecord($pageRecord)
+    {
+        $dokType = (int)$pageRecord['doktype'];
+
+        // overlay dokType if this is a mount point
+        if ($dokType === PageRepository::DOKTYPE_MOUNTPOINT && !empty($pageRecord['mount_pid']) && (int)$pageRecord['mount_pid_ol'] === 0) {
+            $mountPointRecord = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+                '*',
+                'pages',
+                'uid = ' . (int)$pageRecord['mount_pid'] . ' AND doktype' . $this->getTypoScriptFrontendController()->sys_page->enableFields('pages')
+            );
+            if ($mountPointRecord) {
+                $dokType = (int)$mountPointRecord['doktype'];
+            }
+        }
+
+        return $this->getPageRepositoryForDokType($dokType);
+    }
+
+    /**
+     * @return DatabaseConnection
+     */
+    protected function getDatabaseConnection()
+    {
+        return $GLOBALS['TYPO3_DB'];
+    }
+
+    /**
+     * @return TypoScriptFrontendController
+     */
+    protected function getTypoScriptFrontendController()
+    {
+        return $GLOBALS['TSFE'];
     }
 }

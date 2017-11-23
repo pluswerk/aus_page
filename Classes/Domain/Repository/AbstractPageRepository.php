@@ -94,7 +94,7 @@ abstract class AbstractPageRepository implements SingletonInterface
     /**
      * @var bool
      */
-    protected $runAddMountPages = false;
+    protected $enableMountPoints = false;
 
 
     /**
@@ -144,7 +144,7 @@ abstract class AbstractPageRepository implements SingletonInterface
      */
     public function findByUid($pageUid)
     {
-        return $this->findByWhereClause('uid = ' . (int)$pageUid)[0];
+        return $this->findByWhereClause('uid = ' . $this->getRealPageUid((int)$pageUid))[0];
     }
 
     /**
@@ -259,14 +259,20 @@ abstract class AbstractPageRepository implements SingletonInterface
     ) {
         /** @var int[]|null $allPageUidArray */
         $allPageUidArray = null;
+        $addedPidList = [];
+        $addedPidListMapping = [];
         if ($whereClause !== '') {
             $whereClause = $whereClause . ' AND ';
         }
         if ($rootLinePid !== 0) {
             $pidList = $this->getContentObject()->getTreeList($rootLinePid, $pageTreeDepth, $pageTreeBegin, '1=1');
-            // addMountPointPages
-            if ($this->runAddMountPages) {
-                $pidList = $this->addMountPointPages($pidList);
+
+            // add mount point pages
+            if ($this->enableMountPoints) {
+                $addedMountPointPages = $this->addMountPointPages($pidList);
+                $pidList = $addedMountPointPages['pidList'];
+                $addedPidList = $addedMountPointPages['addedPidList'];
+                $addedPidListMapping = $addedMountPointPages['addedPidListMapping'];
             }
             if ($pidList === '') {
                 return []; // we have no child pages
@@ -308,8 +314,38 @@ abstract class AbstractPageRepository implements SingletonInterface
             $flattenedTree = $this->getAllPagesInOrder($rootLinePid);
             //In $allPageUidArray are all uids that we want, but they are not in the Order that we want.
             //With array_intersect we get only the uids what we want and in they are in order.
+            $allPageUidArrayOriginal = $allPageUidArray;
             $allPageUidArray = array_intersect($flattenedTree, $allPageUidArray);
+
+            if ($this->enableMountPoints) {
+                // added mount point pages are to be again
+                $toRunResort = false;
+                if (count($addedPidList) !== 0 && count($addedPidListMapping) !== 0) {
+                    foreach ($allPageUidArrayOriginal as $pid) {
+                        if (in_array($pid, $addedPidList)) {
+                            $allPageUidArray[] = $pid;
+                            $toRunResort = true;
+                        }
+                    }
+                    $allPageUidArray = array_unique($allPageUidArray);
+                }
+                // resort mount points
+                if ($toRunResort) {
+                    usort($allPageUidArray, function ($pageUidA, $pageUidB) use ($flattenedTree, $addedPidListMapping) {
+                        $keyA = array_search(
+                            ($addedPidListMapping[$pageUidA] ? $addedPidListMapping[$pageUidA] : $pageUidA),
+                            $flattenedTree
+                        );
+                        $keyB = array_search(
+                            ($addedPidListMapping[$pageUidB] ? $addedPidListMapping[$pageUidB] : $pageUidB),
+                            $flattenedTree
+                        );
+                        return $keyA - $keyB;
+                    });
+                }
+            }
         }
+
         $pages = [];
         foreach ($allPageUidArray as $pageUid) {
             $pageRecord = $this->pageRepository->getPage($pageUid);
@@ -323,25 +359,33 @@ abstract class AbstractPageRepository implements SingletonInterface
 
     /**
      * @param $pidList
-     * @return string
+     * @return array
      */
     protected function addMountPointPages($pidList)
     {
         $pidListArray = GeneralUtility::trimExplode(',', $pidList, true);
+        $addedPidListMapping = [];
         foreach ($pidListArray as $pid) {
             // mount_pid_ol = 1: pid exists already in pidList
-            $whereClause = 'uid = ' . $pid . ' AND mount_pid_ol = 0' . $this->pageRepository->enableFields('pages');
+            $whereClause = 'uid = ' . $pid . ' AND mount_pid AND mount_pid_ol = 0' . $this->pageRepository->enableFields('pages');
             $res = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('*', 'pages', $whereClause, '', '', 1);
-            if ($res && $mount_pid = $res[0]['mount_pid']) {
-                $whereClause = 'uid = ' . $mount_pid . ' AND doktype = ' . $this->dokType . $this->pageRepository->enableFields('pages');
+            if ($res) {
+                $mountPid = $res[0]['mount_pid'];
+                $whereClause = 'uid = ' . $mountPid . ' AND doktype = ' . $this->dokType . $this->pageRepository->enableFields('pages');
                 $res = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('*', 'pages', $whereClause, '', '', 1);
                 if ($res) {
-                    $pidListArray[] = $mount_pid;
+                    $pidListArray[] = $mountPid;
+                    $addedPidListMapping[$mountPid] = (int)$pid;
                 }
             }
         }
         $pidListArray = array_unique($pidListArray);
-        return implode(',', $pidListArray);
+        $addedPidListArray = array_diff($pidListArray, GeneralUtility::trimExplode(',', $pidList, true));
+        return [
+            'pidList' => implode(',', $pidListArray),
+            'addedPidList' => $addedPidListArray,
+            'addedPidListMapping' => $addedPidListMapping,
+        ];
     }
 
     /**
@@ -401,5 +445,24 @@ abstract class AbstractPageRepository implements SingletonInterface
     protected function mapResultToModel(&$rows)
     {
         return $this->dataMapper->map($this->modelClassName, $rows);
+    }
+
+    /**
+     * Get mount point page pid
+     *
+     * @param int $pageUid
+     * @return int
+     */
+    protected function getRealPageUid($pageUid)
+    {
+        if ($this->enableMountPoints) {
+            // If this is a mount point we have to look up for the real page uid
+            $whereClause = 'uid = ' . $pageUid . ' AND doktype = ' . PageRepository::DOKTYPE_MOUNTPOINT . ' AND mount_pid AND mount_pid_ol = 0';
+            $res = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('*', 'pages', $whereClause, '', '', 1);
+            if ($res) {
+                $pageUid = $res[0]['mount_pid'];
+            }
+        }
+        return (int)$pageUid;
     }
 }

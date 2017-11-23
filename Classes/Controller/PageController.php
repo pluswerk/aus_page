@@ -66,7 +66,7 @@ class PageController extends ActionController
         }
         /** @var RepositoryService $repositoryService */
         $repositoryService = $this->objectManager->get(RepositoryService::class);
-        $repository = $repositoryService->getPageRepositoryForDokType((int)$this->getTypoScriptFrontendController()->page['doktype']);
+        $repository = $repositoryService->getPageRepositoryForPageRecord($this->getTypoScriptFrontendController()->page);
         $this->view->assignMultiple([
             'settings' => $this->settings,
             'page' => $repository->findByUid((int)$this->getTypoScriptFrontendController()->id),
@@ -127,12 +127,29 @@ class PageController extends ActionController
             $this->mergePageFilterSettingsFromSettings($filter, $this->settings);
         }
 
-        $this->view->assignMultiple([
+        $pages = $repository->findByFilter($filter, $this->settings['startPage']);
+
+        $templateVariables = [
             'settings' => $this->settings,
             'filter' => $filter,
             'pageCategory' => ($filter->getPageCategoryUid() !== 0 ? $this->categoryRepository->findByUid($filter->getPageCategoryUid()) : null),
-            'pages' => $repository->findByFilter($filter, $this->settings['startPage']),
-        ]);
+            'pages' => $pages,
+        ];
+
+        // Hook to overwrite template variables
+        if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['aus_page']['afterOneLevelNavigationAction']) {
+            foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['aus_page']['afterOneLevelNavigationAction'] as $_funcRef) {
+                if ($_funcRef) {
+                    $params = array(
+                        'controller' => $this,
+                        'templateVariables' => &$templateVariables,
+                    );
+                    GeneralUtility::callUserFunction($_funcRef, $params, $this);
+                }
+            }
+        }
+
+        $this->view->assignMultiple($templateVariables);
     }
 
     /**
