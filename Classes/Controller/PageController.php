@@ -136,21 +136,6 @@ class PageController extends ActionController
             'pages' => $pages,
         ];
 
-
-        // @todo: @sinian: move this to luetze project (via hook)
-//        /*
-//         * extra $mappedPages as mount point pages
-//         * the mount point pages are to be searched and mapped only for pages with the defined doktype and langauge
-//         */
-//        $mappedPages = array();
-//        if ($ausPagePluginId = $this->settings['languageAusPageIdMapping'][$this->settings['dokType']][$GLOBALS['TSFE']->sys_language_uid]) {
-//            foreach ($pages as $page) {
-//                if ($mappedPage = $repository->getMappedPageWithMountPid($repository->getAllPagesInOrder($ausPagePluginId), $page->getUid())) {
-//                    $mappedPages[$page->getUid()]['mappedPage'] = $mappedPage;
-//                }
-//            }
-//        }
-
         // Hook to overwrite template variables
         if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['aus_page']['afterOneLevelNavigationAction']) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['aus_page']['afterOneLevelNavigationAction'] as $_funcRef) {

@@ -218,27 +218,6 @@ abstract class AbstractPageRepository implements SingletonInterface
         return $pages;
     }
 
-    //@todo this is never used?
-//    /**
-//     * @param $allPageUids
-//     * @param $mountPid
-//     * @return mixed
-//     */
-//    public function getMappedPageWithMountPid($allPageUids, $mountPid)
-//    {
-//        foreach ($allPageUids as $pid) {
-//            if ($pid === $mountPid) {
-//                continue;
-//            }
-//            $whereClause = 'uid = ' . $pid . ' AND mount_pid = ' . $mountPid;
-//            $res = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('*', 'pages', $whereClause, '', '', 1);
-//            if ($res) {
-//                return $res['0'];
-//            }
-//        }
-//        return null;
-//    }
-
     /**
      * @param PageFilter $pageFilter
      * @param \AUS\AusPage\Domain\Model\AbstractPage[] $pages
