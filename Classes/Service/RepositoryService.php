@@ -14,11 +14,14 @@ namespace AUS\AusPage\Service;
 use AUS\AusPage\Domain\Repository\AbstractPageRepository;
 use AUS\AusPage\Domain\Repository\DefaultPageRepository;
 use AUS\AusPage\Page\PageTypeService;
+use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\ClassNamingUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Frontend\Page\PageRepository;
 
 /**
@@ -48,9 +51,6 @@ class RepositoryService implements SingletonInterface
      */
     public function getPageRepositoryForDokType($dokType)
     {
-        // get mount point page doktype if set
-        $dokType = $this->getMountPointPageDokType($dokType);
-
         /** @var PageTypeService $pageTypeService */
         $pageTypeService = $this->objectManager->get(PageTypeService::class);
         $modelClassName = $pageTypeService->getClassByPageType($dokType);
@@ -67,26 +67,41 @@ class RepositoryService implements SingletonInterface
     }
 
     /**
-     * Get mount point page doctype
-     *
-     * @param int $dokType
-     * @return int
+     * @param array $pageRecord
+     * @return AbstractPageRepository
      */
-    protected function getMountPointPageDokType($dokType)
+    public function getPageRepositoryForPageRecord($pageRecord)
     {
-        //@todo: m.hoelzle will think about it
-        throw new \Exception('Funktioniert nicht bei z.B. CLI Tasks');
+        $dokType = (int)$pageRecord['doktype'];
 
-        $whereClause = 'uid = ' . $GLOBALS['TSFE']->id . ' AND doktype = ' . PageRepository::DOKTYPE_MOUNTPOINT . ' AND mount_pid AND mount_pid_ol = 0';
-        $res = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('*', 'pages', $whereClause, '', '', 1);
-        if ($res) {
-            $mount_pid = $res[0]['mount_pid'];
-            $whereClause = 'uid = ' . $mount_pid . ' AND doktype' . $GLOBALS['TSFE']->sys_page->enableFields('pages');
-            $res = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('*', 'pages', $whereClause, '', '', 1);
-            if ($res) {
-                $dokType = $res[0]['doktype'];
+        // overlay dokType if this is a mount point
+        if ($dokType === PageRepository::DOKTYPE_MOUNTPOINT && !empty($pageRecord['mount_pid']) && (int)$pageRecord['mount_pid_ol'] === 0) {
+            $mountPointRecord = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+                '*',
+                'pages',
+                'uid = ' . (int)$pageRecord['mount_pid'] . ' AND doktype' . $this->getTypoScriptFrontendController()->sys_page->enableFields('pages')
+            );
+            if ($mountPointRecord) {
+                $dokType = (int)$mountPointRecord['doktype'];
             }
         }
-        return (int)$dokType;
+
+        return $this->getPageRepositoryForDokType($dokType);
+    }
+
+    /**
+     * @return DatabaseConnection
+     */
+    protected function getDatabaseConnection()
+    {
+        return $GLOBALS['TYPO3_DB'];
+    }
+
+    /**
+     * @return TypoScriptFrontendController
+     */
+    protected function getTypoScriptFrontendController()
+    {
+        return $GLOBALS['TSFE'];
     }
 }
