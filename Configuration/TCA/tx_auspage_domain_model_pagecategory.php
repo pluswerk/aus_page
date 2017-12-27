@@ -16,7 +16,7 @@ return array(
             'disabled' => 'hidden',
         ),
         'searchFields' => 'title,',
-        'iconfile' => 'EXT:aus_page/Resources/Pubic/Icons/PageCategory.svg'
+        'iconfile' => 'EXT:aus_page/Resources/Public/Icons/PageCategory.svg'
     ),
     'interface' => array(
         'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, title, dok_type',
