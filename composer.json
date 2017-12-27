@@ -9,6 +9,9 @@
   "extra": {
     "grumphp": {
       "config-default-path": "vendor/pluswerk/grumphp-config/grumphp.yml"
+    },
+    "pluswerk/grumphp-config": {
+      "auto-setting": true
     }
   },
   "autoload": {
