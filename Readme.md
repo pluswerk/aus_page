@@ -112,7 +112,7 @@ If you want to exclude your property from the language overlay just set `'exclud
 Add a plugin of type "Navigation (flat)" to your page and select a "Template".
 The templates will be defined via TypoScript:
 
-```
+```typo3_typoscript
 plugin.tx_auspage.settings.templates.myOwnTemplate {
   title = Blog
   view {
@@ -144,9 +144,11 @@ plugin.tx_auspage.settings.templates.myOwnTemplate {
       # Limit result to a single year
       #fields.your_specified_field.year = 2016
       # Limit result to a minimum date
-      #fields.your_specified_field.dateFrom = 2017-11-02
+      #fields.your_specified_field.dateMinimal = -30days
+      #fields.your_specified_field.dateMinimal = 2017-11-28
       # Limit result to a maximum date
-      #fields.your_specified_field.dateTo = 2017-12-03
+      #fields.your_specified_field.dateMaximal = +30days
+      #fields.your_specified_field.dateMaximal = 2018-01-27
       # Limit result to pages with this category
       #fields.page_categories = 3
       # Limit result to pages with this your_specified_field (mm relation possible)

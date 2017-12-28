@@ -170,10 +170,20 @@ abstract class AbstractPageRepository implements SingletonInterface
                         $conditions[] = 'pages.' . $fieldName . ' < ' . $date->getTimestamp();
                     }
 
+                    if (isset($fieldValue['dateMinimal']) && !empty($fieldValue['dateMinimal'])) {
+                        $date = new \DateTime($fieldValue['dateMinimal']);
+                        $conditions[] = 'pages.' . $fieldName . ' > ' . $date->getTimestamp();
+                    }
+                    if (isset($fieldValue['dateMaximal']) && !empty($fieldValue['dateMaximal'])) {
+                        $date = new \DateTime($fieldValue['dateMaximal']);
+                        $conditions[] = 'pages.' . $fieldName . ' < ' . $date->getTimestamp();
+                    }
+                    /** @deprecated will be removed in version 2.0.0 use dateMinimal instead */
                     if (isset($fieldValue['from']) && !empty($fieldValue['from'])) {
                         $date = \DateTime::createFromFormat('Y-m-d', $fieldValue['from']);
                         $conditions[] = 'pages.' . $fieldName . ' > ' . $date->getTimestamp();
                     }
+                    /** @deprecated will be removed in version 2.0.0 use dateMaximal instead  */
                     if (isset($fieldValue['to']) && !empty($fieldValue['to'])) {
                         $date = \DateTime::createFromFormat('Y-m-d', $fieldValue['to']);
                         $conditions[] = 'pages.' . $fieldName . ' < ' . $date->getTimestamp();
