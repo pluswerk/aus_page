@@ -203,6 +203,11 @@ class PagePropertyService implements SingletonInterface
                 $GLOBALS['TCA']['pages']['types'][$dokType]['showitem'] = $pagesTypeDefinition['showitem'] . $pagesShowItems;
             }
 
+            // Add the realurl palette to the new dokType
+            if (ExtensionManagementUtility::isLoaded('realurl')) {
+                ExtensionManagementUtility::addToAllTCAtypes('pages', '--palette--;LLL:EXT:realurl/Resources/Private/Language/locallang_db.xlf:pages.palette_title;tx_realurl', $dokType, 'after:nav_title');
+            }
+
             // add showItems to pages_language_overlay
             $pagesLanguageOverlayFields = [];
             foreach ($this->tcaFields[$dokType]['pageProperties'] as $pageProperty) {
