@@ -25,7 +25,7 @@ call_user_func(function ($_EXTKEY) {
             $pluginName,
             'LLL:EXT:aus_page/Resources/Private/Language/locallang_db.xlf:plugin.' . $pluginName
         );
-        $pluginSignature = 'auspage_onelevelnavigation';
+        $pluginSignature = 'auspage_' . strtolower($pluginName);
         $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$pluginSignature] = 'select_key,pages,recursive';
         $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$pluginSignature] = 'pi_flexform';
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
