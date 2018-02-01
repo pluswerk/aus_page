@@ -199,7 +199,7 @@ class PageConfigurationService implements SingletonInterface
                     $pagePropertyService->addPageProperties($configuration['dokType'], $configuration['additionalProperties']);
                 }
                 if (empty($configuration['showAsAdditionalProperty']) === false) {
-                    $pagePropertyService->moveOrAddPagePropertiesToDokType($configuration['dokType'], explode(',', $configuration['showAsAdditionalProperty']));
+                    $pagePropertyService->moveOrAddPagePropertiesToDokType($configuration['dokType'], GeneralUtility::trimExplode(',', $configuration['showAsAdditionalProperty'], true));
                 }
             }
             foreach ($this->loadedConfigurations[$extensionKey]['addPageType'] as $configuration) {

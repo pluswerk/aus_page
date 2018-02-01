@@ -3,14 +3,14 @@
 ## Installation
 
 #### ext_localconf.php
-Put this in your `aus_project/ext_localconf.php`:
+Put this in your `my_extension/ext_localconf.php`:
 ```php
 <?php
 \AUS\AusPage\Configuration\PageConfiguration::load($_EXTKEY, 'ext_localconf.php');
 ```
 
-#### TCA Overrides / ext_tables.php
-Put this in a new file `aus_project/Configuration/TCA/Overrides/AusPage.php` (since TYPO3 8):
+#### TCA Overrides
+Put this in your `my_extension/Configuration/TCA/Overrides/AusPage.php`:
 ```php
 <?php
 defined('TYPO3_MODE') || die('Access denied.');
@@ -19,7 +19,8 @@ call_user_func(function () {
 });
 ```
 
-@deprecated: Put this in your `aus_project/ext_tables.php` (TYPO3 <= 7):
+#### ext_tables.php
+Put this in your `my_extension/ext_tables.php`:
 ```php
 <?php
 \AUS\AusPage\Configuration\PageConfiguration::load($_EXTKEY, 'ext_tables.php');
@@ -29,12 +30,14 @@ call_user_func(function () {
 
 Put your configuration in your extension in `Configuration/AusPage/Configuration.php`:
 
-Bug: Font Awesome can not be displayed in the page edit. (TYPO3 CMS 7.6.9)
+**Bug:** Font Awesome can not be displayed in the page edit. (TYPO3 CMS 7.6.9)
 
-Update: Some general fields can be used now without long TCA entries:
+**Update:** Some general fields can be used now without long TCA entries:
         input, slider (params: lower end, upper end, steps), text, rte, date, colorPicker, headerImage, teaserImage
         <br> Difference between headerImage and teaserImage are the field names.
 
+**Note:** Your new Page Type will get all the fields from the Default page. But only until your Extension is loaded.
+       <br> for example: So If you wont to get realurl page fields in your new Page Type you must add `realurl` to the depends key in your `my_extension/ext_emconf.php`
 
 ```php
 <?php
@@ -42,31 +45,31 @@ Update: Some general fields can be used now without long TCA entries:
     'dokType' => 125, // (required, unique, int, > 10, < 200)
     'identifier' => 'news', // (required)
     'modelClassName' => \AUS\MyExtension\Domain\Model\MyModel::class, // create TypoScript mapping (is needed if you add Properties that will be used in FE ++Repository(with doktype) is needed too)
-    'title' => 'LLL:EXT:aus_project/Resources/Private/Language/locallang_db.xlf:doktype.news',
-    'icon' => 'EXT:aus_project/ext_icon.svg', // SVG, PNG, Font Awesome ('file')
+    'title' => 'LLL:EXT:my_extension/Resources/Private/Language/locallang_db.xlf:doktype.news',
+    'icon' => 'EXT:my_extension/ext_icon.svg', // SVG, PNG, Font Awesome ('file')
     'additionalTabs' => [ // Map fields to tabs (optional, if not set, a default tab for this dokType will be created)
-        'LLL:EXT:aus_project/Resources/Private/Language/locallang_db.xlf:doktype.news.tab.foo' => ['my_special_field1', 'my_special_field2'],
-        'LLL:EXT:aus_project/Resources/Private/Language/locallang_db.xlf:doktype.news.tab.bar' => ['my_special_field3', 'property_from_other_dok_type'],
+        'LLL:EXT:my_extension/Resources/Private/Language/locallang_db.xlf:doktype.news.tab.foo' => ['my_special_field1', 'my_special_field2'],
+        'LLL:EXT:my_extension/Resources/Private/Language/locallang_db.xlf:doktype.news.tab.bar' => ['my_special_field3', 'property_from_other_dok_type'],
     ],
     'additionalProperties' => [ // Add new database fields (optional)
         'my_text' => \AUS\AusPage\Utility\AusPageTcaUtility::text([
-                            'label' => 'LLL:EXT:aus_project/Resources/Private/Language/locallang_db.xlf:pages.text',
+                            'label' => 'LLL:EXT:my_extension/Resources/Private/Language/locallang_db.xlf:pages.text',
                         ]),
         'my_input' => \AUS\AusPage\Utility\AusPageTcaUtility::input([
-                    'label' => 'LLL:EXT:aus_project/Resources/Private/Language/locallang_db.xlf:pages.input',
+                    'label' => 'LLL:EXT:my_extension/Resources/Private/Language/locallang_db.xlf:pages.input',
                 ]),
         'my_colorpicker' => \AUS\AusPage\Utility\AusPageTcaUtility::colorPicker([
-                    'label' => 'LLL:EXT:aus_project/Resources/Private/Language/locallang_db.xlf:pages.colorpicker',
+                    'label' => 'LLL:EXT:my_extension/Resources/Private/Language/locallang_db.xlf:pages.colorpicker',
                 ]),
         'my_slider' => \AUS\AusPage\Utility\AusPageTcaUtility::slider([
-                    'label' => 'LLL:EXT:aus_project/Resources/Private/Language/locallang_db.xlf:pages.slider',
+                    'label' => 'LLL:EXT:my_extension/Resources/Private/Language/locallang_db.xlf:pages.slider',
                 ], -20, 20, 1),
         'my_image' => \AUS\AusPage\Utility\AusPageTcaUtility::image([
-                            'label' => 'LLL:EXT:aus_project/Resources/Private/Language/locallang_db.xlf:pages.image',
+                            'label' => 'LLL:EXT:my_extension/Resources/Private/Language/locallang_db.xlf:pages.image',
                         ], 'my_image'),
         'my_select' => \AUS\AusPage\Utility\AusPageTcaUtility::select(
             [
-                'label' => 'LLL:EXT:aus_project/Resources/Private/Language/locallang_db.xlf:pages.image',
+                'label' => 'LLL:EXT:my_extension/Resources/Private/Language/locallang_db.xlf:pages.image',
             ],
             [
                 ['Item 1', 0],
@@ -74,13 +77,13 @@ Update: Some general fields can be used now without long TCA entries:
             ]),
             // Default TCA does also work:
             'my_special_field1' => [
-                        'label' => 'LLL:EXT:aus_project/Resources/Private/Language/locallang_db.xlf:news.my_special_field1',
+                        'label' => 'LLL:EXT:my_extension/Resources/Private/Language/locallang_db.xlf:news.my_special_field1',
                         'config' => [
                             'type' => 'input',
                         ],
                     ],
                     'my_special_field2' => [
-                        'label' => 'LLL:EXT:aus_project/Resources/Private/Language/locallang_db.xlf:news.my_special_field2',
+                        'label' => 'LLL:EXT:my_extension/Resources/Private/Language/locallang_db.xlf:news.my_special_field2',
                         'config' => [
                             'type' => 'text',
                             'size' => 10,
@@ -205,7 +208,7 @@ Remember to set the right `modelClassName` in your `Configuration.php`!
 Example:
 ```php
 <?php
-namespace AUS\AusProject\Domain\Model;
+namespace AUS\MyExtension\Domain\Model;
 
 /***
  * This file is part of an "anders und sehr" Extension for TYPO3 CMS.
@@ -222,7 +225,7 @@ use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 /**
  * Class Product
  *
- * @package AUS\AusProject\Domain\Model
+ * @package AUS\MyExtension\Domain\Model
  */
 class Product extends AbstractPage
 {
@@ -266,7 +269,7 @@ The repository must have set the variable `$dokType`.
 Example:
 ```php
 <?php
-namespace AUS\AusProject\Domain\Repository;
+namespace AUS\MyExtension\Domain\Repository;
 
 /***
  * This file is part of an "anders und sehr" Extension for TYPO3 CMS.
@@ -282,7 +285,7 @@ use AUS\AusPage\Domain\Repository\AbstractPageRepository;
 /**
  * Class ProductRepository
  *
- * @package AUS\AusProject\Domain\Repository
+ * @package AUS\MyExtension\Domain\Repository
  */
 class ProductRepository extends AbstractPageRepository
 {
