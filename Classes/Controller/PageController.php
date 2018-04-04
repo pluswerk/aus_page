@@ -81,8 +81,11 @@ class PageController extends ActionController
         /** @var MvcPropertyMappingConfiguration $propertyMappingConfiguration */
         $propertyMappingConfiguration = $this->arguments['filter']->getPropertyMappingConfiguration();
         $propertyMappingConfiguration->allowProperties('pageCategoryUid', 'fields', 'offset', 'limit');
-        $propertyMappingConfiguration->setTypeConverterOption(PersistentObjectConverter::class,
-            PersistentObjectConverter::CONFIGURATION_CREATION_ALLOWED, true);
+        $propertyMappingConfiguration->setTypeConverterOption(
+            PersistentObjectConverter::class,
+            PersistentObjectConverter::CONFIGURATION_CREATION_ALLOWED,
+            true
+        );
     }
 
     /**
@@ -177,8 +180,10 @@ class PageController extends ActionController
         $this->view->assignMultiple([
             'settings' => $this->settings,
             'activePageCategoryUid' => $activePageCategoryUid,
-            'pageCategories' => $this->categoryRepository->findByDokType($this->settings['dokType'],
-                $this->settings['startPage']),
+            'pageCategories' => $this->categoryRepository->findByDokType(
+                $this->settings['dokType'],
+                $this->settings['startPage']
+            ),
         ]);
     }
 
@@ -195,8 +200,10 @@ class PageController extends ActionController
             is_array($settings['templates'][$settings['template']]['settings'])
         ) {
             $this->unsetEmptyValuesFromArray($settings);
-            ArrayUtility::mergeRecursiveWithOverrule($settings,
-                $settings['templates'][$settings['template']]['settings']);
+            ArrayUtility::mergeRecursiveWithOverrule(
+                $settings,
+                $settings['templates'][$settings['template']]['settings']
+            );
         }
         return $settings;
     }
