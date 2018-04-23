@@ -37,6 +37,7 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Page\PageRepository;
+use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 
 /**
  * Abstract repository for objects which are "pages"
@@ -95,7 +96,6 @@ abstract class AbstractPageRepository implements SingletonInterface
      * @var bool
      */
     protected $enableMountPoints = false;
-
 
     /**
      * initializeObject
@@ -357,27 +357,21 @@ abstract class AbstractPageRepository implements SingletonInterface
             }
         }
 
+        // set signalSlotDispatcher
+        if ($this->enableMountPoints && $allPageUidArray) {
+            $signalSlotDispatcher = GeneralUtility::makeInstance(Dispatcher::class);
+        }
+
         $pages = [];
         foreach ($allPageUidArray as $pageUid) {
             $pageRecord = $this->pageRepository->getPage($pageUid);
 
             /* default: pageRecord of default language */
-            if ($this->enableMountPoints && $addedPidListMapping[$pageUid]) {
-                // Hook to overwrite template pageRecord
-                if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['aus_page']['findByWhereClauseMountedPageRecord']) {
-                    foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['aus_page']['findByWhereClauseMountedPageRecord'] as $_funcRef) {
-                        if ($_funcRef) {
-                            $params = [
-                                'abstractPageRepository' => $this,
-                                'pageUid' => $addedPidListMapping[$pageUid],
-                                'pageRepository' => $this->pageRepository,
-                                'pageRecord' => &$pageRecord,
-                            ];
-                            GeneralUtility::callUserFunction($_funcRef, $params, $this);
-                        }
-                    }
-                }
-            }
+            $signalSlotDispatcher->dispatch(
+                __CLASS__,
+                'findByWhereClauseMountedPageRecord',
+                array($addedPidListMapping[$pageUid], $this->pageRepository, &$pageRecord)
+            );
 
             if ($pageRecord) {
                 $pages[] = $pageRecord;
