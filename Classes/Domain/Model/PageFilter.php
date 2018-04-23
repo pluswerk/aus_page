@@ -158,6 +158,15 @@ class PageFilter
     }
 
     /**
+     * @param string $propertyName
+     * @return mixed
+     */
+    public function _getProperty($propertyName)
+    {
+        return $this->{$propertyName};
+    }
+
+    /**
      * @return int[]
      */
     public function getSelectedPages(): array
