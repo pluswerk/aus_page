@@ -80,8 +80,12 @@ class PageController extends ActionController
     {
         /** @var MvcPropertyMappingConfiguration $propertyMappingConfiguration */
         $propertyMappingConfiguration = $this->arguments['filter']->getPropertyMappingConfiguration();
-        $propertyMappingConfiguration->allowProperties('pageCategoryUid', 'fields', 'offset');
-        $propertyMappingConfiguration->setTypeConverterOption(PersistentObjectConverter::class, PersistentObjectConverter::CONFIGURATION_CREATION_ALLOWED, true);
+        $propertyMappingConfiguration->allowProperties('pageCategoryUid', 'fields', 'offset', 'limit');
+        $propertyMappingConfiguration->setTypeConverterOption(
+            PersistentObjectConverter::class,
+            PersistentObjectConverter::CONFIGURATION_CREATION_ALLOWED,
+            true
+        );
     }
 
     /**
@@ -176,7 +180,10 @@ class PageController extends ActionController
         $this->view->assignMultiple([
             'settings' => $this->settings,
             'activePageCategoryUid' => $activePageCategoryUid,
-            'pageCategories' => $this->categoryRepository->findByDokType($this->settings['dokType'], $this->settings['startPage']),
+            'pageCategories' => $this->categoryRepository->findByDokType(
+                $this->settings['dokType'],
+                $this->settings['startPage']
+            ),
         ]);
     }
 
@@ -193,7 +200,10 @@ class PageController extends ActionController
             is_array($settings['templates'][$settings['template']]['settings'])
         ) {
             $this->unsetEmptyValuesFromArray($settings);
-            ArrayUtility::mergeRecursiveWithOverrule($settings, $settings['templates'][$settings['template']]['settings']);
+            ArrayUtility::mergeRecursiveWithOverrule(
+                $settings,
+                $settings['templates'][$settings['template']]['settings']
+            );
         }
         return $settings;
     }
@@ -218,8 +228,11 @@ class PageController extends ActionController
      */
     protected function mergePageFilterSettingsFromSettings(PageFilter $filter, array $settings)
     {
+        $defaultFilterObject = GeneralUtility::makeInstance(PageFilter::class);
         foreach ($settings['pageFilter'] as $key => $value) {
-            $filter->_setProperty($key, $value);
+            if ($defaultFilterObject->_getProperty($key) === $filter->_getProperty($key)) {
+                $filter->_setProperty($key, $value);
+            }
         }
     }
 
