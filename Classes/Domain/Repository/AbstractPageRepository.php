@@ -140,11 +140,12 @@ abstract class AbstractPageRepository implements SingletonInterface
     /**
      * findByUid
      * @param int $pageUid
+     * @param int $rootLinePid
      * @return \AUS\AusPage\Domain\Model\AbstractPage
      */
-    public function findByUid($pageUid)
+    public function findByUid($pageUid, $rootLinePid = 0)
     {
-        return $this->findByWhereClause('uid = ' . $this->getRealPageUid((int)$pageUid))[0];
+        return $this->findByWhereClause('uid = ' . $this->getRealPageUid((int)$pageUid), $rootLinePid)[0];
     }
 
     /**
@@ -359,6 +360,25 @@ abstract class AbstractPageRepository implements SingletonInterface
         $pages = [];
         foreach ($allPageUidArray as $pageUid) {
             $pageRecord = $this->pageRepository->getPage($pageUid);
+
+            /* default: pageRecord of default language */
+            if ($this->enableMountPoints && $addedPidListMapping[$pageUid]) {
+                // Hook to overwrite template pageRecord
+                if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['aus_page']['findByWhereClauseMountedPageRecord']) {
+                    foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['aus_page']['findByWhereClauseMountedPageRecord'] as $_funcRef) {
+                        if ($_funcRef) {
+                            $params = [
+                                'abstractPageRepository' => $this,
+                                'pageUid' => $addedPidListMapping[$pageUid],
+                                'pageRepository' => $this->pageRepository,
+                                'pageRecord' => &$pageRecord,
+                            ];
+                            GeneralUtility::callUserFunction($_funcRef, $params, $this);
+                        }
+                    }
+                }
+            }
+
             if ($pageRecord) {
                 $pages[] = $pageRecord;
             }

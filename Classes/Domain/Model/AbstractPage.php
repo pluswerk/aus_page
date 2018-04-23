@@ -44,10 +44,23 @@ abstract class AbstractPage extends AbstractEntity
     protected $title = '';
 
     /**
+     * @var integer
+     */
+    protected $doktype = 0;
+
+    /**
      * @return string
      */
     public function getTitle()
     {
         return (string)$this->title;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getDoktype()
+    {
+        return (int)$this->doktype;
     }
 }
