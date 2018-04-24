@@ -357,11 +357,8 @@ abstract class AbstractPageRepository implements SingletonInterface
             }
         }
 
-        // set signalSlotDispatcher
-        if ($this->enableMountPoints && $allPageUidArray) {
-            $signalSlotDispatcher = GeneralUtility::makeInstance(Dispatcher::class);
-        }
-
+        // signalSlotDispatcher
+        $signalSlotDispatcher = GeneralUtility::makeInstance(Dispatcher::class);
         $pages = [];
         foreach ($allPageUidArray as $pageUid) {
             $pageRecord = $this->pageRepository->getPage($pageUid);
