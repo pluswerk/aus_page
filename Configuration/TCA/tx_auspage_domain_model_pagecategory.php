@@ -22,7 +22,7 @@ return array(
         'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, title, dok_type',
     ),
     'types' => array(
-        '1' => array('showitem' => 'title,dok_type,--div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,hidden,sys_language_uid;;;;1-1-1,l10n_parent,l10n_diffsource'),
+        '1' => array('showitem' => 'title,dok_type,--div--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.tabs.access,hidden,sys_language_uid;;;;1-1-1,l10n_parent,l10n_diffsource'),
     ),
     'palettes' => array(
         '1' => array('showitem' => ''),
