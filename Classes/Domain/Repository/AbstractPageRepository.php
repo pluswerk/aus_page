@@ -37,6 +37,7 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Page\PageRepository;
+use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 
 /**
  * Abstract repository for objects which are "pages"
@@ -96,7 +97,6 @@ abstract class AbstractPageRepository implements SingletonInterface
      */
     protected $enableMountPoints = false;
 
-
     /**
      * initializeObject
      */
@@ -140,11 +140,12 @@ abstract class AbstractPageRepository implements SingletonInterface
     /**
      * findByUid
      * @param int $pageUid
+     * @param int $rootLinePid
      * @return \AUS\AusPage\Domain\Model\AbstractPage
      */
-    public function findByUid($pageUid)
+    public function findByUid($pageUid, $rootLinePid = 0)
     {
-        return $this->findByWhereClause('uid = ' . $this->getRealPageUid((int)$pageUid))[0];
+        return $this->findByWhereClause('uid = ' . $this->getRealPageUid((int)$pageUid), $rootLinePid)[0];
     }
 
     /**
@@ -356,9 +357,19 @@ abstract class AbstractPageRepository implements SingletonInterface
             }
         }
 
+        // signalSlotDispatcher
+        $signalSlotDispatcher = GeneralUtility::makeInstance(Dispatcher::class);
         $pages = [];
         foreach ($allPageUidArray as $pageUid) {
             $pageRecord = $this->pageRepository->getPage($pageUid);
+
+            /* default: pageRecord of default language */
+            $signalSlotDispatcher->dispatch(
+                __CLASS__,
+                'findByWhereClauseMountedPageRecord',
+                array($addedPidListMapping[$pageUid], $this->pageRepository, &$pageRecord)
+            );
+
             if ($pageRecord) {
                 $pages[] = $pageRecord;
             }
