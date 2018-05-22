@@ -91,6 +91,7 @@ class DatabaseSchemaGenerator implements SingletonInterface
     {
         $databaseSchema = '';
         $configType = $GLOBALS['TCA'][$table]['columns'][$field]['config']['type'];
+        $configMaxChars = $GLOBALS['TCA'][$table]['columns'][$field]['config']['max'];
         switch ($configType) {
             case 'input':
                 $evalParts = GeneralUtility::trimExplode(',', $GLOBALS['TCA'][$table]['columns'][$field]['config']['eval'], true);
@@ -110,7 +111,11 @@ class DatabaseSchemaGenerator implements SingletonInterface
                 } else if ($isFloat) {
                     $databaseSchema = 'double(6,2) DEFAULT \'0.00\' NOT NULL,';
                 } else {
-                    $databaseSchema = 'varchar(511) DEFAULT \'\' NOT NULL,';
+                    if ($configMaxChars) {
+                        $databaseSchema = 'varchar(' . $configMaxChars . ') DEFAULT \'\' NOT NULL,';
+                    } else {
+                        $databaseSchema = 'varchar(511) DEFAULT \'\' NOT NULL,';
+                    }
                 }
                 break;
             case 'text':
