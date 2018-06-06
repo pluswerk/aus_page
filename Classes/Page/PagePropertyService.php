@@ -195,7 +195,9 @@ class PagePropertyService implements SingletonInterface
             // add showItems to pages
             $pagesShowItems = $this->getDokTypeTabConfiguration($dokType, $this->tcaFields[$dokType]['pageProperties']);
 
-            if (isset($GLOBALS['TCA']['pages']['types']['1']['showitem'])) {
+            if (isset($GLOBALS['TCA']['pages']['types'][$dokType]['showitem'])) {
+                $GLOBALS['TCA']['pages']['types'][$dokType]['showitem'] .= $pagesShowItems;
+            } elseif (isset($GLOBALS['TCA']['pages']['types']['1']['showitem'])) {
                 $GLOBALS['TCA']['pages']['types'][$dokType]['showitem'] = $GLOBALS['TCA']['pages']['types']['1']['showitem'] . $pagesShowItems;
             } elseif (is_array($GLOBALS['TCA']['pages']['types'])) {
                 // use first entry in types array
