@@ -35,9 +35,9 @@ use TYPO3\CMS\Core\Utility\ClassNamingUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
+use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Page\PageRepository;
-use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 
 /**
  * Abstract repository for objects which are "pages"
@@ -184,7 +184,7 @@ abstract class AbstractPageRepository implements SingletonInterface
                         $date = \DateTime::createFromFormat('Y-m-d', $fieldValue['from']);
                         $conditions[] = 'pages.' . $fieldName . ' > ' . $date->getTimestamp();
                     }
-                    /** @deprecated will be removed in version 2.0.0 use dateMaximal instead  */
+                    /** @deprecated will be removed in version 2.0.0 use dateMaximal instead */
                     if (isset($fieldValue['to']) && !empty($fieldValue['to'])) {
                         $date = \DateTime::createFromFormat('Y-m-d', $fieldValue['to']);
                         $conditions[] = 'pages.' . $fieldName . ' < ' . $date->getTimestamp();
@@ -367,7 +367,7 @@ abstract class AbstractPageRepository implements SingletonInterface
             $signalSlotDispatcher->dispatch(
                 __CLASS__,
                 'findByWhereClauseMountedPageRecord',
-                array($addedPidListMapping[$pageUid], $this->pageRepository, &$pageRecord)
+                [$addedPidListMapping[$pageUid], $this->pageRepository, &$pageRecord]
             );
 
             if ($pageRecord) {

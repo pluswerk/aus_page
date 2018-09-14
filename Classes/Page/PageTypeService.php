@@ -1,4 +1,5 @@
 <?php
+
 namespace AUS\AusPage\Page;
 
 /***************************************************************
@@ -87,7 +88,7 @@ class PageTypeService implements SingletonInterface
         // Add the new dokType to the list of page types
         $GLOBALS['PAGES_TYPES'][$dokType] = [
             'type' => 'web',
-            'allowedTables' => '*'
+            'allowedTables' => '*',
         ];
         // Set pageType as "content dokType"
         $GLOBALS['TYPO3_CONF_VARS']['FE']['content_doktypes'] .= ',' . $dokType;

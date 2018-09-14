@@ -1,4 +1,10 @@
-# aus_page
+[![Packagist Release](https://img.shields.io/packagist/v/pluswerk/aus-page.svg?style=flat-square)](https://packagist.org/packages/pluswerk/aus-page)
+[![Travis](https://img.shields.io/travis/pluswerk/aus_page.svg?style=flat-square)](https://travis-ci.org/pluswerk/aus_page)
+[![GitHub License](https://img.shields.io/github/license/pluswerk/aus_page.svg?style=flat-square)](https://github.com/pluswerk/aus_page/blob/master/LICENSE.txt)
+[![Code Climate](https://img.shields.io/codeclimate/github/pluswerk/aus_page.svg?style=flat-square)](https://codeclimate.com/github/pluswerk/aus_page)
+[![Build Status](https://travis-ci.org/pluswerk/aus_page.svg?branch=master)](https://travis-ci.org/pluswerk/aus_page)
+
+# +Pluswerk TYPO3 extension: aus_page
 
 ## Installation
 
@@ -29,8 +35,6 @@ Put this in your `my_extension/ext_tables.php`:
 ## Page Type Configuration
 
 Put your configuration in your extension in `Configuration/AusPage/Configuration.php`:
-
-**Bug:** Font Awesome can not be displayed in the page edit. (TYPO3 CMS 7.6.9)
 
 **Update:** Some general fields can be used now without long TCA entries:
         input, slider (params: lower end, upper end, steps), text, rte, date, colorPicker, headerImage, teaserImage
@@ -109,6 +113,8 @@ Put your configuration in your extension in `Configuration/AusPage/Configuration
 All `additionalProperties` are added to the table `pages_language_overlay` as well.
 If you want to exclude your property from the language overlay just set `'excludeFromLanguageOverlay' => true`.
 
+**Note** This extension is not yet compatible with TYPO3 9.
+
 
 ## Plugin Template Configuration
 
@@ -119,9 +125,9 @@ The templates will be defined via TypoScript:
 plugin.tx_auspage.settings.templates.myOwnTemplate {
   title = Blog
   view {
-    templateRootPaths.100 = EXT:aus_page/Resources/Private/Templates/
-    partialRootPaths.100 = EXT:aus_page/Resources/Private/Partials/
-    layoutRootPaths.100 = EXT:aus_page/Resources/Private/Layouts/
+    templateRootPaths.100 = EXT:my_extension/Resources/Private/Templates/
+    partialRootPaths.100 = EXT:my_extension/Resources/Private/Partials/
+    layoutRootPaths.100 = EXT:my_extension/Resources/Private/Layouts/
   }
   settings {
     # Show only sub pages of this page
@@ -137,12 +143,12 @@ plugin.tx_auspage.settings.templates.myOwnTemplate {
       limit = 2
       # Set first result position
       #offset = 3
-      # The number of page levels to descend. If you want to descend infinitely, just set this to 100 or so. Should be at least "1" since zero will just make the function return (no decend...)
+      # The number of page levels to descend. If you want to descend infinitely, just set this to 100 or so. Should be at least "1" since zero will just make the function return (no decent...)
       #pageTreeDepth = 99
       # Is an integer that determines at which page level in the tree to start collecting uid's. Zero means 'start right away', 1 = 'next level and out'
       #pageTreeBegin = 0
-      # Sort Recursive (default: '')
-      sortRecursive =
+      # Sort Recursive (default: 0)
+      sortRecursive = 0
 
       # Limit result to a single year
       #fields.your_specified_field.year = 2016
@@ -173,18 +179,18 @@ plugin.tx_auspage.settings.templates.myOwnTemplate {
 <form method="GET" action="">
   <f:form.select name="tx_auspage_onelevelnavigation[filter][fields][company]" options="{companies}"
                  prependOptionValue=""
-                 prependOptionLabel="{f:translate(key: 'ext_name.all_companies', extensionName: 'ext_name')}"
+                 prependOptionLabel="{f:translate(key: 'all_companies', extensionName: 'my_extension')}"
                  value="{currentFilterParams.fields.company}"
                  class="input input__select js-news__input"/>
   <f:form.select name="tx_auspage_onelevelnavigation[filter][fields][page_categories]" options="{categories}"
                  optionValueField="uid" optionLabelField="title"
                  prependOptionValue=""
-                 prependOptionLabel="{f:translate(key: 'ext_name.all_categories', extensionName: 'ext_name')}"
+                 prependOptionLabel="{f:translate(key: 'all_categories', extensionName: 'my_extension')}"
                  value="{currentFilterParams.fields.page_categories}"
                  class="input input__select js-news__input"/>
   <f:form.select name="tx_auspage_onelevelnavigation[filter][fields][date][year]" options="{years}"
                  prependOptionValue=""
-                 prependOptionLabel="{f:translate(key: 'ext_name.all_years', extensionName: 'ext_name')}"
+                 prependOptionLabel="{f:translate(key: 'all_years', extensionName: 'my_extension')}"
                  value="{currentFilterParams.fields.date.year}"
                  class="input input__select js-news__input"/>
 
@@ -200,7 +206,7 @@ plugin.tx_auspage.settings.templates.myOwnTemplate {
 
 ### Using the additional properties
 
-To use all your page properties in a Fluid template in an aus_page plugin you have to create an Extbase Model class
+To use all your page properties in a Fluid template in an aus_page plugin you have to create an extbase Model class
 which extends `\AUS\AusPage\Domain\Model\AbstractPage` and add all your properties and the required getter functions.
 
 Remember to set the right `modelClassName` in your `Configuration.php`!
@@ -210,23 +216,9 @@ Example:
 <?php
 namespace AUS\MyExtension\Domain\Model;
 
-/***
- * This file is part of an "anders und sehr" Extension for TYPO3 CMS.
- *
- * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * (c) 2017 Your Name <y.name@andersundsehr.com>, anders und sehr GmbH
- ***/
-
 use AUS\AusPage\Domain\Model\AbstractPage;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 
-/**
- * Class Product
- *
- * @package AUS\MyExtension\Domain\Model
- */
 class Product extends AbstractPage
 {
     /**
@@ -239,17 +231,11 @@ class Product extends AbstractPage
      */
     protected $description = '';
 
-    /**
-     * @return FileReference
-     */
     public function getHeaderImage(): FileReference
     {
         return $this->headerImage;
     }
 
-    /**
-     * @return string
-     */
     public function getDescription(): string
     {
         return $this->description;
@@ -258,9 +244,9 @@ class Product extends AbstractPage
 ```
 
 
-## Using pages as Extbase Model
+## Using pages as extbase Model
 
-If you want to use pages in your extension as an Extbase Model object you have to create a Model class
+If you want to use pages in your extension as an extbase Model object you have to create a Model class
 which extends `\AUS\AusPage\Domain\Model\AbstractPage` (see above) and a repository class
 which extends `\AUS\AusPage\Domain\Repository\AbstractPageRepository`.
 
@@ -271,22 +257,8 @@ Example:
 <?php
 namespace AUS\MyExtension\Domain\Repository;
 
-/***
- * This file is part of an "anders und sehr" Extension for TYPO3 CMS.
- *
- * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * (c) 2017 Your Name <y.name@andersundsehr.com>, anders und sehr GmbH
- ***/
-
 use AUS\AusPage\Domain\Repository\AbstractPageRepository;
 
-/**
- * Class ProductRepository
- *
- * @package AUS\MyExtension\Domain\Repository
- */
 class ProductRepository extends AbstractPageRepository
 {
     /**

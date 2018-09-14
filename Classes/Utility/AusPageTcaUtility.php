@@ -2,7 +2,9 @@
 
 namespace AUS\AusPage\Utility;
 
+use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
 /**
  * Class AusPageTcaUtility
@@ -26,10 +28,10 @@ class AusPageTcaUtility
             'config' => [
                 'type' => 'input',
                 'cols' => 40,
-                'eval' => 'trim'
+                'eval' => 'trim',
             ],
         ];
-        \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($tca, $config);
+        ArrayUtility::mergeRecursiveWithOverrule($tca, $config);
         return $tca;
     }
 
@@ -59,7 +61,7 @@ class AusPageTcaUtility
                 ],
             ],
         ];
-        \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($tca, $config);
+        ArrayUtility::mergeRecursiveWithOverrule($tca, $config);
         return $tca;
     }
 
@@ -76,10 +78,10 @@ class AusPageTcaUtility
                 'type' => 'text',
                 'cols' => 40,
                 'rows' => 8,
-                'eval' => 'trim'
+                'eval' => 'trim',
             ],
         ];
-        \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($tca, $config);
+        ArrayUtility::mergeRecursiveWithOverrule($tca, $config);
         return $tca;
     }
 
@@ -97,7 +99,7 @@ class AusPageTcaUtility
                 'enableRichtext' => true,
             ],
         ];
-        \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($tca, $config);
+        ArrayUtility::mergeRecursiveWithOverrule($tca, $config);
         return $tca;
     }
 
@@ -114,9 +116,9 @@ class AusPageTcaUtility
                 'type' => 'input',
                 'size' => 5,
                 'eval' => 'date',
-            ]
+            ],
         ];
-        \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($tca, $config);
+        ArrayUtility::mergeRecursiveWithOverrule($tca, $config);
         return $tca;
     }
 
@@ -143,11 +145,11 @@ class AusPageTcaUtility
                         'dim' => '20x20',
                         'tableStyle' => 'border: solid 1px black; margin-left: 20px;',
                         'JSopenParams' => 'height=600,width=380,status=0,menubar=0,scrollbars=1',
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ];
-        \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($tca, $config);
+        ArrayUtility::mergeRecursiveWithOverrule($tca, $config);
         return $tca;
     }
 
@@ -162,22 +164,22 @@ class AusPageTcaUtility
             'label' => 'Header Image',
             'exclude' => 0,
             'excludeFromLanguageOverlay' => true,
-            'config' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getFileFieldTCAConfig(
+            'config' => ExtensionManagementUtility::getFileFieldTCAConfig(
                 $fieldName,
                 [
                     'maxitems' => 1,
                     'overrideChildTca' => [
-                        'types' => array(
-                            \TYPO3\CMS\Core\Resource\File::FILETYPE_IMAGE => [
+                        'types' => [
+                            File::FILETYPE_IMAGE => [
                                 'showitem' => '--palette--;LLL:EXT:lang/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.imageoverlayPalette;imageoverlayPalette,--palette--;;filePalette',
                             ],
-                        ),
+                        ],
                     ],
                 ],
                 $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext']
-            )
+            ),
         ];
-        \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($tca, $config);
+        ArrayUtility::mergeRecursiveWithOverrule($tca, $config);
         return $tca;
     }
 
@@ -194,10 +196,10 @@ class AusPageTcaUtility
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
-                'items' => $fields
+                'items' => $fields,
             ],
         ];
-        \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($tca, $config);
+        ArrayUtility::mergeRecursiveWithOverrule($tca, $config);
         return $tca;
     }
 }

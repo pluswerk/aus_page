@@ -1,4 +1,5 @@
 <?php
+
 namespace AUS\AusPage\Page;
 
 /***************************************************************
@@ -199,7 +200,10 @@ class PageConfigurationService implements SingletonInterface
                     $pagePropertyService->addPageProperties($configuration['dokType'], $configuration['additionalProperties']);
                 }
                 if (empty($configuration['showAsAdditionalProperty']) === false) {
-                    $pagePropertyService->moveOrAddPagePropertiesToDokType($configuration['dokType'], GeneralUtility::trimExplode(',', $configuration['showAsAdditionalProperty'], true));
+                    $pagePropertyService->moveOrAddPagePropertiesToDokType(
+                        $configuration['dokType'],
+                        GeneralUtility::trimExplode(',', $configuration['showAsAdditionalProperty'], true)
+                    );
                 }
             }
             foreach ($this->loadedConfigurations[$extensionKey]['addPageType'] as $configuration) {
@@ -223,14 +227,14 @@ class PageConfigurationService implements SingletonInterface
             throw new \Exception('DokType have to be an integer!');
         }
         if ($configuration['dokType'] < 11 || $configuration['dokType'] > 199) {
-            throw new \Exception('DokType "' . $configuration['identifier']. '" (' . $configuration['dokType']. ') have to be between 10 and 200!');
+            throw new \Exception('DokType "' . $configuration['identifier'] . '" (' . $configuration['dokType'] . ') have to be between 10 and 200!');
         }
 
         if (isset($GLOBALS['PAGES_TYPES'][$configuration['dokType']])) {
             // Bugfix for extension installing in backend
             $getEM = GeneralUtility::_GET('tx_extensionmanager_tools_extensionmanagerextensionmanager');
             if ($getEM['action'] !== 'toggleExtensionInstallationState') {
-                throw new \Exception('DokType "' . $configuration['identifier']. '" (' . $configuration['dokType']. ') does already exists!');
+                throw new \Exception('DokType "' . $configuration['identifier'] . '" (' . $configuration['dokType'] . ') does already exists!');
             }
         }
 

@@ -1,11 +1,14 @@
 {
-  "name": "andersundsehr/aus_page",
+  "name": "pluswerk/aus-page",
   "type": "typo3-cms-extension",
-  "description": "anders und sehr: Page Extension",
-  "homepage": "https://bitbucket.org/andersundsehr/aus_page",
+  "description": "+Pluswerk TYPO3 extension: Page Extension",
+  "homepage": "https://www.pluswerk.ag/",
   "support": {
-    "source": "https://bitbucket.org/andersundsehr/aus_page"
+    "source": "https://github.com/pluswerk/aus_page",
+    "issues": "https://github.com/pluswerk/aus_page/issues",
+    "docs": "https://github.com/pluswerk/aus_page/blob/master/Readme.md"
   },
+  "license": "GPL-2.0-or-later",
   "extra": {
     "grumphp": {
       "config-default-path": "vendor/pluswerk/grumphp-config/grumphp.yml"
@@ -20,9 +23,14 @@
     }
   },
   "require": {
-    "php": ">=7"
+    "php": ">=7.0",
+    "typo3/cms": "7.6.* | 8.7.*"
   },
   "require-dev": {
     "pluswerk/grumphp-config": "2.*"
+  },
+  "replace": {
+    "aus_page": "self.version",
+    "typo3-ter/aus-page": "self.version"
   }
 }

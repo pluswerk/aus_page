@@ -101,20 +101,24 @@ class DatabaseSchemaGenerator implements SingletonInterface
                     if (in_array($evalPart, $this->integerFields)) {
                         $isInteger = true;
                         break;
-                    } else if (in_array($evalPart, $this->floatFields)) {
-                        $isFloat = true;
-                        break;
+                    } else {
+                        if (in_array($evalPart, $this->floatFields)) {
+                            $isFloat = true;
+                            break;
+                        }
                     }
                 }
                 if ($isInteger) {
                     $databaseSchema = 'int(11) DEFAULT \'0\' NOT NULL,';
-                } else if ($isFloat) {
-                    $databaseSchema = 'double(6,2) DEFAULT \'0.00\' NOT NULL,';
                 } else {
-                    if ($configMaxChars) {
-                        $databaseSchema = 'varchar(' . $configMaxChars . ') DEFAULT \'\' NOT NULL,';
+                    if ($isFloat) {
+                        $databaseSchema = 'double(6,2) DEFAULT \'0.00\' NOT NULL,';
                     } else {
-                        $databaseSchema = 'varchar(511) DEFAULT \'\' NOT NULL,';
+                        if ($configMaxChars) {
+                            $databaseSchema = 'varchar(' . $configMaxChars . ') DEFAULT \'\' NOT NULL,';
+                        } else {
+                            $databaseSchema = 'varchar(511) DEFAULT \'\' NOT NULL,';
+                        }
                     }
                 }
                 break;

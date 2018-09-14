@@ -60,7 +60,7 @@ class DataMapper extends \TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMappe
                     'uid',
                     'pages_language_overlay',
                     'pid=' . (int)$row['uid'] . ' AND sys_language_uid=' . (int)$GLOBALS['TSFE']->sys_language_uid .
-                        $this->getPageRepository()->enableFields('pages_language_overlay')
+                    $this->getPageRepository()->enableFields('pages_language_overlay')
                 );
                 if ($currentOverlayRecord) {
                     $dataMap = $this->getDataMap(get_class($object));

@@ -144,10 +144,10 @@ class PageController extends ActionController
         if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['aus_page']['afterOneLevelNavigationAction']) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['aus_page']['afterOneLevelNavigationAction'] as $_funcRef) {
                 if ($_funcRef) {
-                    $params = array(
+                    $params = [
                         'controller' => $this,
                         'templateVariables' => &$templateVariables,
-                    );
+                    ];
                     GeneralUtility::callUserFunction($_funcRef, $params, $this);
                 }
             }

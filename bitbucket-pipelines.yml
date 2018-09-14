@@ -1,9 +1,0 @@
-image: kanti/buildy:7.0
-pipelines:
-  default:
-    - step:
-        caches:
-          - composer
-        script:
-          - composer install --no-interaction --no-progress --no-suggest
-          - ./vendor/bin/grumphp run

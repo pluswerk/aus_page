@@ -1,7 +1,7 @@
 <?php
 /** @var string $_EXTKEY */
 $EM_CONF[$_EXTKEY] = [
-    'title' => 'anders und sehr: Page Extension',
+    'title' => '+Pluswerk: Page Extension',
     'description' => '',
     'category' => 'misc',
     'author' => 'Markus Hölzle',
@@ -11,7 +11,7 @@ $EM_CONF[$_EXTKEY] = [
     'uploadfolder' => '0',
     'createDirs' => '',
     'clearCacheOnLoad' => false,
-    'version' => '1.13.1',
+    'version' => '2.0.0',
     'constraints' => [
         'depends' => [
             'typo3' => '7.6.9-8.7.999',

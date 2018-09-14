@@ -64,7 +64,6 @@ class PageConfiguration
      * @param array $configuration
      * @return void
      * @throws \Exception
-     * @todo: Implement & define params
      */
     public static function addFieldToPage($dokType, array $configuration = [])
     {
